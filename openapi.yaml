@@ -3,8 +3,7 @@
 
 openapi: 3.0.3
 info:
-    title: Bqb API
-    description: 表情包服务.
+    title: ""
     version: 0.0.1
 paths:
     /wxxcx/bqb/index:
@@ -80,6 +79,79 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/voice/default:
+        get:
+            tags:
+                - Voice
+            operationId: Voice_GetVoiceDefault
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceDefaultReply'
+    /wxxcx/voice/list:
+        get:
+            tags:
+                - Voice
+            operationId: Voice_GetVoiceList
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: type
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceListReply'
+    /wxxcx/voice/ping:
+        get:
+            tags:
+                - Voice
+            operationId: Voice_Ping
+            responses:
+                "200":
+                    description: OK
+                    content: {}
 components:
     schemas:
         wxxcx.v1.GetBqbIndexReply:
@@ -118,5 +190,43 @@ components:
                     type: string
                 image_path:
                     type: string
+        wxxcx.v1.GetVoiceDefaultReply:
+            type: object
+            properties:
+                name:
+                    type: string
+                code:
+                    type: string
+                type:
+                    type: integer
+                    format: uint32
+                mp_appid:
+                    type: string
+                works:
+                    type: string
+                share_title:
+                    type: string
+                share_image_url:
+                    type: string
+        wxxcx.v1.GetVoiceListReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.GetVoiceListReply_Info'
+        wxxcx.v1.GetVoiceListReply_Info:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                type:
+                    type: string
+                image_path:
+                    type: string
 tags:
     - name: Bqb
+      description: 表情包服务.
+    - name: Voice
+      description: 语音盒服务.

@@ -15,7 +15,8 @@ import (
 )
 
 type unitTestSvc struct {
-	bqbSvc *BqbService
+	bqbSvc   *BqbService
+	voiceSvc *VoiceService
 }
 
 func NewTestUnitTestSvcService(*conf.Server, log.Logger, *conf.Bootstrap, *conf.Data) (*unitTestSvc, func(), error) {

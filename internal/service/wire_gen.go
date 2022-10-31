@@ -21,10 +21,14 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		return nil, nil, err
 	}
 	biaoQingBaoRepo := data.NewBqbRepo(dataData, logger)
-	biaoQingBaoUsecase := biz.NewBiaoQingBaoUsecase(biaoQingBaoRepo, logger)
-	bqbService := NewBqbService(biaoQingBaoUsecase)
+	biaoQingBaoUseCase := biz.NewBiaoQingBaoUseCase(biaoQingBaoRepo, logger)
+	bqbService := NewBqbService(biaoQingBaoUseCase)
+	voiceRepo := data.NewVoiceRepo(dataData, logger)
+	voiceUseCase := biz.NewVoiceUseCase(voiceRepo, logger)
+	voiceService := NewVoiceService(voiceUseCase)
 	serviceUnitTestSvc := &unitTestSvc{
-		bqbSvc: bqbService,
+		bqbSvc:   bqbService,
+		voiceSvc: voiceService,
 	}
 	return serviceUnitTestSvc, func() {
 		cleanup()
@@ -34,5 +38,6 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 // wire.go:
 
 type unitTestSvc struct {
-	bqbSvc *BqbService
+	bqbSvc   *BqbService
+	voiceSvc *VoiceService
 }

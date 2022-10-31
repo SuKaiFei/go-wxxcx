@@ -11,7 +11,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewBqbRepo)
+var ProviderSet = wire.NewSet(NewData, NewBqbRepo, NewVoiceRepo)
 
 // Data .
 type Data struct {
@@ -29,8 +29,9 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	}
 
 	db.AutoMigrate(
-		&biz.BiaoQingBao{},
-		&biz.BiaoQingBaoIndex{},
+		new(biz.BiaoQingBao),
+		new(biz.BiaoQingBaoIndex),
+		new(biz.Voice),
 	)
 
 	return &Data{

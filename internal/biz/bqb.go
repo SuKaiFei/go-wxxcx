@@ -14,25 +14,22 @@ var (
 	ErrUserNotFound = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
 )
 
-// BiaoQingBaoRepo is a Greater repo.
 type BiaoQingBaoRepo interface {
 	GetIndex(context.Context, string) ([]*BiaoQingBaoIndex, error)
 	GetIndexNum(context.Context, string, []string) ([]*BiaoQingBaoIndexNum, error)
 	GetList(context.Context, string, string, uint64, uint64) ([]*BiaoQingBao, error)
 }
 
-// BiaoQingBaoUsecase is a BiaoQingBao usecase.
-type BiaoQingBaoUsecase struct {
+type BiaoQingBaoUseCase struct {
 	repo BiaoQingBaoRepo
 	log  *log.Helper
 }
 
-// NewBiaoQingBaoUsecase new a BiaoQingBao usecase.
-func NewBiaoQingBaoUsecase(repo BiaoQingBaoRepo, logger log.Logger) *BiaoQingBaoUsecase {
-	return &BiaoQingBaoUsecase{repo: repo, log: log.NewHelper(logger)}
+func NewBiaoQingBaoUseCase(repo BiaoQingBaoRepo, logger log.Logger) *BiaoQingBaoUseCase {
+	return &BiaoQingBaoUseCase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (uc *BiaoQingBaoUsecase) GetList(ctx context.Context, appid, typ string, page, pageSize uint64) (
+func (uc *BiaoQingBaoUseCase) GetList(ctx context.Context, appid, typ string, page, pageSize uint64) (
 	reply *v1.GetBqbListReply,
 	err error,
 ) {
@@ -53,7 +50,7 @@ func (uc *BiaoQingBaoUsecase) GetList(ctx context.Context, appid, typ string, pa
 	return reply, nil
 }
 
-func (uc *BiaoQingBaoUsecase) GetIndex(ctx context.Context, appid string) (reply *v1.GetBqbIndexReply, err error) {
+func (uc *BiaoQingBaoUseCase) GetIndex(ctx context.Context, appid string) (reply *v1.GetBqbIndexReply, err error) {
 	baos, err := uc.repo.GetIndex(ctx, appid)
 	if err != nil {
 		return nil, errors2.WithStack(err)

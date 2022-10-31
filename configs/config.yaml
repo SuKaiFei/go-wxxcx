@@ -6,3 +6,10 @@ data:
   database:
     driver: mysql
     source: root:root@tcp(127.0.0.1:3306)/test
+
+application:
+  mp:
+    appid:
+      id: appid
+      key: app-key
+      name: app-name

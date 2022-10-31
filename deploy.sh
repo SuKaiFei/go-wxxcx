@@ -39,8 +39,7 @@ echo 下一次部署后的端口：$nextPort
 
 sed -i "s/$curPort/$nextPort/" /app/wxxcx/config.yaml
 
-
-nohup /app/wxxcx/go-wxxcx -conf /app/wxxcx/config.yaml >go-wxxcx$(date '+%Y%m%d')-$nextPort.log 2>&1 &
+nohup /app/wxxcx/go-wxxcx -conf /app/wxxcx/config.yaml >/app/wxxcx/go-wxxcx$(date '+%Y%m%d')-$nextPort.log 2>&1 &
 
 #设置变量，url为你需要检测的目标网站的网址（IP或域名）
 url=http://localhost:$nextPort/wxxcx/bqb/ping

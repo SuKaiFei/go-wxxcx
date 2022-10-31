@@ -51,11 +51,13 @@ build:
 .PHONY: buildlinux
 # buildlinux
 buildlinux:
+	rm ./bin/go-wxxcx
 	mkdir -p bin/ && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
 
 .PHONY: scp
 # scp
 scp:
+	ssh root@101.42.176.254 "rm /app/wxxcx/go-wxxcx"
 	scp ./bin/go-wxxcx root@101.42.176.254:/app/wxxcx
 
 

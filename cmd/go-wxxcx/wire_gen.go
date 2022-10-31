@@ -29,9 +29,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 		return nil, nil, err
 	}
 	biaoQingBaoRepo := data.NewBqbRepo(dataData, logger)
-	biaoQingBaoUsecase := biz.NewBiaoQingBaoUsecase(biaoQingBaoRepo, logger)
-	bqbService := service.NewBqbService(biaoQingBaoUsecase)
-	httpServer := server.NewHTTPServer(confServer, application, bqbService, logger)
+	biaoQingBaoUseCase := biz.NewBiaoQingBaoUseCase(biaoQingBaoRepo, logger)
+	bqbService := service.NewBqbService(biaoQingBaoUseCase)
+	voiceRepo := data.NewVoiceRepo(dataData, logger)
+	voiceUseCase := biz.NewVoiceUseCase(voiceRepo, logger)
+	voiceService := service.NewVoiceService(voiceUseCase)
+	httpServer := server.NewHTTPServer(confServer, application, bqbService, voiceService, logger)
 	app := newApp(logger, httpServer)
 	return app, func() {
 		cleanup()

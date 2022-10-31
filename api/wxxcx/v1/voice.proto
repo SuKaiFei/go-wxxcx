@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package wxxcx.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+// 语音盒服务.
+service Voice {
+  rpc GetVoiceList (GetVoiceListRequest) returns (GetVoiceListReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/voice/list"
+    };
+  }
+  rpc GetVoiceDefault (GetVoiceDefaultRequest) returns (GetVoiceDefaultReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/voice/default"
+    };
+  }
+  rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/wxxcx/voice/ping"
+    };
+  }
+}
+
+message GetVoiceDefaultRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+}
+
+message GetVoiceDefaultReply {
+  string name = 1;
+  string code = 2;
+  uint32 type = 3;
+  string mp_appid = 4 [json_name = 'mp_appid'];
+  string works = 5;
+  string share_title = 6 [json_name = 'share_title'];
+  string share_image_url = 7 [json_name = 'share_image_url'];
+}
+
+message GetVoiceListRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string type = 4;
+  uint64 page = 5;
+  uint64 page_size = 6;
+}
+
+message GetVoiceListReply {
+  message Info {
+    uint64 id = 1;
+    string type = 2;
+    string image_path = 3 [json_name = 'image_path'];
+  }
+  repeated Info results = 1;
+}

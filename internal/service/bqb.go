@@ -9,15 +9,13 @@ import (
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
 )
 
-// BqbService is a greeter service.
 type BqbService struct {
 	v1.UnimplementedBqbServer
 
-	uc *biz.BiaoQingBaoUsecase
+	uc *biz.BiaoQingBaoUseCase
 }
 
-// NewBqbService new a greeter service.
-func NewBqbService(uc *biz.BiaoQingBaoUsecase) *BqbService {
+func NewBqbService(uc *biz.BiaoQingBaoUseCase) *BqbService {
 	return &BqbService{uc: uc}
 }
 
@@ -44,6 +42,5 @@ func (s *BqbService) GetBqbList(ctx context.Context, in *v1.GetBqbListRequest) (
 }
 
 func (s *BqbService) Ping(_ context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
-
 	return &emptypb.Empty{}, nil
 }
