@@ -1,0 +1,122 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Bqb API
+    description: 表情包服务.
+    version: 0.0.1
+paths:
+    /wxxcx/bqb/index:
+        get:
+            tags:
+                - Bqb
+            operationId: Bqb_GetBqbIndex
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.GetBqbIndexReply'
+    /wxxcx/bqb/list:
+        get:
+            tags:
+                - Bqb
+            operationId: Bqb_GetBqbList
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: type
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.GetBqbListReply'
+    /wxxcx/bqb/ping:
+        get:
+            tags:
+                - Bqb
+            operationId: Bqb_Ping
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+components:
+    schemas:
+        wxxcx.v1.GetBqbIndexReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.GetBqbIndexReply_Info'
+        wxxcx.v1.GetBqbIndexReply_Info:
+            type: object
+            properties:
+                name:
+                    type: string
+                type:
+                    type: string
+                image_path:
+                    type: string
+                num:
+                    type: integer
+                    format: uint64
+        wxxcx.v1.GetBqbListReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.GetBqbListReply_Info'
+        wxxcx.v1.GetBqbListReply_Info:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                type:
+                    type: string
+                image_path:
+                    type: string
+tags:
+    - name: Bqb

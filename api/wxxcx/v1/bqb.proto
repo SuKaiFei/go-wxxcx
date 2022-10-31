@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package wxxcx.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+// 表情包服务.
+service Bqb {
+  rpc GetBqbIndex (GetBqbIndexRequest) returns (GetBqbIndexReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/bqb/index"
+    };
+  }
+  rpc GetBqbList (GetBqbListRequest) returns (GetBqbListReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/bqb/list"
+    };
+  }
+  rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/wxxcx/bqb/ping"
+    };
+  }
+}
+
+message GetBqbIndexRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+}
+
+message GetBqbIndexReply {
+  message Info {
+    string name = 1;
+    string type = 2;
+    string image_path = 3 [json_name = 'image_path'];
+    uint64 num = 4;
+  }
+  repeated Info results = 1;
+}
+
+message GetBqbListRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string type = 4;
+  uint64 page = 5;
+  uint64 page_size = 6;
+}
+
+message GetBqbListReply {
+  message Info {
+    uint64 id = 1;
+    string type = 2;
+    string image_path = 3 [json_name = 'image_path'];
+  }
+  repeated Info results = 1;
+}

@@ -1,0 +1,39 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Application application = 3;
+}
+
+message Application {
+  message App {
+    string id = 1;
+    string key = 2;
+    string name = 3;
+  }
+
+  map<string, App> mp = 1;
+}
+
+message Server {
+  message HTTP {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  HTTP http = 1;
+}
+
+message Data {
+  message Database {
+    string driver = 1;
+    string source = 2;
+  }
+  Database database = 1;
+}
