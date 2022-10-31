@@ -17,8 +17,7 @@
 
 |                     微信小程序码                       |                    赞赏码(觉得不错打个赏😁)                     |
 |:-----------------------------------------------:|:-----------------------------------------------------:|
-| <img src="./assets/image/mp.jpg" width="200px"> | <img src="./assets/image/zanshang.jpg" width="200px"> | 
-|
+| <img src="./assets/image/mp.jpg" width="200px"> | <img src="./assets/image/zanshang.jpg" width="200px"> |
 
 - 鸡音盒(主线产品，也是总入口)
 - 纯真盒
