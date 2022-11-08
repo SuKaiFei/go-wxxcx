@@ -24,7 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VoiceClient interface {
 	GetVoiceList(ctx context.Context, in *GetVoiceListRequest, opts ...grpc.CallOption) (*GetVoiceListReply, error)
-	GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRequest, opts ...grpc.CallOption) (*GetVoiceDefaultReply, error)
+	GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRequest, opts ...grpc.CallOption) (*GetVoiceReply, error)
+	GetVoiceById(ctx context.Context, in *GetVoiceByIdRequest, opts ...grpc.CallOption) (*GetVoiceReply, error)
 	Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
@@ -45,9 +46,18 @@ func (c *voiceClient) GetVoiceList(ctx context.Context, in *GetVoiceListRequest,
 	return out, nil
 }
 
-func (c *voiceClient) GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRequest, opts ...grpc.CallOption) (*GetVoiceDefaultReply, error) {
-	out := new(GetVoiceDefaultReply)
+func (c *voiceClient) GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRequest, opts ...grpc.CallOption) (*GetVoiceReply, error) {
+	out := new(GetVoiceReply)
 	err := c.cc.Invoke(ctx, "/wxxcx.v1.Voice/GetVoiceDefault", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *voiceClient) GetVoiceById(ctx context.Context, in *GetVoiceByIdRequest, opts ...grpc.CallOption) (*GetVoiceReply, error) {
+	out := new(GetVoiceReply)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.Voice/GetVoiceById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +78,8 @@ func (c *voiceClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.
 // for forward compatibility
 type VoiceServer interface {
 	GetVoiceList(context.Context, *GetVoiceListRequest) (*GetVoiceListReply, error)
-	GetVoiceDefault(context.Context, *GetVoiceDefaultRequest) (*GetVoiceDefaultReply, error)
+	GetVoiceDefault(context.Context, *GetVoiceDefaultRequest) (*GetVoiceReply, error)
+	GetVoiceById(context.Context, *GetVoiceByIdRequest) (*GetVoiceReply, error)
 	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	mustEmbedUnimplementedVoiceServer()
 }
@@ -80,8 +91,11 @@ type UnimplementedVoiceServer struct {
 func (UnimplementedVoiceServer) GetVoiceList(context.Context, *GetVoiceListRequest) (*GetVoiceListReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVoiceList not implemented")
 }
-func (UnimplementedVoiceServer) GetVoiceDefault(context.Context, *GetVoiceDefaultRequest) (*GetVoiceDefaultReply, error) {
+func (UnimplementedVoiceServer) GetVoiceDefault(context.Context, *GetVoiceDefaultRequest) (*GetVoiceReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVoiceDefault not implemented")
+}
+func (UnimplementedVoiceServer) GetVoiceById(context.Context, *GetVoiceByIdRequest) (*GetVoiceReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVoiceById not implemented")
 }
 func (UnimplementedVoiceServer) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
@@ -135,6 +149,24 @@ func _Voice_GetVoiceDefault_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Voice_GetVoiceById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVoiceByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VoiceServer).GetVoiceById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/wxxcx.v1.Voice/GetVoiceById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VoiceServer).GetVoiceById(ctx, req.(*GetVoiceByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Voice_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -167,6 +199,10 @@ var Voice_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetVoiceDefault",
 			Handler:    _Voice_GetVoiceDefault_Handler,
+		},
+		{
+			MethodName: "GetVoiceById",
+			Handler:    _Voice_GetVoiceById_Handler,
 		},
 		{
 			MethodName: "Ping",

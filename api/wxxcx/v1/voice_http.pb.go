@@ -19,7 +19,8 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type VoiceHTTPServer interface {
-	GetVoiceDefault(context.Context, *GetVoiceDefaultRequest) (*GetVoiceDefaultReply, error)
+	GetVoiceById(context.Context, *GetVoiceByIdRequest) (*GetVoiceReply, error)
+	GetVoiceDefault(context.Context, *GetVoiceDefaultRequest) (*GetVoiceReply, error)
 	GetVoiceList(context.Context, *GetVoiceListRequest) (*GetVoiceListReply, error)
 	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 }
@@ -28,6 +29,7 @@ func RegisterVoiceHTTPServer(s *http.Server, srv VoiceHTTPServer) {
 	r := s.Route("/")
 	r.GET("/wxxcx/voice/list", _Voice_GetVoiceList0_HTTP_Handler(srv))
 	r.GET("/wxxcx/voice/default", _Voice_GetVoiceDefault0_HTTP_Handler(srv))
+	r.GET("/wxxcx/voice/by_id", _Voice_GetVoiceById0_HTTP_Handler(srv))
 	r.GET("/wxxcx/voice/ping", _Voice_Ping1_HTTP_Handler(srv))
 }
 
@@ -64,7 +66,26 @@ func _Voice_GetVoiceDefault0_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Con
 		if err != nil {
 			return err
 		}
-		reply := out.(*GetVoiceDefaultReply)
+		reply := out.(*GetVoiceReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Voice_GetVoiceById0_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetVoiceByIdRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/wxxcx.v1.Voice/GetVoiceById")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetVoiceById(ctx, req.(*GetVoiceByIdRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetVoiceReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -89,7 +110,8 @@ func _Voice_Ping1_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Context) error
 }
 
 type VoiceHTTPClient interface {
-	GetVoiceDefault(ctx context.Context, req *GetVoiceDefaultRequest, opts ...http.CallOption) (rsp *GetVoiceDefaultReply, err error)
+	GetVoiceById(ctx context.Context, req *GetVoiceByIdRequest, opts ...http.CallOption) (rsp *GetVoiceReply, err error)
+	GetVoiceDefault(ctx context.Context, req *GetVoiceDefaultRequest, opts ...http.CallOption) (rsp *GetVoiceReply, err error)
 	GetVoiceList(ctx context.Context, req *GetVoiceListRequest, opts ...http.CallOption) (rsp *GetVoiceListReply, err error)
 	Ping(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
@@ -102,8 +124,21 @@ func NewVoiceHTTPClient(client *http.Client) VoiceHTTPClient {
 	return &VoiceHTTPClientImpl{client}
 }
 
-func (c *VoiceHTTPClientImpl) GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRequest, opts ...http.CallOption) (*GetVoiceDefaultReply, error) {
-	var out GetVoiceDefaultReply
+func (c *VoiceHTTPClientImpl) GetVoiceById(ctx context.Context, in *GetVoiceByIdRequest, opts ...http.CallOption) (*GetVoiceReply, error) {
+	var out GetVoiceReply
+	pattern := "/wxxcx/voice/by_id"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/wxxcx.v1.Voice/GetVoiceById"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *VoiceHTTPClientImpl) GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRequest, opts ...http.CallOption) (*GetVoiceReply, error) {
+	var out GetVoiceReply
 	pattern := "/wxxcx/voice/default"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/wxxcx.v1.Voice/GetVoiceDefault"))

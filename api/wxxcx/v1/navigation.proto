@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package api.wxxcx.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+service Navigation {
+  rpc GetNavigations (GetNavigationsRequest) returns (GetNavigationsReply){
+    option (google.api.http) = {
+      get: "/wxxcx/navigation/list_by_code"
+    };
+  }
+}
+
+message GetNavigationsRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string code = 4;
+}
+
+message GetNavigationReply {
+  uint32 type = 1;
+  string image_path = 2 [json_name = 'image_path'];
+  string title = 3;
+  string describe = 4;
+  int64 sort = 5;
+  string mp_appid = 6[json_name = 'mp_appid'];
+  string url = 7;
+}
+
+message GetNavigationsReply {
+  repeated GetNavigationReply results = 1;
+}

@@ -5,6 +5,6 @@ import (
 )
 
 func TestGetSign(t *testing.T) {
-	sign := GetSign(map[string]interface{}{"timestamp": 1}, map[string]interface{}{"a": "b"}, "c")
+	sign := GetSign(map[string][]string{}, "c")
 	t.Log(sign)
 }

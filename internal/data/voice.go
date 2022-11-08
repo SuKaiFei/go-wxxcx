@@ -36,11 +36,23 @@ func (r *voiceRepo) GetDefault(ctx context.Context, appid string) (
 	return res, nil
 }
 
+func (r *voiceRepo) GetVoiceByID(ctx context.Context, id uint) (
+	res *biz.Voice, err error,
+) {
+	err = r.data.db.WithContext(ctx).
+		First(&res, id).
+		Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return res, nil
+}
+
 func (r *voiceRepo) GetList(ctx context.Context, appid string) (
 	res []*biz.Voice, err error,
 ) {
 	err = r.data.db.WithContext(ctx).
-		Select("appid", "code", "name", "default", "type", "mp_appid", "sort", "share_title", "share_image_url").
+		Select("id", "code", "name", "type", "mp_appid").
 		Order("sort desc").
 		Find(&res, "appid=?", appid).
 		Error

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	nhttp "net/http"
 
 	v1 "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
@@ -31,6 +32,8 @@ func NewWhiteListMatcher() selector.MatchFunc {
 func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	bqbSVC *service.BqbService,
 	voiceSVC *service.VoiceService,
+	articleSVC *service.ArticleService,
+	navigationSVC *service.NavigationService,
 	logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -51,7 +54,13 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
+
+	fs := nhttp.FileServer(nhttp.Dir(cApp.GetStaticPath()))
+	srv.HandlePrefix("/static/", StripPrefix(logger, cApp, "/static/", fs))
+
 	v1.RegisterBqbHTTPServer(srv, bqbSVC)
 	v1.RegisterVoiceHTTPServer(srv, voiceSVC)
+	v1.RegisterArticleHTTPServer(srv, articleSVC)
+	v1.RegisterNavigationHTTPServer(srv, navigationSVC)
 	return srv
 }

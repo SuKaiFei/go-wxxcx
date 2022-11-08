@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package wxxcx.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+// 文章服务.
+service Article {
+  rpc GetArticle (GetArticleRequest) returns (GetArticleReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/article/by_code"
+    };
+  }
+  rpc GetArticles (GetArticlesRequest) returns (GetArticlesReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/article/list_by_code"
+    };
+  }
+}
+
+message GetArticleRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string code = 4;
+}
+
+message GetArticleReply {
+  string image_path = 1 [json_name = 'image_path'];
+  string title = 2;
+  string content = 3;
+}
+
+message GetArticlesRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string code = 4;
+  uint64 page = 5;
+  uint64 page_size = 6;
+}
+
+message GetArticlesReply {
+  repeated GetArticleReply results = 1;
+}

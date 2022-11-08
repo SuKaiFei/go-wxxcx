@@ -14,9 +14,14 @@ service Voice {
       get: "/wxxcx/voice/list"
     };
   }
-  rpc GetVoiceDefault (GetVoiceDefaultRequest) returns (GetVoiceDefaultReply) {
+  rpc GetVoiceDefault (GetVoiceDefaultRequest) returns (GetVoiceReply) {
     option (google.api.http) = {
       get: "/wxxcx/voice/default"
+    };
+  }
+  rpc GetVoiceById (GetVoiceByIdRequest) returns (GetVoiceReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/voice/by_id"
     };
   }
   rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
@@ -32,30 +37,41 @@ message GetVoiceDefaultRequest {
   string sign = 3;
 }
 
-message GetVoiceDefaultReply {
-  string name = 1;
-  string code = 2;
-  uint32 type = 3;
-  string mp_appid = 4 [json_name = 'mp_appid'];
-  string works = 5;
-  string share_title = 6 [json_name = 'share_title'];
-  string share_image_url = 7 [json_name = 'share_image_url'];
+message Share {
+  string title = 1 [json_name = 'title'];
+  string image_url = 2 [json_name = 'imageUrl'];
+}
+
+message GetVoiceReply {
+  uint64 id = 1;
+  string name = 2;
+  string code = 3;
+  uint32 type = 4;
+  string mp_appid = 5 [json_name = 'mp_appid'];
+  string works = 6;
+  Share share = 7;
+}
+
+message GetVoiceByIdRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  uint64 id = 4;
 }
 
 message GetVoiceListRequest {
   string appid = 1;
   string timestamp = 2;
   string sign = 3;
-  string type = 4;
-  uint64 page = 5;
-  uint64 page_size = 6;
 }
 
 message GetVoiceListReply {
   message Info {
     uint64 id = 1;
-    string type = 2;
-    string image_path = 3 [json_name = 'image_path'];
+    uint32 type = 2;
+    string name = 3;
+    string code = 4;
+    string mp_appid = 5 [json_name = 'mp_appid'];
   }
   repeated Info results = 1;
 }

@@ -19,6 +19,7 @@ message Application {
   }
 
   map<string, App> mp = 1;
+  string staticPath = 2;
 }
 
 message Server {

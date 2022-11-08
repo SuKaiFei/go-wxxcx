@@ -9,6 +9,7 @@ import (
 type VoiceRepo interface {
 	GetList(context.Context, string) ([]*Voice, error)
 	GetDefault(context.Context, string) (*Voice, error)
+	GetVoiceByID(context.Context, uint) (*Voice, error)
 	Add(context.Context, *Voice) error
 }
 
@@ -26,6 +27,18 @@ func (uc *VoiceUseCase) GetDefault(ctx context.Context, appid string) (
 	err error,
 ) {
 	reply, err = uc.repo.GetDefault(ctx, appid)
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+
+	return reply, nil
+}
+
+func (uc *VoiceUseCase) GetVoiceByID(ctx context.Context, id uint64) (
+	reply *Voice,
+	err error,
+) {
+	reply, err = uc.repo.GetVoiceByID(ctx, uint(id))
 	if err != nil {
 		return nil, errors2.WithStack(err)
 	}

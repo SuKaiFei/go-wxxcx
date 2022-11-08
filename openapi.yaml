@@ -6,6 +6,74 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /wxxcx/article/by_code:
+        get:
+            tags:
+                - Article
+            operationId: Article_GetArticle
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: code
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.GetArticleReply'
+    /wxxcx/article/list_by_code:
+        get:
+            tags:
+                - Article
+            operationId: Article_GetArticles
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: code
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.GetArticlesReply'
     /wxxcx/bqb/index:
         get:
             tags:
@@ -79,6 +147,65 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/navigation/list_by_code:
+        get:
+            tags:
+                - Navigation
+            operationId: Navigation_GetNavigations
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: code
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.GetNavigationsReply'
+    /wxxcx/voice/by_id:
+        get:
+            tags:
+                - Voice
+            operationId: Voice_GetVoiceById
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceReply'
     /wxxcx/voice/default:
         get:
             tags:
@@ -103,7 +230,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceDefaultReply'
+                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceReply'
     /wxxcx/voice/list:
         get:
             tags:
@@ -122,20 +249,6 @@ paths:
                   in: query
                   schema:
                     type: string
-                - name: type
-                  in: query
-                  schema:
-                    type: string
-                - name: page
-                  in: query
-                  schema:
-                    type: integer
-                    format: uint64
-                - name: pageSize
-                  in: query
-                  schema:
-                    type: integer
-                    format: uint64
             responses:
                 "200":
                     description: OK
@@ -154,6 +267,48 @@ paths:
                     content: {}
 components:
     schemas:
+        api.wxxcx.v1.GetNavigationReply:
+            type: object
+            properties:
+                type:
+                    type: integer
+                    format: uint32
+                image_path:
+                    type: string
+                title:
+                    type: string
+                describe:
+                    type: string
+                sort:
+                    type: integer
+                    format: int64
+                mp_appid:
+                    type: string
+                url:
+                    type: string
+        api.wxxcx.v1.GetNavigationsReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.wxxcx.v1.GetNavigationReply'
+        wxxcx.v1.GetArticleReply:
+            type: object
+            properties:
+                image_path:
+                    type: string
+                title:
+                    type: string
+                content:
+                    type: string
+        wxxcx.v1.GetArticlesReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.GetArticleReply'
         wxxcx.v1.GetBqbIndexReply:
             type: object
             properties:
@@ -190,24 +345,6 @@ components:
                     type: string
                 image_path:
                     type: string
-        wxxcx.v1.GetVoiceDefaultReply:
-            type: object
-            properties:
-                name:
-                    type: string
-                code:
-                    type: string
-                type:
-                    type: integer
-                    format: uint32
-                mp_appid:
-                    type: string
-                works:
-                    type: string
-                share_title:
-                    type: string
-                share_image_url:
-                    type: string
         wxxcx.v1.GetVoiceListReply:
             type: object
             properties:
@@ -222,11 +359,45 @@ components:
                     type: integer
                     format: uint64
                 type:
+                    type: integer
+                    format: uint32
+                name:
                     type: string
-                image_path:
+                code:
+                    type: string
+                mp_appid:
+                    type: string
+        wxxcx.v1.GetVoiceReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                name:
+                    type: string
+                code:
+                    type: string
+                type:
+                    type: integer
+                    format: uint32
+                mp_appid:
+                    type: string
+                works:
+                    type: string
+                share:
+                    $ref: '#/components/schemas/wxxcx.v1.Share'
+        wxxcx.v1.Share:
+            type: object
+            properties:
+                title:
+                    type: string
+                imageUrl:
                     type: string
 tags:
+    - name: Article
+      description: 文章服务.
     - name: Bqb
       description: 表情包服务.
+    - name: Navigation
     - name: Voice
       description: 语音盒服务.
