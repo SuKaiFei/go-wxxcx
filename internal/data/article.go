@@ -24,7 +24,7 @@ func (r *articleRepo) GetArticle(ctx context.Context, appid, code string) (
 	res *biz.Article, err error,
 ) {
 	err = r.data.db.WithContext(ctx).
-		First(&res, "appid=? and code=? and deleted_at is null", appid, code).
+		First(&res, "appid=? and code=?", appid, code).
 		Error
 	if err != nil {
 		return nil, errors2.WithStack(err)
@@ -36,7 +36,7 @@ func (r *articleRepo) GetArticles(ctx context.Context, appid, code string, page,
 	res []*biz.Article, err error,
 ) {
 	err = r.data.db.WithContext(ctx).Limit(pageSize).Offset(page*pageSize).Order("sort").
-		Find(&res, "appid=? and code=? and deleted_at is null", appid, code).
+		Find(&res, "appid=? and code=?", appid, code).
 		Error
 	if err != nil {
 		return nil, errors2.WithStack(err)

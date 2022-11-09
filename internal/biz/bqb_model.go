@@ -6,10 +6,10 @@ import (
 
 type BiaoQingBaoIndex struct {
 	gorm.Model
-	Appid     string `json:"app_id" gorm:"type:char(18);index:idx_appid;"`
+	Appid     string `json:"app_id" gorm:"type:char(18);"`
 	Name      string `json:"name" gorm:"type:varchar(255);"`
-	Type      string `json:"type" gorm:"type:varchar(255);index:idx_type;"`
-	Sort      int    `json:"sort" gorm:"type:int(255);index:idx_sort;"`
+	Type      string `json:"type" gorm:"type:varchar(255);"`
+	Sort      int    `json:"sort" gorm:"type:int(255);"`
 	ImagePath string `json:"image_path" gorm:"type:varchar(255);"`
 }
 
@@ -19,8 +19,8 @@ func (BiaoQingBaoIndex) TableName() string {
 
 type BiaoQingBao struct {
 	gorm.Model
-	Appid     string `json:"app_id" gorm:"type:char(18);index:idx_appid;"`
-	Type      string `json:"type" gorm:"type:varchar(255);index:idx_type;"`
+	Appid     string `json:"app_id" gorm:"type:char(18);"`
+	Type      string `json:"type" gorm:"type:varchar(255);"`
 	ImagePath string `json:"image_path" gorm:"type:varchar(255);"`
 }
 

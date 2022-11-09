@@ -24,7 +24,7 @@ func (r *navigationRepo) GetNavigations(ctx context.Context, appid, code string)
 	res []*biz.Navigation, err error,
 ) {
 	err = r.data.db.WithContext(ctx).Order("sort").
-		Find(&res, "appid=? and code=? and deleted_at is null", appid, code).
+		Find(&res, "appid=? and code=?", appid, code).
 		Error
 	if err != nil {
 		return nil, errors2.WithStack(err)

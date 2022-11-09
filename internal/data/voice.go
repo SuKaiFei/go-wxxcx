@@ -53,7 +53,7 @@ func (r *voiceRepo) GetList(ctx context.Context, appid string) (
 ) {
 	err = r.data.db.WithContext(ctx).
 		Select("id", "code", "name", "type", "mp_appid").
-		Order("sort desc").
+		Order("sort").
 		Find(&res, "appid=?", appid).
 		Error
 	if err != nil {

@@ -23,8 +23,8 @@ type VoiceWorks [][]*VoiceWork
 
 type Voice struct {
 	gorm.Model
-	Appid         string     `gorm:"type:char(18);index:idx_appid;"`
-	Code          string     `gorm:"type:varchar(50);index:idx_code;"`
+	Appid         string     `gorm:"type:char(18);"`
+	Code          string     `gorm:"type:varchar(50);"`
 	Name          string     `gorm:"type:varchar(50);"`
 	Default       bool       `gorm:"type:tinyint;"`
 	Type          VoiceType  `gorm:"type:int(1);default:1;"`
@@ -32,7 +32,7 @@ type Voice struct {
 	Sort          int        `gorm:"type:int(1);default:1;"`
 	ShareTitle    string     `gorm:"type:varchar(50);"`
 	ShareImageUrl string     `gorm:"type:varchar(300);"`
-	Works         VoiceWorks `gorm:"column:works;type:json;"`
+	Works         VoiceWorks `gorm:"type:json;"`
 }
 
 func (Voice) TableName() string {
