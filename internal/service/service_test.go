@@ -48,7 +48,7 @@ func TestMain(m *testing.M) {
 		err       error
 	)
 
-	tSVC, closeFunc, err = NewTestUnitTestSvcService(bc.GetServer(), logger, &bc, bc.GetData())
+	tSVC, closeFunc, err = NewTestUnitTestSvcService(bc.GetServer(), logger, &bc, bc.GetData(), bc.GetApplication())
 	if err != nil {
 		panic(err)
 	}

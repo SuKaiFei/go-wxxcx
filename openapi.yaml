@@ -265,6 +265,24 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/wechat/mp/login:
+        post:
+            tags:
+                - WechatMp
+            operationId: WechatMp_LoginWechatMp
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.LoginWechatMpRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.LoginWechatMpReply'
 components:
     schemas:
         api.wxxcx.v1.GetNavigationReply:
@@ -293,6 +311,26 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/api.wxxcx.v1.GetNavigationReply'
+        api.wxxcx.v1.LoginWechatMpReply:
+            type: object
+            properties:
+                openid:
+                    type: string
+                session_key:
+                    type: string
+                unionid:
+                    type: string
+        api.wxxcx.v1.LoginWechatMpRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                code:
+                    type: string
         wxxcx.v1.GetArticleReply:
             type: object
             properties:
@@ -401,3 +439,4 @@ tags:
     - name: Navigation
     - name: Voice
       description: 语音盒服务.
+    - name: WechatMp

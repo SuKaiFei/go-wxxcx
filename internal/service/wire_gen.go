@@ -15,7 +15,7 @@ import (
 
 // Injectors from wire.go:
 
-func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap *conf.Bootstrap, confData *conf.Data) (*unitTestSvc, func(), error) {
+func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap *conf.Bootstrap, confData *conf.Data, application *conf.Application) (*unitTestSvc, func(), error) {
 	dataData, cleanup, err := data.NewData(confData, logger)
 	if err != nil {
 		return nil, nil, err
@@ -32,11 +32,14 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	navigationRepo := data.NewNavigationRepo(dataData, logger)
 	navigationUseCase := biz.NewNavigationUseCase(navigationRepo, logger)
 	navigationService := NewNavigationService(navigationUseCase)
+	wechatMpUseCase := biz.NewWechatMpUseCase(logger, application)
+	wechatMpService := NewWechatMpService(wechatMpUseCase)
 	serviceUnitTestSvc := &unitTestSvc{
 		bqbSvc:        bqbService,
 		articleSvc:    articleService,
 		voiceSvc:      voiceService,
 		navigationSvc: navigationService,
+		wechatMpSvc:   wechatMpService,
 	}
 	return serviceUnitTestSvc, func() {
 		cleanup()
@@ -50,4 +53,5 @@ type unitTestSvc struct {
 	articleSvc    *ArticleService
 	voiceSvc      *VoiceService
 	navigationSvc *NavigationService
+	wechatMpSvc   *WechatMpService
 }

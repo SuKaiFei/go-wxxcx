@@ -19,9 +19,10 @@ type unitTestSvc struct {
 	articleSvc    *ArticleService
 	voiceSvc      *VoiceService
 	navigationSvc *NavigationService
+	wechatMpSvc   *WechatMpService
 }
 
-func NewTestUnitTestSvcService(*conf.Server, log.Logger, *conf.Bootstrap, *conf.Data) (*unitTestSvc, func(), error) {
+func NewTestUnitTestSvcService(*conf.Server, log.Logger, *conf.Bootstrap, *conf.Data, *conf.Application) (*unitTestSvc, func(), error) {
 	panic(wire.Build(
 		wire.Struct(new(unitTestSvc), "*"),
 		data.ProviderSet,

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package api.wxxcx.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "/api/wxxcx/v1;v1";
+service WechatMp {
+  rpc LoginWechatMp (LoginWechatMpRequest) returns (LoginWechatMpReply) {
+    option (google.api.http) = {
+      post: "/wxxcx/wechat/mp/login",
+      body: "*",
+    };
+  }
+}
+
+message LoginWechatMpRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string code = 4;
+}
+
+message LoginWechatMpReply {
+  string openid = 1;
+  string session_key = 2 [json_name = 'session_key'];
+  string unionid = 3;
+}

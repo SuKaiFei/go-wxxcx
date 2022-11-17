@@ -29,7 +29,7 @@ func StripPrefix(logger log.Logger, cApp *conf.Application, prefix string, h htt
 			"operation", operation,
 			"url", r.RequestURI,
 		)
-		if err := requestAuth(cApp, r.Referer(), r.URL); err != nil {
+		if err := requestAuth(cApp, r, nil); err != nil {
 			_ = logContext.Log(log.LevelError,
 				"kind", "server",
 				"component", kind,

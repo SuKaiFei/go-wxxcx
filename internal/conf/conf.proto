@@ -16,6 +16,9 @@ message Application {
     string id = 1;
     string key = 2;
     string name = 3;
+    string token = 4;
+    string encodingAESKey = 5;
+    string secret = 6;
   }
 
   map<string, App> mp = 1;

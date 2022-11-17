@@ -5,7 +5,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
@@ -41,34 +40,7 @@ func (t LocalTime) String() string {
 	return time.Time(t).Format(TimeFormat)
 }
 
-func UnmarshalJSON(data []byte, v interface{}) (err error) {
-	return json.Unmarshal(data, v)
-}
-
-func ConvertStructList(data interface{}) string {
-	if data == nil {
-		return "[]"
-	}
-	jsonStr, _ := json.Marshal(data)
-	return string(jsonStr)
-}
-
-func ConvertStruct(data interface{}) string {
-	if data == nil {
-		return "{}"
-	}
-	jsonStr, _ := json.Marshal(data)
-	return string(jsonStr)
-}
-
-func ConvertBasicList(data interface{}) string {
-	if data == nil {
-		return "[]"
-	}
-	return strings.Replace(strings.Trim(fmt.Sprint(data), "[]"), " ", ",", -1)
-}
-
-func GetSign(data map[string][]string, secret string) string {
+func GetSign(data map[string]interface{}, secret string) string {
 	var keyList = make([]string, 0, len(data)-1)
 	for k := range data {
 		if k == "sign" {
@@ -80,7 +52,7 @@ func GetSign(data map[string][]string, secret string) string {
 	var signStr = new(bytes.Buffer)
 	for _, key := range keyList {
 		value := data[key]
-		_, _ = signStr.WriteString(fmt.Sprintf("%v%v", key, value[0]))
+		_, _ = signStr.WriteString(fmt.Sprintf("%v%v", key, value))
 	}
 	sign := strings.ToUpper(HmacSha256(signStr.String(), secret))
 	return sign

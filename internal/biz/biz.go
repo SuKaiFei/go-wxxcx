@@ -3,4 +3,10 @@ package biz
 import "github.com/google/wire"
 
 // ProviderSet is biz providers.
-var ProviderSet = wire.NewSet(NewBiaoQingBaoUseCase, NewVoiceUseCase, NewArticleUseCase, NewNavigationUseCase)
+var ProviderSet = wire.NewSet(
+	NewBiaoQingBaoUseCase,
+	NewVoiceUseCase,
+	NewArticleUseCase,
+	NewNavigationUseCase,
+	NewWechatMpUseCase,
+)
