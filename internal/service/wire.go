@@ -21,6 +21,7 @@ type unitTestSvc struct {
 	navigationSvc *NavigationService
 	wechatMpSvc   *WechatMpService
 	imageSvc      *ImageService
+	musicSvc      *MusicService
 }
 
 func NewTestUnitTestSvcService(*conf.Server, log.Logger, *conf.Bootstrap, *conf.Data, *conf.Application) (*unitTestSvc, func(), error) {

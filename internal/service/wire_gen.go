@@ -36,6 +36,9 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	wechatMpService := NewWechatMpService(wechatMpUseCase)
 	imageUseCase := biz.NewImageUseCase(logger)
 	imageService := NewImageService(imageUseCase, application)
+	musicRepo := data.NewMusicRepo(dataData, logger)
+	musicUseCase := biz.NewMusicUseCase(musicRepo, logger)
+	musicService := NewMusicService(musicUseCase)
 	serviceUnitTestSvc := &unitTestSvc{
 		bqbSvc:        bqbService,
 		articleSvc:    articleService,
@@ -43,6 +46,7 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		navigationSvc: navigationService,
 		wechatMpSvc:   wechatMpService,
 		imageSvc:      imageService,
+		musicSvc:      musicService,
 	}
 	return serviceUnitTestSvc, func() {
 		cleanup()
@@ -58,4 +62,5 @@ type unitTestSvc struct {
 	navigationSvc *NavigationService
 	wechatMpSvc   *WechatMpService
 	imageSvc      *ImageService
+	musicSvc      *MusicService
 }

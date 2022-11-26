@@ -12,7 +12,14 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewBqbRepo, NewVoiceRepo, NewArticleRepo, NewNavigationRepo)
+var ProviderSet = wire.NewSet(
+	NewData,
+	NewBqbRepo,
+	NewVoiceRepo,
+	NewArticleRepo,
+	NewNavigationRepo,
+	NewMusicRepo,
+)
 
 // Data .
 type Data struct {
@@ -46,6 +53,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		new(biz.Voice),
 		new(biz.Article),
 		new(biz.Navigation),
+		new(biz.Music),
 	)
 	if err != nil {
 		return nil, nil, err

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package wxxcx.v1.common;
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+message Share {
+  string title = 1 [json_name = 'title'];
+  string image_url = 2 [json_name = 'imageUrl'];
+}

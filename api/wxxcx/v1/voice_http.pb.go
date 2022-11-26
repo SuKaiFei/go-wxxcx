@@ -39,7 +39,7 @@ func _Voice_GetVoiceList0_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Contex
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Voice/GetVoiceList")
+		http.SetOperation(ctx, "/wxxcx.v1.voice.Voice/GetVoiceList")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetVoiceList(ctx, req.(*GetVoiceListRequest))
 		})
@@ -58,7 +58,7 @@ func _Voice_GetVoiceDefault0_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Con
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Voice/GetVoiceDefault")
+		http.SetOperation(ctx, "/wxxcx.v1.voice.Voice/GetVoiceDefault")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetVoiceDefault(ctx, req.(*GetVoiceDefaultRequest))
 		})
@@ -77,7 +77,7 @@ func _Voice_GetVoiceById0_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Contex
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Voice/GetVoiceById")
+		http.SetOperation(ctx, "/wxxcx.v1.voice.Voice/GetVoiceById")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetVoiceById(ctx, req.(*GetVoiceByIdRequest))
 		})
@@ -96,7 +96,7 @@ func _Voice_Ping1_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Context) error
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Voice/Ping")
+		http.SetOperation(ctx, "/wxxcx.v1.voice.Voice/Ping")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Ping(ctx, req.(*emptypb.Empty))
 		})
@@ -128,7 +128,7 @@ func (c *VoiceHTTPClientImpl) GetVoiceById(ctx context.Context, in *GetVoiceById
 	var out GetVoiceReply
 	pattern := "/wxxcx/voice/by_id"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Voice/GetVoiceById"))
+	opts = append(opts, http.Operation("/wxxcx.v1.voice.Voice/GetVoiceById"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -141,7 +141,7 @@ func (c *VoiceHTTPClientImpl) GetVoiceDefault(ctx context.Context, in *GetVoiceD
 	var out GetVoiceReply
 	pattern := "/wxxcx/voice/default"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Voice/GetVoiceDefault"))
+	opts = append(opts, http.Operation("/wxxcx.v1.voice.Voice/GetVoiceDefault"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -154,7 +154,7 @@ func (c *VoiceHTTPClientImpl) GetVoiceList(ctx context.Context, in *GetVoiceList
 	var out GetVoiceListReply
 	pattern := "/wxxcx/voice/list"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Voice/GetVoiceList"))
+	opts = append(opts, http.Operation("/wxxcx.v1.voice.Voice/GetVoiceList"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -167,7 +167,7 @@ func (c *VoiceHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, opts 
 	var out emptypb.Empty
 	pattern := "/wxxcx/voice/ping"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Voice/Ping"))
+	opts = append(opts, http.Operation("/wxxcx.v1.voice.Voice/Ping"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

@@ -10,4 +10,5 @@ var ProviderSet = wire.NewSet(
 	NewNavigationService,
 	NewWechatMpService,
 	NewImageService,
+	NewMusicService,
 )

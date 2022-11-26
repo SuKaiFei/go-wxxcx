@@ -1,9 +1,10 @@
 syntax = "proto3";
 
-package wxxcx.v1;
+package wxxcx.v1.voice;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "wxxcx/v1/common.proto";
 
 option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
 
@@ -37,11 +38,6 @@ message GetVoiceDefaultRequest {
   string sign = 3;
 }
 
-message Share {
-  string title = 1 [json_name = 'title'];
-  string image_url = 2 [json_name = 'imageUrl'];
-}
-
 message GetVoiceReply {
   uint64 id = 1;
   string name = 2;
@@ -49,7 +45,7 @@ message GetVoiceReply {
   uint32 type = 4;
   string mp_appid = 5 [json_name = 'mp_appid'];
   string works = 6;
-  Share share = 7;
+  wxxcx.v1.common.Share share = 7;
 }
 
 message GetVoiceByIdRequest {

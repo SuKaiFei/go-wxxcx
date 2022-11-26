@@ -18,43 +18,43 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-type ImageHTTPServer interface {
+type MusicHTTPServer interface {
+	GetMusicList(context.Context, *GetMusicListRequest) (*GetMusicListReply, error)
 	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
-	UploadImage(context.Context, *UploadImageRequest) (*UploadImageReply, error)
 }
 
-func RegisterImageHTTPServer(s *http.Server, srv ImageHTTPServer) {
+func RegisterMusicHTTPServer(s *http.Server, srv MusicHTTPServer) {
 	r := s.Route("/")
-	r.POST("/wxxcx/image/upload", _Image_UploadImage0_HTTP_Handler(srv))
-	r.GET("/wxxcx/image/ping", _Image_Ping3_HTTP_Handler(srv))
+	r.GET("/wxxcx/music/list", _Music_GetMusicList0_HTTP_Handler(srv))
+	r.GET("/wxxcx/music/ping", _Music_Ping2_HTTP_Handler(srv))
 }
 
-func _Image_UploadImage0_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
+func _Music_GetMusicList0_HTTP_Handler(srv MusicHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in UploadImageRequest
-		if err := ctx.Bind(&in); err != nil {
+		var in GetMusicListRequest
+		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.Image/UploadImage")
+		http.SetOperation(ctx, "/wxxcx.v1.music.Music/GetMusicList")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.UploadImage(ctx, req.(*UploadImageRequest))
+			return srv.GetMusicList(ctx, req.(*GetMusicListRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*UploadImageReply)
+		reply := out.(*GetMusicListReply)
 		return ctx.Result(200, reply)
 	}
 }
 
-func _Image_Ping3_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
+func _Music_Ping2_HTTP_Handler(srv MusicHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.Image/Ping")
+		http.SetOperation(ctx, "/wxxcx.v1.music.Music/Ping")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Ping(ctx, req.(*emptypb.Empty))
 		})
@@ -67,24 +67,24 @@ func _Image_Ping3_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error
 	}
 }
 
-type ImageHTTPClient interface {
+type MusicHTTPClient interface {
+	GetMusicList(ctx context.Context, req *GetMusicListRequest, opts ...http.CallOption) (rsp *GetMusicListReply, err error)
 	Ping(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
-	UploadImage(ctx context.Context, req *UploadImageRequest, opts ...http.CallOption) (rsp *UploadImageReply, err error)
 }
 
-type ImageHTTPClientImpl struct {
+type MusicHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewImageHTTPClient(client *http.Client) ImageHTTPClient {
-	return &ImageHTTPClientImpl{client}
+func NewMusicHTTPClient(client *http.Client) MusicHTTPClient {
+	return &MusicHTTPClientImpl{client}
 }
 
-func (c *ImageHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*emptypb.Empty, error) {
-	var out emptypb.Empty
-	pattern := "/wxxcx/image/ping"
+func (c *MusicHTTPClientImpl) GetMusicList(ctx context.Context, in *GetMusicListRequest, opts ...http.CallOption) (*GetMusicListReply, error) {
+	var out GetMusicListReply
+	pattern := "/wxxcx/music/list"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.Image/Ping"))
+	opts = append(opts, http.Operation("/wxxcx.v1.music.Music/GetMusicList"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -93,13 +93,13 @@ func (c *ImageHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, opts 
 	return &out, err
 }
 
-func (c *ImageHTTPClientImpl) UploadImage(ctx context.Context, in *UploadImageRequest, opts ...http.CallOption) (*UploadImageReply, error) {
-	var out UploadImageReply
-	pattern := "/wxxcx/image/upload"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.Image/UploadImage"))
+func (c *MusicHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/wxxcx/music/ping"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/wxxcx.v1.music.Music/Ping"))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

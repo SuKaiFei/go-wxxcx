@@ -174,6 +174,54 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.wxxcx.v1.UploadImageReply'
+    /wxxcx/music/list:
+        get:
+            tags:
+                - Music
+            operationId: Music_GetMusicList
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: code
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.music.GetMusicListReply'
+    /wxxcx/music/ping:
+        get:
+            tags:
+                - Music
+            operationId: Music_Ping
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /wxxcx/navigation/list_by_code:
         get:
             tags:
@@ -232,7 +280,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceReply'
+                                $ref: '#/components/schemas/wxxcx.v1.voice.GetVoiceReply'
     /wxxcx/voice/default:
         get:
             tags:
@@ -257,7 +305,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceReply'
+                                $ref: '#/components/schemas/wxxcx.v1.voice.GetVoiceReply'
     /wxxcx/voice/list:
         get:
             tags:
@@ -282,7 +330,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetVoiceListReply'
+                                $ref: '#/components/schemas/wxxcx.v1.voice.GetVoiceListReply'
     /wxxcx/voice/ping:
         get:
             tags:
@@ -429,14 +477,47 @@ components:
                     type: string
                 image_path:
                     type: string
-        wxxcx.v1.GetVoiceListReply:
+        wxxcx.v1.common.Share:
+            type: object
+            properties:
+                title:
+                    type: string
+                imageUrl:
+                    type: string
+        wxxcx.v1.music.GetMusicListReply:
             type: object
             properties:
                 results:
                     type: array
                     items:
-                        $ref: '#/components/schemas/wxxcx.v1.GetVoiceListReply_Info'
-        wxxcx.v1.GetVoiceListReply_Info:
+                        $ref: '#/components/schemas/wxxcx.v1.music.GetMusicListReply_Info'
+        wxxcx.v1.music.GetMusicListReply_Info:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                name:
+                    type: string
+                duration:
+                    type: integer
+                    format: uint64
+                singer:
+                    type: string
+                url:
+                    type: string
+                image_path:
+                    type: string
+                share:
+                    $ref: '#/components/schemas/wxxcx.v1.common.Share'
+        wxxcx.v1.voice.GetVoiceListReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.voice.GetVoiceListReply_Info'
+        wxxcx.v1.voice.GetVoiceListReply_Info:
             type: object
             properties:
                 id:
@@ -451,7 +532,7 @@ components:
                     type: string
                 mp_appid:
                     type: string
-        wxxcx.v1.GetVoiceReply:
+        wxxcx.v1.voice.GetVoiceReply:
             type: object
             properties:
                 id:
@@ -469,20 +550,14 @@ components:
                 works:
                     type: string
                 share:
-                    $ref: '#/components/schemas/wxxcx.v1.Share'
-        wxxcx.v1.Share:
-            type: object
-            properties:
-                title:
-                    type: string
-                imageUrl:
-                    type: string
+                    $ref: '#/components/schemas/wxxcx.v1.common.Share'
 tags:
     - name: Article
       description: 文章服务.
     - name: Bqb
       description: 表情包服务.
     - name: Image
+    - name: Music
     - name: Navigation
     - name: Voice
       description: 语音盒服务.

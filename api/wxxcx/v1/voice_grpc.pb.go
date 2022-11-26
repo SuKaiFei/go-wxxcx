@@ -39,7 +39,7 @@ func NewVoiceClient(cc grpc.ClientConnInterface) VoiceClient {
 
 func (c *voiceClient) GetVoiceList(ctx context.Context, in *GetVoiceListRequest, opts ...grpc.CallOption) (*GetVoiceListReply, error) {
 	out := new(GetVoiceListReply)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Voice/GetVoiceList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.voice.Voice/GetVoiceList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *voiceClient) GetVoiceList(ctx context.Context, in *GetVoiceListRequest,
 
 func (c *voiceClient) GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRequest, opts ...grpc.CallOption) (*GetVoiceReply, error) {
 	out := new(GetVoiceReply)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Voice/GetVoiceDefault", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.voice.Voice/GetVoiceDefault", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *voiceClient) GetVoiceDefault(ctx context.Context, in *GetVoiceDefaultRe
 
 func (c *voiceClient) GetVoiceById(ctx context.Context, in *GetVoiceByIdRequest, opts ...grpc.CallOption) (*GetVoiceReply, error) {
 	out := new(GetVoiceReply)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Voice/GetVoiceById", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.voice.Voice/GetVoiceById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *voiceClient) GetVoiceById(ctx context.Context, in *GetVoiceByIdRequest,
 
 func (c *voiceClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Voice/Ping", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.voice.Voice/Ping", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +123,7 @@ func _Voice_GetVoiceList_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Voice/GetVoiceList",
+		FullMethod: "/wxxcx.v1.voice.Voice/GetVoiceList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VoiceServer).GetVoiceList(ctx, req.(*GetVoiceListRequest))
@@ -141,7 +141,7 @@ func _Voice_GetVoiceDefault_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Voice/GetVoiceDefault",
+		FullMethod: "/wxxcx.v1.voice.Voice/GetVoiceDefault",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VoiceServer).GetVoiceDefault(ctx, req.(*GetVoiceDefaultRequest))
@@ -159,7 +159,7 @@ func _Voice_GetVoiceById_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Voice/GetVoiceById",
+		FullMethod: "/wxxcx.v1.voice.Voice/GetVoiceById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VoiceServer).GetVoiceById(ctx, req.(*GetVoiceByIdRequest))
@@ -177,7 +177,7 @@ func _Voice_Ping_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Voice/Ping",
+		FullMethod: "/wxxcx.v1.voice.Voice/Ping",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VoiceServer).Ping(ctx, req.(*emptypb.Empty))
@@ -189,7 +189,7 @@ func _Voice_Ping_Handler(srv interface{}, ctx context.Context, dec func(interfac
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Voice_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "wxxcx.v1.Voice",
+	ServiceName: "wxxcx.v1.voice.Voice",
 	HandlerType: (*VoiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

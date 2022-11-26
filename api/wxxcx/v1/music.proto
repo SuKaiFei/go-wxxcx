@@ -1,16 +1,17 @@
 syntax = "proto3";
 
-package api.wxxcx.v1;
+package wxxcx.v1.music;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "wxxcx/v1/common.proto";
 
-option go_package = "/api/wxxcx/v1;v1";
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
 service Music {
-  rpc UploadMusic (UploadMusicRequest) returns (UploadMusicReply) {
+  rpc GetMusicList (GetMusicListRequest) returns (GetMusicListReply) {
     option (google.api.http) = {
-      post: "/wxxcx/music/upload",
-      body: "*"
+      get: "/wxxcx/music/list"
     };
   }
   rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
@@ -20,14 +21,24 @@ service Music {
   }
 }
 
-message UploadMusicRequest {
+message GetMusicListRequest {
   string appid = 1;
   string timestamp = 2;
   string sign = 3;
-  string filename = 4;
-  bytes file = 5;
+  string code = 4;
+  uint64 page = 5;
+  uint64 page_size = 6;
 }
 
-message UploadMusicReply {
-  string path = 1;
+message GetMusicListReply {
+  message Info {
+    uint64 id = 1;
+    string name = 3;
+    uint64 duration = 2;
+    string singer = 4;
+    string url = 5;
+    string image_path = 6 [json_name = 'image_path'];
+    wxxcx.v1.common.Share share = 7;
+  }
+  repeated Info results = 1;
 }
