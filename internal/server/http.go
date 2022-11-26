@@ -16,7 +16,8 @@ import (
 )
 
 var whiteList = map[string]struct{}{
-	"/wxxcx.v1.Bqb/Ping": {},
+	"/wxxcx.v1.Bqb/Ping":              {},
+	"/api.wxxcx.v1.Image/UploadImage": {},
 }
 
 func NewWhiteListMatcher() selector.MatchFunc {
@@ -35,6 +36,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	articleSVC *service.ArticleService,
 	navigationSVC *service.NavigationService,
 	wechatMpSVC *service.WechatMpService,
+	imageSVC *service.ImageService,
 	logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -64,6 +66,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	v1.RegisterArticleHTTPServer(srv, articleSVC)
 	v1.RegisterNavigationHTTPServer(srv, navigationSVC)
 	v1.RegisterWechatMpHTTPServer(srv, wechatMpSVC)
+	v1.RegisterImageHTTPServer(srv, imageSVC)
 	RegisterWechatHTTPServer(srv, wechatMpSVC)
 	return srv
 }

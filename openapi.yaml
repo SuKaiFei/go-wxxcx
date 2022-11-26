@@ -147,6 +147,33 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/image/ping:
+        get:
+            tags:
+                - Image
+            operationId: Image_Ping
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/image/upload:
+        post:
+            tags:
+                - Image
+            operationId: Image_UploadImage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.UploadImageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.UploadImageReply'
     /wxxcx/navigation/list_by_code:
         get:
             tags:
@@ -331,6 +358,25 @@ components:
                     type: string
                 code:
                     type: string
+        api.wxxcx.v1.UploadImageReply:
+            type: object
+            properties:
+                path:
+                    type: string
+        api.wxxcx.v1.UploadImageRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                filename:
+                    type: string
+                file:
+                    type: string
+                    format: bytes
         wxxcx.v1.GetArticleReply:
             type: object
             properties:
@@ -436,6 +482,7 @@ tags:
       description: 文章服务.
     - name: Bqb
       description: 表情包服务.
+    - name: Image
     - name: Navigation
     - name: Voice
       description: 语音盒服务.

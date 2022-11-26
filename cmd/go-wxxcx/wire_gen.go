@@ -42,7 +42,9 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 	navigationService := service.NewNavigationService(navigationUseCase)
 	wechatMpUseCase := biz.NewWechatMpUseCase(logger, application)
 	wechatMpService := service.NewWechatMpService(wechatMpUseCase)
-	httpServer := server.NewHTTPServer(confServer, application, bqbService, voiceService, articleService, navigationService, wechatMpService, logger)
+	imageUseCase := biz.NewImageUseCase(logger)
+	imageService := service.NewImageService(imageUseCase, application)
+	httpServer := server.NewHTTPServer(confServer, application, bqbService, voiceService, articleService, navigationService, wechatMpService, imageService, logger)
 	app := newApp(logger, httpServer)
 	return app, func() {
 		cleanup()

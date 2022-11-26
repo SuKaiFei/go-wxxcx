@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package api.wxxcx.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "/api/wxxcx/v1;v1";
+service Image {
+  rpc UploadImage (UploadImageRequest) returns (UploadImageReply) {
+    option (google.api.http) = {
+      post: "/wxxcx/image/upload",
+      body: "*"
+    };
+  }
+  rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/wxxcx/image/ping"
+    };
+  }
+}
+
+message UploadImageRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string filename = 4;
+  bytes file = 5;
+}
+
+message UploadImageReply {
+  string path = 1;
+}

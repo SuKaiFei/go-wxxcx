@@ -3,9 +3,11 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
 	"github.com/SuKaiFei/go-wxxcx/internal/util"
 	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"strconv"
 	"strings"
@@ -77,10 +79,18 @@ func requestAuth(cApp *conf.Application, request *http.Request, req interface{})
 		if signObj, found := data["sign"]; found {
 			reqSign = signObj.(string)
 		}
+
+		delete(data, "file")
 	}
 
 	timestamp, _ := strconv.Atoi(timestampStr)
-	if time.Since(time.Unix(int64(timestamp), 0)) > 10*time.Second {
+	if time.Since(time.Unix(int64(timestamp), 0)) > 3*time.Minute {
+		log.Errorw(
+			"msg", fmt.Sprintf("时间戳超时%d", time.Now().Unix()-int64(timestamp)),
+			"请求IP", request.Header.Get("X-Forward-For"),
+			"请求地址", request.RequestURI,
+			"UserAgent", request.UserAgent(),
+		)
 		return ErrBadSign
 	}
 

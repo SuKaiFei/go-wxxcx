@@ -20,6 +20,7 @@ type unitTestSvc struct {
 	voiceSvc      *VoiceService
 	navigationSvc *NavigationService
 	wechatMpSvc   *WechatMpService
+	imageSvc      *ImageService
 }
 
 func NewTestUnitTestSvcService(*conf.Server, log.Logger, *conf.Bootstrap, *conf.Data, *conf.Application) (*unitTestSvc, func(), error) {
