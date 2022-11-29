@@ -82,9 +82,9 @@ func (s *ImageService) UploadImage(ctx context.Context, req *v1.UploadImageReque
 	}
 	request.Header.SetContentType(writer.FormDataContentType())
 
-	writer.WriteField("name", filename)
-	writer.WriteField("a", "gpsimg")
-	writer.WriteField("para", fmt.Sprintf(`{"noauto":"","usekoutu":true,"bgimg":"https://img.alicdn.com/imgextra/i1/2201168165444/O1CN01gfyCWT1q5OyiKKrXM_!!2201168165444.jpg","bgimginfo":"230|30|370","pageid":"22809","randstr":"1%s"}`, strings.ReplaceAll(uuid.NewString(), "-", "")))
+	_ = writer.WriteField("name", filename)
+	_ = writer.WriteField("a", "gpsimg")
+	_ = writer.WriteField("para", fmt.Sprintf(`{"noauto":"","usekoutu":true,"bgimg":"https://img.alicdn.com/imgextra/i1/2201168165444/O1CN01gfyCWT1q5OyiKKrXM_!!2201168165444.jpg","bgimginfo":"230|30|370","pageid":"22809","randstr":"1%s"}`, strings.ReplaceAll(uuid.NewString(), "-", "")))
 	writer.Close()
 	request.SetBody(requestBody.Bytes())
 	err = fasthttp.DoTimeout(request, response, 10*time.Second)

@@ -7,6 +7,7 @@ import (
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
 	"github.com/medivhzhan/weapp/v3"
 	"github.com/medivhzhan/weapp/v3/auth"
+	"github.com/medivhzhan/weapp/v3/security"
 )
 
 type WechatMpService struct {
@@ -35,6 +36,32 @@ func (s *WechatMpService) LoginWechatMp(ctx context.Context, req *pb.LoginWechat
 		Openid:     session.Openid,
 		SessionKey: session.SessionKey,
 		Unionid:    session.Unionid,
+	}
+	return reply, nil
+}
+
+func (s *WechatMpService) SecurityCheckMsg(ctx context.Context, req *pb.SecurityCheckMsgRequest) (
+	*pb.SecurityCheckMsgReply,
+	error,
+) {
+	_, client := s.GetApp(req.GetAppid())
+	securityCli := client.NewSecurity()
+	securityRequest := &security.MsgSecCheckRequest{
+		Version: 2,
+		Scene:   2,
+		Openid:  req.Openid,
+		Content: req.Content,
+	}
+	secCheck, err := securityCli.MsgSecCheck(securityRequest)
+	if err != nil {
+		return nil, err
+	}
+	if secCheck.GetResponseError() != nil {
+		return nil, secCheck.GetResponseError()
+	}
+	reply := &pb.SecurityCheckMsgReply{
+		Suggest: secCheck.Result.Suggest,
+		Label:   uint32(secCheck.Result.Label),
 	}
 	return reply, nil
 }

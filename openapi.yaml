@@ -358,6 +358,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.wxxcx.v1.LoginWechatMpReply'
+    /wxxcx/wechat/mp/sec-check/msg:
+        post:
+            tags:
+                - WechatMp
+            operationId: WechatMp_SecurityCheckMsg
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.SecurityCheckMsgRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.SecurityCheckMsgReply'
 components:
     schemas:
         api.wxxcx.v1.GetNavigationReply:
@@ -405,6 +423,27 @@ components:
                 sign:
                     type: string
                 code:
+                    type: string
+        api.wxxcx.v1.SecurityCheckMsgReply:
+            type: object
+            properties:
+                suggest:
+                    type: string
+                label:
+                    type: integer
+                    format: uint32
+        api.wxxcx.v1.SecurityCheckMsgRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                content:
+                    type: string
+                openid:
                     type: string
         api.wxxcx.v1.UploadImageReply:
             type: object

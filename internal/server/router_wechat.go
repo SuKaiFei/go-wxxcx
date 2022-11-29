@@ -5,7 +5,6 @@ import (
 	"github.com/SuKaiFei/go-wxxcx/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/medivhzhan/weapp/v3/server"
 	"io"
 )
 
@@ -29,7 +28,7 @@ func wechatMiniappNotifyHandle(wechatMpSVC *service.WechatMpService) func(ctx ht
 		return nil
 	}
 	return func(ctx http.Context) error {
-		appid := ctx.Request().RequestURI[23:]
+		appid := ctx.Request().RequestURI[23 : 23+18]
 		confApp, sdk := wechatMpSVC.GetApp(appid)
 		body := ctx.Request().Body
 		bodyBytes, err := io.ReadAll(body)
@@ -42,13 +41,14 @@ func wechatMiniappNotifyHandle(wechatMpSVC *service.WechatMpService) func(ctx ht
 			"ctx.Query().Encode()", ctx.Query().Encode(),
 			"ctx.Form().Encode()", ctx.Form().Encode(),
 			"appid", appid,
+			"sdkIsNil", sdk == nil,
 		)
 		srv, err := sdk.NewServer(
 			confApp.GetToken(),
 			confApp.GetEncodingAESKey(),
 			"mchID",
 			"apiKey",
-			false,
+			true,
 			handler,
 		)
 		if err != nil {
@@ -56,10 +56,6 @@ func wechatMiniappNotifyHandle(wechatMpSVC *service.WechatMpService) func(ctx ht
 			return err
 		}
 
-		// 调用事件处理器后 通用处理器不再处理该事件
-		srv.OnMediaCheckAsync(func(result *server.MediaCheckAsyncResult) {
-
-		})
 		if err := srv.Serve(ctx.Response(), ctx.Request()); err != nil {
 			log.Errorw("serving error: %s", err)
 			return err

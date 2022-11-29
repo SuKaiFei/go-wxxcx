@@ -6,11 +6,7 @@ import (
 	"github.com/medivhzhan/weapp/v3"
 )
 
-type WechatMpRepo interface {
-}
-
 type WechatMpUseCase struct {
-	repo      WechatMpRepo
 	log       *log.Helper
 	clientMap map[string]*weapp.Client
 	appMap    map[string]*conf.Application_App

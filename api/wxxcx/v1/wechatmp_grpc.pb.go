@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WechatMpClient interface {
 	LoginWechatMp(ctx context.Context, in *LoginWechatMpRequest, opts ...grpc.CallOption) (*LoginWechatMpReply, error)
+	SecurityCheckMsg(ctx context.Context, in *SecurityCheckMsgRequest, opts ...grpc.CallOption) (*SecurityCheckMsgReply, error)
 }
 
 type wechatMpClient struct {
@@ -42,11 +43,21 @@ func (c *wechatMpClient) LoginWechatMp(ctx context.Context, in *LoginWechatMpReq
 	return out, nil
 }
 
+func (c *wechatMpClient) SecurityCheckMsg(ctx context.Context, in *SecurityCheckMsgRequest, opts ...grpc.CallOption) (*SecurityCheckMsgReply, error) {
+	out := new(SecurityCheckMsgReply)
+	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.WechatMp/SecurityCheckMsg", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WechatMpServer is the server API for WechatMp service.
 // All implementations must embed UnimplementedWechatMpServer
 // for forward compatibility
 type WechatMpServer interface {
 	LoginWechatMp(context.Context, *LoginWechatMpRequest) (*LoginWechatMpReply, error)
+	SecurityCheckMsg(context.Context, *SecurityCheckMsgRequest) (*SecurityCheckMsgReply, error)
 	mustEmbedUnimplementedWechatMpServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedWechatMpServer struct {
 
 func (UnimplementedWechatMpServer) LoginWechatMp(context.Context, *LoginWechatMpRequest) (*LoginWechatMpReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginWechatMp not implemented")
+}
+func (UnimplementedWechatMpServer) SecurityCheckMsg(context.Context, *SecurityCheckMsgRequest) (*SecurityCheckMsgReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SecurityCheckMsg not implemented")
 }
 func (UnimplementedWechatMpServer) mustEmbedUnimplementedWechatMpServer() {}
 
@@ -88,6 +102,24 @@ func _WechatMp_LoginWechatMp_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WechatMp_SecurityCheckMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SecurityCheckMsgRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WechatMpServer).SecurityCheckMsg(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.wxxcx.v1.WechatMp/SecurityCheckMsg",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WechatMpServer).SecurityCheckMsg(ctx, req.(*SecurityCheckMsgRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WechatMp_ServiceDesc is the grpc.ServiceDesc for WechatMp service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var WechatMp_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LoginWechatMp",
 			Handler:    _WechatMp_LoginWechatMp_Handler,
+		},
+		{
+			MethodName: "SecurityCheckMsg",
+			Handler:    _WechatMp_SecurityCheckMsg_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -12,6 +12,12 @@ service WechatMp {
       body: "*",
     };
   }
+  rpc SecurityCheckMsg (SecurityCheckMsgRequest) returns (SecurityCheckMsgReply) {
+    option (google.api.http) = {
+      post: "/wxxcx/wechat/mp/sec-check/msg",
+      body: "*",
+    };
+  }
 }
 
 message LoginWechatMpRequest {
@@ -25,4 +31,17 @@ message LoginWechatMpReply {
   string openid = 1;
   string session_key = 2 [json_name = 'session_key'];
   string unionid = 3;
+}
+
+message SecurityCheckMsgRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string content = 4;
+  string openid = 5;
+}
+
+message SecurityCheckMsgReply {
+  string suggest = 1; // 建议，有risky、pass、review三种值
+  uint32 label = 2  ;// 命中标签枚举值，100 正常；10001 广告；20001 时政；20002 色情；20003 辱骂；20006 违法犯罪；20008 欺诈；20012 低俗；20013 版权；21000 其他
 }
