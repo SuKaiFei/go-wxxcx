@@ -33,9 +33,9 @@ func (s *WechatMpService) LoginWechatMp(ctx context.Context, req *pb.LoginWechat
 		return nil, err
 	}
 	reply := &pb.LoginWechatMpReply{
-		Openid:     session.Openid,
-		SessionKey: session.SessionKey,
-		Unionid:    session.Unionid,
+		Openid: session.Openid,
+		//SessionKey: session.SessionKey,
+		Unionid: session.Unionid,
 	}
 	return reply, nil
 }
