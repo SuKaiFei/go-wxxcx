@@ -36,6 +36,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	articleSVC *service.ArticleService,
 	navigationSVC *service.NavigationService,
 	wechatMpSVC *service.WechatMpService,
+	wechatOcSVC *service.WechatOcService,
 	imageSVC *service.ImageService,
 	musicSVC *service.MusicService,
 	logger log.Logger) *http.Server {

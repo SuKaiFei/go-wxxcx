@@ -52,7 +52,8 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
-	defer closeFunc()
+	exitCode := m.Run()
+	closeFunc()
 
-	os.Exit(m.Run())
+	os.Exit(exitCode)
 }

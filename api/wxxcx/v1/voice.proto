@@ -68,6 +68,7 @@ message GetVoiceListReply {
     string name = 3;
     string code = 4;
     string mp_appid = 5 [json_name = 'mp_appid'];
+    string share_image_url = 6 [json_name = 'share_image_url'];
   }
   repeated Info results = 1;
 }

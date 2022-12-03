@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
+	wlog "github.com/SuKaiFei/go-wxxcx/util/log"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -47,7 +48,7 @@ func newApp(logger log.Logger, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stdout),
+	logger := log.With(wlog.NewLog(),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
 		"service.id", id,
@@ -56,6 +57,7 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
+	log.SetLogger(logger)
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),

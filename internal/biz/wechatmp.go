@@ -15,7 +15,7 @@ type WechatMpUseCase struct {
 func NewWechatMpUseCase(logger log.Logger, apps *conf.Application) *WechatMpUseCase {
 	clientMap := make(map[string]*weapp.Client, len(apps.GetMp()))
 	for _, app := range apps.GetMp() {
-		if len(app.GetSecret()) == 0 {
+		if len(app.GetSecret()) == 0 || len(app.GetKey()) == 0 {
 			continue
 		}
 		clientMap[app.Id] = weapp.NewClient(app.GetId(), app.GetSecret())

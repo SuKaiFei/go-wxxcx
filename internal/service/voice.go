@@ -31,11 +31,12 @@ func (s *VoiceService) GetVoiceList(ctx context.Context, in *v1.GetVoiceListRequ
 	reply := &v1.GetVoiceListReply{Results: make([]*v1.GetVoiceListReply_Info, len(voices))}
 	for i, voice := range voices {
 		reply.Results[i] = &v1.GetVoiceListReply_Info{
-			Id:      uint64(voice.ID),
-			Type:    uint32(voice.Type),
-			Name:    voice.Name,
-			Code:    voice.Code,
-			MpAppid: voice.MpAppid,
+			Id:            uint64(voice.ID),
+			Type:          uint32(voice.Type),
+			Name:          voice.Name,
+			Code:          voice.Code,
+			MpAppid:       voice.MpAppid,
+			ShareImageUrl: voice.ShareImageUrl,
 		}
 	}
 

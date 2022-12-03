@@ -22,7 +22,7 @@ func NewBqbRepo(data *Data, logger log.Logger) biz.BiaoQingBaoRepo {
 }
 
 func (r *bqbRepo) GetIndex(ctx context.Context, appid string) (res []*biz.BiaoQingBaoIndex, err error) {
-	err = r.data.db.WithContext(ctx).Find(&res, "appid=?", appid).Error
+	err = r.data.db.WithContext(ctx).Order("sort").Find(&res, "appid=?", appid).Error
 	if err != nil {
 		return nil, errors2.WithStack(err)
 	}

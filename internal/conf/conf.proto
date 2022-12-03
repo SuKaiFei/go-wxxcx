@@ -39,5 +39,10 @@ message Data {
     string driver = 1;
     string source = 2;
   }
+  message Redis {
+    string addr = 1;
+    string password = 2;
+  }
   Database database = 1;
+  Redis redis = 2;
 }

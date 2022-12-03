@@ -38,3 +38,4 @@ configs/config-prod.yaml
 .vscode/
 .idea/
 *.swp
+/logs/

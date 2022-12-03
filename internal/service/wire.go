@@ -20,6 +20,7 @@ type unitTestSvc struct {
 	voiceSvc      *VoiceService
 	navigationSvc *NavigationService
 	wechatMpSvc   *WechatMpService
+	wechatOcSvc   *WechatOcService
 	imageSvc      *ImageService
 	musicSvc      *MusicService
 }

@@ -571,6 +571,8 @@ components:
                     type: string
                 mp_appid:
                     type: string
+                share_image_url:
+                    type: string
         wxxcx.v1.voice.GetVoiceReply:
             type: object
             properties:

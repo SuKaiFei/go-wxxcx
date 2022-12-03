@@ -23,7 +23,7 @@ func NewMusicRepo(data *Data, logger log.Logger) biz.MusicRepo {
 func (r *musicRepo) GetMusics(ctx context.Context, appid, code string, page, pageSize int) (
 	res []*biz.Music, err error,
 ) {
-	err = r.data.db.WithContext(ctx).Limit(pageSize).Offset(page*pageSize).Order("sort").
+	err = r.data.db.WithContext(ctx).Limit(pageSize).Offset(page*pageSize).Order("sort").Order("updated_at desc").
 		Find(&res, "appid=? and code=?", appid, code).
 		Error
 	if err != nil {
