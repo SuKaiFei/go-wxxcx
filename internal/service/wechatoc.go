@@ -2,21 +2,19 @@ package service
 
 import (
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
-	"github.com/SuKaiFei/go-wxxcx/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/silenceper/wechat/v2/officialaccount"
 	"github.com/silenceper/wechat/v2/officialaccount/message"
 	"github.com/silenceper/wechat/v2/officialaccount/user"
 	"sync"
 )
 
 type WechatOcService struct {
-	uc       *biz.WechatOcUseCase
+	uc       *biz.WechatUseCase
 	sendCH   chan string
 	sendTask *sync.WaitGroup
 }
 
-func NewWechatOcService(uc *biz.WechatOcUseCase) (*WechatOcService, func(), error) {
+func NewWechatOcService(uc *biz.WechatUseCase) (*WechatOcService, func(), error) {
 	const sendCHCount = 50
 	s := &WechatOcService{
 		uc:       uc,
@@ -46,7 +44,7 @@ func (s *WechatOcService) GetUserList(appid string) (
 	[]*user.Info,
 	error,
 ) {
-	_, client := s.GetApp(appid)
+	client := s.uc.GetOaApp(appid)
 	userCli := client.GetUser()
 	tags, err := userCli.GetTag()
 	if err != nil {
@@ -86,7 +84,7 @@ func (s *WechatOcService) Send(openid string) (int64, error) {
 	const toAppid = "wx575f5d87fb66e69a"                             // 鸡音盒
 	const appid = "wx9ef62ba2e3525812"                               // 鸡你太美小助手
 
-	_, client := s.GetApp(appid)
+	client := s.uc.GetOaApp(appid)
 	m := &message.TemplateMessage{
 		ToUser:     openid,
 		TemplateID: templateID,
@@ -106,8 +104,4 @@ func (s *WechatOcService) Send(openid string) (int64, error) {
 	}
 
 	return client.GetTemplate().Send(m)
-}
-
-func (s *WechatOcService) GetApp(appid string) (*conf.Application_App, *officialaccount.OfficialAccount) {
-	return s.uc.GetApp(appid)
 }

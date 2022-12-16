@@ -1,5 +1,6 @@
 #!/bin/bash -v -e
 
+curPort=${2:-$(cat /app/wxxcx/runport)}
 PORT=0
 #判断当前端口是否被占用，没被占用返回0，反之1
 function Listening {
@@ -24,16 +25,15 @@ function get_random_port {
    while [ $PORT == 0 ]; do
        temp1=`random_range $1 $2`
        if [ `Listening $temp1` == 0 ] ; then
+         if [ $curPort != $temp1 ] ; then
               PORT=$temp1
+         fi
        fi
    done
-   echo "port=$PORT"
 }
 get_random_port 8000 8010; #这里指定了1~10000区间，从中任取一个未占用端口号
 
 nextPort=${1:-$PORT}
-curPort=${2:-$(cat /app/wxxcx/pid)}
-
 echo 当前运行端口：$curPort
 echo 下一次部署后的端口：$nextPort
 
@@ -43,7 +43,7 @@ nohup /app/wxxcx/go-wxxcx -conf /app/wxxcx/config.yaml >/app/wxxcx/go-wxxcx$(dat
 
 #设置变量，url为你需要检测的目标网站的网址（IP或域名）
 url=http://localhost:$nextPort/wxxcx/bqb/ping
- 
+
 #定义函数check_http：
 #使用curl命令检查http服务器的状态
 #-m设置curl不管访问成功或失败，最大消耗的时间为5秒，5秒连接服务为相应则视为无法连接
@@ -53,15 +53,15 @@ url=http://localhost:$nextPort/wxxcx/bqb/ping
 check_http(){
     status_code=$(curl -m 5 -s -o /dev/null -w %{http_code} $url)
 }
- 
+
 while :
 do
        check_http
-       date=$(date +%Y%m%d-%H:%M:%S) 
+       date=$(date +%Y%m%d-%H:%M:%S)
 #生成报警邮件的内容
        echo "当前时间为:$date
        $url服务器异常,状态码为${status_code}"
-       
+
 #指定测试服务器状态的函数，并根据返回码决定是发送邮件报警还是将正常信息写入日志
        if [ $status_code -eq 200 ];then
               echo "$url连接正常"
@@ -70,7 +70,7 @@ do
        sleep 1
 done
 
-echo $nextPort > /app/wxxcx/pid
+echo $nextPort > /app/wxxcx/runport
 
 sed -i "s/$curPort/$nextPort/" /etc/nginx/sites-enabled/api.wxxcx.top
 nginx -s reload

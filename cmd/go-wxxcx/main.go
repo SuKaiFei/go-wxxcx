@@ -57,7 +57,6 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
-	log.SetLogger(logger)
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),

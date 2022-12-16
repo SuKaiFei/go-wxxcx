@@ -19,6 +19,7 @@ var ProviderSet = wire.NewSet(
 	NewArticleRepo,
 	NewNavigationRepo,
 	NewMusicRepo,
+	NewChatGPTRepo,
 )
 
 // Data .
@@ -54,6 +55,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		new(biz.Article),
 		new(biz.Navigation),
 		new(biz.Music),
+		new(biz.ChatGPT),
 	)
 	if err != nil {
 		return nil, nil, err

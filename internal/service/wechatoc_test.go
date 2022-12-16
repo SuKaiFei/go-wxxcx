@@ -50,15 +50,15 @@ func TestSendLocalhost(t *testing.T) {
 }
 
 func TestSendAll(t *testing.T) {
-	_, client := tSVC.wechatOcSvc.GetApp(appid)
-	openIDs, err := client.GetUser().ListAllUserOpenIDs()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	for _, openID := range openIDs {
-		tSVC.wechatOcSvc.SendAsync(openID)
-	}
-
-	t.Logf("推送完成(%d)\n", len(openIDs))
+	//_, client := tSVC.wechatOcSvc.GetApp(appid)
+	//openIDs, err := client.GetUser().ListAllUserOpenIDs()
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//
+	//for _, openID := range openIDs {
+	//	tSVC.wechatOcSvc.SendAsync(openID)
+	//}
+	//
+	//t.Logf("推送完成(%d)\n", len(openIDs))
 }

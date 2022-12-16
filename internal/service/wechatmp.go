@@ -4,38 +4,34 @@ import (
 	"context"
 	pb "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
-	"github.com/SuKaiFei/go-wxxcx/internal/conf"
-	"github.com/medivhzhan/weapp/v3"
-	"github.com/medivhzhan/weapp/v3/auth"
-	"github.com/medivhzhan/weapp/v3/security"
+	"github.com/go-kratos/kratos/v2/log"
+	"github.com/pkg/errors"
+	"github.com/silenceper/wechat/v2/miniprogram"
+	"github.com/silenceper/wechat/v2/miniprogram/security"
 )
 
 type WechatMpService struct {
 	pb.UnimplementedWechatMpServer
-	uc *biz.WechatMpUseCase
+	uc *biz.WechatUseCase
 }
 
-func NewWechatMpService(uc *biz.WechatMpUseCase) *WechatMpService {
+func NewWechatMpService(uc *biz.WechatUseCase) *WechatMpService {
 	return &WechatMpService{uc: uc}
 }
 
 func (s *WechatMpService) LoginWechatMp(ctx context.Context, req *pb.LoginWechatMpRequest) (*pb.LoginWechatMpReply, error) {
-	confApp, client := s.GetApp(req.GetAppid())
-	authCli := client.NewAuth()
-	sessionRequest := &auth.Code2SessionRequest{
-		Appid:     req.GetAppid(),
-		Secret:    confApp.GetSecret(),
-		JsCode:    req.GetCode(),
-		GrantType: "authorization_code",
-	}
-	session, err := authCli.Code2Session(sessionRequest)
+	client := s.uc.GetMpApp(req.GetAppid())
+	authCli := client.GetAuth()
+	session, err := authCli.Code2Session(req.GetCode())
 	if err != nil {
 		return nil, err
 	}
+	if session.ErrCode != 0 {
+		return nil, errors.New(session.Error())
+	}
 	reply := &pb.LoginWechatMpReply{
-		Openid: session.Openid,
-		//SessionKey: session.SessionKey,
-		Unionid: session.Unionid,
+		Openid:  session.OpenID,
+		Unionid: session.UnionID,
 	}
 	return reply, nil
 }
@@ -44,28 +40,35 @@ func (s *WechatMpService) SecurityCheckMsg(ctx context.Context, req *pb.Security
 	*pb.SecurityCheckMsgReply,
 	error,
 ) {
-	_, client := s.GetApp(req.GetAppid())
-	securityCli := client.NewSecurity()
-	securityRequest := &security.MsgSecCheckRequest{
-		Version: 2,
+	client := s.uc.GetMpApp(req.GetAppid())
+	securityCli := client.GetSecurity()
+	securityRequest := &security.MsgCheckRequest{
 		Scene:   2,
-		Openid:  req.Openid,
+		OpenID:  req.Openid,
 		Content: req.Content,
 	}
-	secCheck, err := securityCli.MsgSecCheck(securityRequest)
+	secCheck, err := securityCli.MsgCheck(securityRequest)
 	if err != nil {
 		return nil, err
 	}
-	if secCheck.GetResponseError() != nil {
-		return nil, secCheck.GetResponseError()
+	if secCheck.ErrCode != 0 {
+		return nil, errors.New(secCheck.Error())
+	}
+	if secCheck.Result.Label != 100 {
+		log.Warnw(
+			"message", "SecurityCheckMsg Label!=100",
+			"content", req.Content,
+			"appid", req.Appid,
+			"openid", req.Openid,
+		)
 	}
 	reply := &pb.SecurityCheckMsgReply{
-		Suggest: secCheck.Result.Suggest,
+		Suggest: string(secCheck.Result.Suggest),
 		Label:   uint32(secCheck.Result.Label),
 	}
 	return reply, nil
 }
 
-func (s *WechatMpService) GetApp(appid string) (*conf.Application_App, *weapp.Client) {
-	return s.uc.GetApp(appid)
+func (s *WechatMpService) GetApp(appid string) *miniprogram.MiniProgram {
+	return s.uc.GetMpApp(appid)
 }

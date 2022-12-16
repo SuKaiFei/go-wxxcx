@@ -46,6 +46,7 @@ message GetVoiceReply {
   string mp_appid = 5 [json_name = 'mp_appid'];
   string works = 6;
   wxxcx.v1.common.Share share = 7;
+  string mp_url = 8 [json_name = 'mp_url'];
 }
 
 message GetVoiceByIdRequest {
@@ -69,6 +70,7 @@ message GetVoiceListReply {
     string code = 4;
     string mp_appid = 5 [json_name = 'mp_appid'];
     string share_image_url = 6 [json_name = 'share_image_url'];
+    string mp_url = 7 [json_name = 'mp_url'];
   }
   repeated Info results = 1;
 }

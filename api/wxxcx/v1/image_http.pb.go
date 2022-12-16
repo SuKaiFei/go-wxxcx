@@ -26,7 +26,7 @@ type ImageHTTPServer interface {
 func RegisterImageHTTPServer(s *http.Server, srv ImageHTTPServer) {
 	r := s.Route("/")
 	r.POST("/wxxcx/image/upload", _Image_UploadImage0_HTTP_Handler(srv))
-	r.GET("/wxxcx/image/ping", _Image_Ping3_HTTP_Handler(srv))
+	r.GET("/wxxcx/image/ping", _Image_Ping4_HTTP_Handler(srv))
 }
 
 func _Image_UploadImage0_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
@@ -48,7 +48,7 @@ func _Image_UploadImage0_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context
 	}
 }
 
-func _Image_Ping3_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
+func _Image_Ping4_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {

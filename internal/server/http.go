@@ -39,6 +39,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	wechatOcSVC *service.WechatOcService,
 	imageSVC *service.ImageService,
 	musicSVC *service.MusicService,
+	ChatGptSVC *service.ChatGptService,
 	logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -70,6 +71,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	v1.RegisterWechatMpHTTPServer(srv, wechatMpSVC)
 	v1.RegisterImageHTTPServer(srv, imageSVC)
 	v1.RegisterMusicHTTPServer(srv, musicSVC)
+	v1.RegisterChatGptHTTPServer(srv, ChatGptSVC)
 	RegisterWechatHTTPServer(srv, wechatMpSVC)
 	return srv
 }

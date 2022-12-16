@@ -8,8 +8,8 @@ var ProviderSet = wire.NewSet(
 	NewVoiceUseCase,
 	NewArticleUseCase,
 	NewNavigationUseCase,
-	NewWechatMpUseCase,
 	NewImageUseCase,
 	NewMusicUseCase,
-	NewWechatOcUseCase,
+	NewWechatUseCase,
+	NewChatGPTUseCase,
 )

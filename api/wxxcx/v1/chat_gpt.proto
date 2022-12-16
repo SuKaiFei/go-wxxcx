@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package api.wxxcx.v1.chatGpt;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+service ChatGpt {
+  rpc GetChatGptCompletions (GetChatGptCompletionsRequest) returns (GetChatGptCompletionsReply){
+    option (google.api.http) = {
+      get: "/wxxcx/chat_gpt/completions"
+    };
+  }
+
+  rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/wxxcx/chat_gpt/ping"
+    };
+  }
+}
+
+message GetChatGptCompletionsRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  string content = 5;
+}
+
+message GetChatGptCompletionsReply {
+  string result = 1;
+  string image_path = 2 [json_name = 'image_path'];
+}

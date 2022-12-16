@@ -147,6 +147,48 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/chat_gpt/completions:
+        get:
+            tags:
+                - ChatGpt
+            operationId: ChatGpt_GetChatGptCompletions
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+                - name: content
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.GetChatGptCompletionsReply'
+    /wxxcx/chat_gpt/ping:
+        get:
+            tags:
+                - ChatGpt
+            operationId: ChatGpt_Ping
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /wxxcx/image/ping:
         get:
             tags:
@@ -464,6 +506,13 @@ components:
                 file:
                     type: string
                     format: bytes
+        api.wxxcx.v1.chatGpt.GetChatGptCompletionsReply:
+            type: object
+            properties:
+                result:
+                    type: string
+                image_path:
+                    type: string
         wxxcx.v1.GetArticleReply:
             type: object
             properties:
@@ -573,6 +622,8 @@ components:
                     type: string
                 share_image_url:
                     type: string
+                mp_url:
+                    type: string
         wxxcx.v1.voice.GetVoiceReply:
             type: object
             properties:
@@ -592,11 +643,14 @@ components:
                     type: string
                 share:
                     $ref: '#/components/schemas/wxxcx.v1.common.Share'
+                mp_url:
+                    type: string
 tags:
     - name: Article
       description: 文章服务.
     - name: Bqb
       description: 表情包服务.
+    - name: ChatGpt
     - name: Image
     - name: Music
     - name: Navigation

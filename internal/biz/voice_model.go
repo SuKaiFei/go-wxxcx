@@ -29,6 +29,7 @@ type Voice struct {
 	Default       bool       `gorm:"type:tinyint;"`
 	Type          VoiceType  `gorm:"type:int(1);default:1;"`
 	MpAppid       string     `gorm:"type:char(18);"`
+	MpUrl         string     `gorm:"type:varchar(300);;"`
 	Sort          int        `gorm:"type:int(1);default:1;"`
 	ShareTitle    string     `gorm:"type:varchar(50);"`
 	ShareImageUrl string     `gorm:"type:varchar(300);"`

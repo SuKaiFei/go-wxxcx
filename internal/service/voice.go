@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/go-kratos/kratos/v2/errors"
+	"gorm.io/gorm"
 
 	v1 "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
@@ -36,6 +37,7 @@ func (s *VoiceService) GetVoiceList(ctx context.Context, in *v1.GetVoiceListRequ
 			Name:          voice.Name,
 			Code:          voice.Code,
 			MpAppid:       voice.MpAppid,
+			MpUrl:         voice.MpUrl,
 			ShareImageUrl: voice.ShareImageUrl,
 		}
 	}
@@ -58,6 +60,9 @@ func (s *VoiceService) GetVoiceById(ctx context.Context, in *v1.GetVoiceByIdRequ
 	}
 	voice, err := s.vuc.GetVoiceByID(ctx, in.GetId())
 	if err != nil {
+		if errors2.Cause(err) == gorm.ErrRecordNotFound {
+			return s.GetVoiceDefault(ctx, &v1.GetVoiceDefaultRequest{Appid: in.GetAppid()})
+		}
 		return nil, errors2.WithStack(err)
 	}
 	if voice.Appid != in.GetAppid() {
@@ -84,6 +89,7 @@ func voiceToPB(voice *biz.Voice) *v1.GetVoiceReply {
 		Code:    voice.Code,
 		Type:    uint32(voice.Type),
 		MpAppid: voice.MpAppid,
+		MpUrl:   voice.MpUrl,
 		Works:   works,
 		Share:   &v1.Share{Title: voice.ShareTitle, ImageUrl: voice.ShareImageUrl},
 	}

@@ -30,7 +30,7 @@ func NewLog() log.Logger {
 		MaxSize:    200,
 		MaxAge:     6,
 		MaxBackups: 20,
-		Compress:   false,
+		Compress:   true,
 	}
 
 	level := zap.InfoLevel
@@ -53,10 +53,10 @@ func NewLog() log.Logger {
 			level,
 		),
 		zap.AddCaller(),
-		zap.AddCallerSkip(3),
+		zap.AddCallerSkip(2),
 		zap.AddStacktrace(zap.ErrorLevel),
 	))
-	log.DefaultLogger = logger
+	log.SetLogger(logger)
 
 	return logger
 }

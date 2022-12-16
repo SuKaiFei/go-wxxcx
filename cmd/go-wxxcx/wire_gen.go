@@ -40,10 +40,9 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 	navigationRepo := data.NewNavigationRepo(dataData, logger)
 	navigationUseCase := biz.NewNavigationUseCase(navigationRepo, logger)
 	navigationService := service.NewNavigationService(navigationUseCase)
-	wechatMpUseCase := biz.NewWechatMpUseCase(logger, application)
-	wechatMpService := service.NewWechatMpService(wechatMpUseCase)
-	wechatOcUseCase := biz.NewWechatOcUseCase(logger, application, confData)
-	wechatOcService, cleanup2, err := service.NewWechatOcService(wechatOcUseCase)
+	wechatUseCase := biz.NewWechatUseCase(logger, application, confData)
+	wechatMpService := service.NewWechatMpService(wechatUseCase)
+	wechatOcService, cleanup2, err := service.NewWechatOcService(wechatUseCase)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -53,7 +52,10 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 	musicRepo := data.NewMusicRepo(dataData, logger)
 	musicUseCase := biz.NewMusicUseCase(musicRepo, logger)
 	musicService := service.NewMusicService(musicUseCase)
-	httpServer := server.NewHTTPServer(confServer, application, bqbService, voiceService, articleService, navigationService, wechatMpService, wechatOcService, imageService, musicService, logger)
+	chatGPTRepo := data.NewChatGPTRepo(dataData, logger)
+	chatGPTUseCase := biz.NewChatGPTUseCase(chatGPTRepo, application, logger)
+	chatGptService := service.NewChatGptService(chatGPTUseCase)
+	httpServer := server.NewHTTPServer(confServer, application, bqbService, voiceService, articleService, navigationService, wechatMpService, wechatOcService, imageService, musicService, chatGptService, logger)
 	app := newApp(logger, httpServer)
 	return app, func() {
 		cleanup2()
