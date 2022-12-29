@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"reflect"
 	"sort"
 	"strings"
 	"time"
@@ -52,6 +53,10 @@ func GetSign(data map[string]interface{}, secret string) string {
 	var signStr = new(bytes.Buffer)
 	for _, key := range keyList {
 		value := data[key]
+		kind := reflect.TypeOf(value).Kind()
+		if kind == reflect.Slice || kind == reflect.Interface {
+			continue
+		}
 		_, _ = signStr.WriteString(fmt.Sprintf("%v%v", key, value))
 	}
 	sign := strings.ToUpper(HmacSha256(signStr.String(), secret))

@@ -2,7 +2,7 @@ package biz
 
 import (
 	"database/sql/driver"
-	"encoding/json"
+	jsoniter "github.com/json-iterator/go"
 	"gorm.io/gorm"
 )
 
@@ -41,10 +41,9 @@ func (Voice) TableName() string {
 }
 
 func (m VoiceWorks) Value() (driver.Value, error) {
-	b, err := json.Marshal(m)
-	return string(b), err
+	return jsoniter.MarshalToString(m)
 }
 
 func (m *VoiceWorks) Scan(input interface{}) error {
-	return json.Unmarshal(input.([]byte), m)
+	return jsoniter.Unmarshal(input.([]byte), m)
 }

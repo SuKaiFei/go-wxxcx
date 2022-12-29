@@ -7,6 +7,7 @@ type NavigationType uint8
 const (
 	NavigationTypeInner NavigationType = iota + 1 // 内部页面
 	NavigationTypeMp                              // 打开小程序
+	NavigationTypeImage                           // 打开图片
 )
 
 type Navigation struct {

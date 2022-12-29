@@ -24,6 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChatGptClient interface {
 	GetChatGptCompletions(ctx context.Context, in *GetChatGptCompletionsRequest, opts ...grpc.CallOption) (*GetChatGptCompletionsReply, error)
+	GetChatGptHistory(ctx context.Context, in *GetChatGptHistoryRequest, opts ...grpc.CallOption) (*GetChatGptHistoryReply, error)
+	GetAvailableCount(ctx context.Context, in *GetAvailableCountRequest, opts ...grpc.CallOption) (*GetAvailableCountReply, error)
+	CompleteAd(ctx context.Context, in *CompleteAdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
@@ -44,6 +47,33 @@ func (c *chatGptClient) GetChatGptCompletions(ctx context.Context, in *GetChatGp
 	return out, nil
 }
 
+func (c *chatGptClient) GetChatGptHistory(ctx context.Context, in *GetChatGptHistoryRequest, opts ...grpc.CallOption) (*GetChatGptHistoryReply, error) {
+	out := new(GetChatGptHistoryReply)
+	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatGptClient) GetAvailableCount(ctx context.Context, in *GetAvailableCountRequest, opts ...grpc.CallOption) (*GetAvailableCountReply, error) {
+	out := new(GetAvailableCountReply)
+	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatGptClient) CompleteAd(ctx context.Context, in *CompleteAdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *chatGptClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/Ping", in, out, opts...)
@@ -58,6 +88,9 @@ func (c *chatGptClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grp
 // for forward compatibility
 type ChatGptServer interface {
 	GetChatGptCompletions(context.Context, *GetChatGptCompletionsRequest) (*GetChatGptCompletionsReply, error)
+	GetChatGptHistory(context.Context, *GetChatGptHistoryRequest) (*GetChatGptHistoryReply, error)
+	GetAvailableCount(context.Context, *GetAvailableCountRequest) (*GetAvailableCountReply, error)
+	CompleteAd(context.Context, *CompleteAdRequest) (*emptypb.Empty, error)
 	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	mustEmbedUnimplementedChatGptServer()
 }
@@ -68,6 +101,15 @@ type UnimplementedChatGptServer struct {
 
 func (UnimplementedChatGptServer) GetChatGptCompletions(context.Context, *GetChatGptCompletionsRequest) (*GetChatGptCompletionsReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChatGptCompletions not implemented")
+}
+func (UnimplementedChatGptServer) GetChatGptHistory(context.Context, *GetChatGptHistoryRequest) (*GetChatGptHistoryReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChatGptHistory not implemented")
+}
+func (UnimplementedChatGptServer) GetAvailableCount(context.Context, *GetAvailableCountRequest) (*GetAvailableCountReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAvailableCount not implemented")
+}
+func (UnimplementedChatGptServer) CompleteAd(context.Context, *CompleteAdRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompleteAd not implemented")
 }
 func (UnimplementedChatGptServer) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
@@ -103,6 +145,60 @@ func _ChatGpt_GetChatGptCompletions_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChatGpt_GetChatGptHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatGptHistoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatGptServer).GetChatGptHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatGptServer).GetChatGptHistory(ctx, req.(*GetChatGptHistoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatGpt_GetAvailableCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAvailableCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatGptServer).GetAvailableCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatGptServer).GetAvailableCount(ctx, req.(*GetAvailableCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatGpt_CompleteAd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompleteAdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatGptServer).CompleteAd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatGptServer).CompleteAd(ctx, req.(*CompleteAdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ChatGpt_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -131,6 +227,18 @@ var ChatGpt_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetChatGptCompletions",
 			Handler:    _ChatGpt_GetChatGptCompletions_Handler,
+		},
+		{
+			MethodName: "GetChatGptHistory",
+			Handler:    _ChatGpt_GetChatGptHistory_Handler,
+		},
+		{
+			MethodName: "GetAvailableCount",
+			Handler:    _ChatGpt_GetAvailableCount_Handler,
+		},
+		{
+			MethodName: "CompleteAd",
+			Handler:    _ChatGpt_CompleteAd_Handler,
 		},
 		{
 			MethodName: "Ping",

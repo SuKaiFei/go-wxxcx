@@ -1,0 +1,258 @@
+syntax = "proto3";
+
+package api.wxxcx.v1.community;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+service Community {
+  rpc DeleteCommunityMyArticle (DeleteCommunityByIdRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/wxxcx/community/my/article/delete"
+      body: "*"
+    };
+  }
+  rpc DeleteCommunityMyComment (DeleteCommunityByIdRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/wxxcx/community/my/comment/delete"
+      body: "*"
+    };
+  }
+  rpc GetCommunityMyArticleList (GetCommunityArticleListRequest) returns (GetCommunityArticleListReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/my/article/list"
+    };
+  }
+  rpc GetCommunityMyProfile (GetCommunityMyProfileRequest) returns (GetCommunityMyProfileReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/my/profile"
+    };
+  }
+  rpc UpdateCommunityMyProfile (UpdateCommunityMyProfileRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/wxxcx/community/my/profile/update"
+      body: "*"
+    };
+  }
+  rpc GetCommunityArticleList (GetCommunityArticleListRequest) returns (GetCommunityArticleListReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/article/list"
+    };
+  }
+  rpc GetCommunityCommentList (GetCommunityCommentListRequest) returns (GetCommunityCommentListReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/comment/list"
+    };
+  }
+  rpc GetCommunityArticle (GetCommunityArticleRequest) returns (GetCommunityArticleReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/article"
+    };
+  }
+  rpc AddCommunityComment (AddCommunityCommentRequest) returns (AddCommunityCommentReply) {
+    option (google.api.http) = {
+      post: "/wxxcx/community/comment/add"
+      body: "*"
+    };
+  }
+  rpc AddCommunityFeedback (AddCommunityFeedbackRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/wxxcx/community/feedback/add"
+      body: "*"
+    };
+  }
+  rpc PushCommunityArticle (PushCommunityArticleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/wxxcx/community/article/push"
+      body: "*"
+    };
+  }
+  rpc UpdateCommunityLike (UpdateCommunityLikeRequest) returns (UpdateCommunityLikeReply) {
+    option (google.api.http) = {
+      post: "/wxxcx/community/like"
+      body: "*"
+    };
+  }
+  rpc GetCosCredential (GetCosCredentialRequest) returns (GetCosCredentialReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/cos/credential"
+    };
+  }
+
+  rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/ping"
+    };
+  }
+}
+
+message AddCommunityCommentRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 top_reply_id = 5 [json_name = 'top_reply_id'];
+  uint64 reply_id = 6 [json_name = 'reply_id'];
+  string top_reply_openid = 7 [json_name = 'top_reply_openid'];
+  string reply_openid = 8 [json_name = 'reply_openid'];
+  string content = 9;
+  uint64 article_id = 10 [json_name = 'article_id'];
+}
+
+message CommunityUser {
+  uint64 id = 1;
+  string openid = 2;
+  string username = 3;
+  string avatar_url = 4 [json_name = 'avatar_url'];
+}
+
+message AddCommunityCommentReply {
+  uint64 id = 1 [json_name = 'id'];
+  string content = 2;
+  CommunityUser userinfo = 3;
+  CommunityUser reply_userinfo = 4;
+  uint64 top_reply_id = 5 [json_name = 'top_reply_id'];
+  uint64 reply_id = 6 [json_name = 'reply_id'];
+  string top_reply_openid = 7 [json_name = 'top_reply_openid'];
+  uint64 like_count = 8 [json_name = 'like_count'];
+  uint64 comment_count = 9 [json_name = 'comment_count'];
+  bool is_like = 10 [json_name = 'is_like'];
+  string comment_time = 11 [json_name = 'comment_time'];
+  uint64 article_id = 12 [json_name = 'article_id'];
+}
+
+message GetCommunityMyProfileRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+}
+
+message GetCommunityMyProfileReply {
+  uint64 id = 1 [json_name = 'id'];
+  string username = 2 [json_name = 'username'];
+  string avatar_url = 3 [json_name = 'avatar_url'];
+}
+
+message UpdateCommunityMyProfileRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 id = 5 [json_name = 'id'];
+  string username = 6 [json_name = 'username'];
+  string avatar_url = 7 [json_name = 'avatar_url'];
+}
+
+message AddCommunityFeedbackRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 id = 5;
+  uint32 type = 6;
+  string content = 7;
+}
+
+message UpdateCommunityLikeRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 tid = 5;
+  uint64 type = 6;
+}
+
+message DeleteCommunityByIdRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 id = 5;
+  uint64 article_id = 6 [json_name = 'article_id'];
+}
+
+message UpdateCommunityLikeReply {
+  bool is_like = 1 [json_name = 'is_like'];
+}
+
+message PushCommunityArticleRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  repeated Photo photos = 5;
+  string content = 6;
+}
+
+message GetCosCredentialRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+}
+
+message GetCosCredentialReply {
+  string tmp_secret_id = 1 [json_name = 'tmp_secret_id'];
+  string tmp_secret_key = 2 [json_name = 'tmp_secret_key'];
+  string session_token = 3 [json_name = 'session_token'];
+  uint64 start_time = 4 [json_name = 'start_time'];
+  uint64 expired_time = 5 [json_name = 'expired_time'];
+}
+
+message GetCommunityArticleListRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 page = 5;
+  uint64 page_size = 6;
+}
+
+message GetCommunityArticleListReply {
+  repeated GetCommunityArticleReply results = 1;
+}
+
+message GetCommunityCommentListRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 article_id = 5;
+  uint64 comment_id = 6;
+  uint64 page = 7;
+  uint64 page_size = 8;
+}
+
+message GetCommunityCommentListReply {
+  repeated AddCommunityCommentReply results = 1;
+}
+
+message GetCommunityArticleRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 id = 5;
+}
+
+message Photo {
+  string url = 1;
+  uint32 width = 2;
+  uint32 height = 3;
+}
+
+message GetCommunityArticleReply {
+  string pub_user_name = 1 [json_name = 'pub_user_name'];
+  string pub_user_avatar = 2 [json_name = 'pub_user_avatar'];
+  string pub_content = 3 [json_name = 'pub_content'];
+  string pub_time = 4 [json_name = 'pub_time'];
+  uint64 like_count = 5 [json_name = 'like_count'];
+  uint64 com_count = 6 [json_name = 'com_count'];
+  bool is_like = 7 [json_name = 'is_like'];
+  repeated Photo photos = 8;
+  uint64 id = 9;
+  string openid = 10;
+}

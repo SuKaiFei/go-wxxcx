@@ -8,9 +8,25 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
 
 service ChatGpt {
-  rpc GetChatGptCompletions (GetChatGptCompletionsRequest) returns (GetChatGptCompletionsReply){
+  rpc GetChatGptCompletions (GetChatGptCompletionsRequest) returns (GetChatGptCompletionsReply) {
     option (google.api.http) = {
       get: "/wxxcx/chat_gpt/completions"
+    };
+  }
+  rpc GetChatGptHistory (GetChatGptHistoryRequest) returns (GetChatGptHistoryReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/chat_gpt/history"
+    };
+  }
+  rpc GetAvailableCount (GetAvailableCountRequest) returns (GetAvailableCountReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/chat_gpt/available_count"
+    };
+  }
+  rpc CompleteAd (CompleteAdRequest) returns (.google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/wxxcx/chat_gpt/ad/complete"
+      body: "*"
     };
   }
 
@@ -19,6 +35,19 @@ service ChatGpt {
       get: "/wxxcx/chat_gpt/ping"
     };
   }
+}
+
+message GetChatGptHistoryRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  uint64 id = 5;
+}
+
+message GetChatGptHistoryReply {
+  string prompt = 1;
+  string result = 2;
 }
 
 message GetChatGptCompletionsRequest {
@@ -32,4 +61,24 @@ message GetChatGptCompletionsRequest {
 message GetChatGptCompletionsReply {
   string result = 1;
   string image_path = 2 [json_name = 'image_path'];
+  uint64 id = 3;
+}
+
+message GetAvailableCountRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+}
+
+message GetAvailableCountReply {
+  uint64 count = 1;
+}
+
+message CompleteAdRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  string adid = 5;
 }

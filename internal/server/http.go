@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/SuKaiFei/go-wxxcx/internal/biz"
 	nhttp "net/http"
 
 	v1 "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
@@ -39,13 +40,15 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	wechatOcSVC *service.WechatOcService,
 	imageSVC *service.ImageService,
 	musicSVC *service.MusicService,
-	ChatGptSVC *service.ChatGptService,
+	chatGptSVC *service.ChatGptService,
+	communitySVC *service.CommunityService,
+	securityUC *biz.SecurityUseCase,
 	logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
 			logging.Server(logger),
-			selector.Server(MiddlewareAuth(cApp)).
+			selector.Server(MiddlewareAuth(cApp, securityUC)).
 				Match(NewWhiteListMatcher()).
 				Build(),
 		),
@@ -62,7 +65,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	srv := http.NewServer(opts...)
 
 	fs := nhttp.FileServer(nhttp.Dir(cApp.GetStaticPath()))
-	srv.HandlePrefix("/static/", StripPrefix(logger, cApp, "/static/", fs))
+	srv.HandlePrefix("/static/", StripPrefix(logger, cApp, "/static/", fs, securityUC))
 
 	v1.RegisterBqbHTTPServer(srv, bqbSVC)
 	v1.RegisterVoiceHTTPServer(srv, voiceSVC)
@@ -71,7 +74,8 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	v1.RegisterWechatMpHTTPServer(srv, wechatMpSVC)
 	v1.RegisterImageHTTPServer(srv, imageSVC)
 	v1.RegisterMusicHTTPServer(srv, musicSVC)
-	v1.RegisterChatGptHTTPServer(srv, ChatGptSVC)
+	v1.RegisterChatGptHTTPServer(srv, chatGptSVC)
+	v1.RegisterCommunityHTTPServer(srv, communitySVC)
 	RegisterWechatHTTPServer(srv, wechatMpSVC)
 	return srv
 }

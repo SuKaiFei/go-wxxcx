@@ -5,18 +5,30 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	pb "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/json-iterator/go"
 	errors2 "github.com/pkg/errors"
 	"github.com/valyala/fasthttp"
+	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
+const (
+	defaultImagePath = "https://mmbiz.qpic.cn/mmbiz_jpg/Mhr8pCDXpQqoWjx3avyHfIMn9OJc93Pobae5GkdGX5E93SOBrichibgCNKxEn3JyCqeBBNmYkA5SHricEtyfMhs8A/0?wx_fmt=jpeg"
+)
+
 type ChatGPTRepo interface {
-	Get(context.Context, string, string) (*ChatGPT, error)
-	Add(context.Context, *ChatGPT) error
+	Get(context.Context, uint) (*ChatGPT, error)
+	Add(context.Context, *ChatGPT) (uint, error)
 	CountByOpenid(context.Context, string) (int64, error)
+	Search(context.Context, string, string) (*ChatGPT, error)
+
+	GetTodayQuota(context.Context, string) (*ChatGPTQuota, error)
+	AddQuotaUseCount(context.Context, string) error
+	AddQuotaUnusedCount(context.Context, string) error
 }
 
 type ChatGPTUseCase struct {
@@ -34,25 +46,93 @@ func NewChatGPTUseCase(repo ChatGPTRepo, appConf *conf.Application, logger log.L
 }
 
 func (uc *ChatGPTUseCase) isLimit(ctx context.Context, openid string) (bool, error) {
-	if openid == "oeAvF5bWne0rjIGB0MuPrGumQoBQ" {
-		return false, nil
-	}
+	//if openid == "oeAvF5bWne0rjIGB0MuPrGumQoBQ" {
+	//	return false, nil
+	//}
 
-	c, err := uc.repo.CountByOpenid(ctx, openid)
+	c, err := uc.GetTodaySendCount(ctx, openid)
 	if err != nil {
 		return false, errors2.WithStack(err)
 	}
-	return c >= 5, nil
+	return c < 1, nil
 }
 
-func (uc *ChatGPTUseCase) Completions(ctx context.Context, appid, openid, prompt string) (string, error) {
+func (uc *ChatGPTUseCase) searchByDB(ctx context.Context, prompt string) (*ChatGPT, error) {
+	hash := md5.New()
+	hash.Write([]byte(prompt))
+
+	m, err := uc.repo.Search(ctx, fmt.Sprintf("%x", hash.Sum(nil)), prompt)
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return m, nil
+}
+
+func (uc *ChatGPTUseCase) GetChatGptHistory(ctx context.Context, openid string, id uint64) (*ChatGPT, error) {
+	m, err := uc.repo.Get(ctx, uint(id))
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	if m.Type == ChatGPTTypeQuote {
+		pid, _ := strconv.Atoi(m.Result)
+		if pid > 0 {
+			pm, err := uc.repo.Get(ctx, uint(pid))
+			if err != nil {
+				return nil, errors2.WithStack(err)
+			}
+			m.Result = pm.Result
+		}
+	}
+
+	uc.log.Infof("GetChatGptHistory invited %s->%s", m.Openid, openid)
+
+	return m, nil
+}
+
+func (uc *ChatGPTUseCase) GetTodaySendCount(ctx context.Context, openid string) (uint64, error) {
+	m, err := uc.repo.GetTodayQuota(ctx, openid)
+	if err != nil {
+		return 0, errors2.WithStack(err)
+	}
+	return m.UnusedCount - m.UseCount, nil
+}
+
+func (uc *ChatGPTUseCase) AddQuotaUnusedCount(ctx context.Context, openid string) error {
+	err := uc.repo.AddQuotaUnusedCount(ctx, openid)
+	if err != nil {
+		return errors2.WithStack(err)
+	}
+	return nil
+}
+
+func (uc *ChatGPTUseCase) Completions(ctx context.Context, appid, openid, prompt string) (*pb.GetChatGptCompletionsReply, error) {
+	reply := &pb.GetChatGptCompletionsReply{
+		ImagePath: defaultImagePath,
+		Id:        0,
+	}
+
 	isLimit, err := uc.isLimit(ctx, openid)
 	if err != nil {
-		return "", errors2.WithStack(err)
+		return nil, errors2.WithStack(err)
 	}
 	if isLimit {
 		uc.log.Warnf("completions limit openid(%s)", openid)
-		return "你的今日次数已用完\n点击右上角三个点，可以免费分享给好友使用", nil
+		reply.Result = "你的今日次数已用完\n点击右上角三个点，可以免费分享给好友使用"
+		return reply, nil
+	}
+
+	m, sErr := uc.searchByDB(ctx, prompt)
+	if sErr != nil && errors2.Cause(sErr) != gorm.ErrRecordNotFound {
+		return nil, errors2.WithStack(sErr)
+	}
+	if m != nil {
+		id, err := uc.AddCompletionToDB(ctx, appid, openid, prompt, strconv.Itoa(int(m.ID)), ChatGPTTypeQuote)
+		if err != nil {
+			return nil, errors2.WithStack(err)
+		}
+		reply.Result = m.Result
+		reply.Id = uint64(id)
+		return reply, nil
 	}
 
 	request := fasthttp.AcquireRequest()
@@ -73,31 +153,36 @@ func (uc *ChatGPTUseCase) Completions(ctx context.Context, appid, openid, prompt
 
 	body, err := jsoniter.Marshal(bodyObj)
 	if err != nil {
-		return "", errors2.WithStack(err)
+		return nil, errors2.WithStack(err)
 	}
 
 	request.SetBody(body)
 	err = fasthttp.DoTimeout(request, response, 40*time.Second)
 	if err != nil {
-		return "", errors2.WithStack(err)
+		return nil, errors2.WithStack(err)
 	}
 
 	var resp *CompletionsResp
 	if err = json.Unmarshal(response.Body(), &resp); err != nil {
-		return "", errors2.WithStack(err)
+		return nil, errors2.WithStack(err)
 	}
 	if resp.Error.Message != "" {
-		return "", errors2.New(resp.Error.Message)
+		return nil, errors2.New(resp.Error.Message)
 	}
 
 	uc.log.Infof("completions req(%+v) resp(%s)", bodyObj, response.Body())
 
-	go uc.AddCompletionToDB(appid, openid, prompt, resp)
+	reply.Result = resp.Choices[0].Text
+	id, err := uc.AddCompletionToDB(ctx, appid, openid, prompt, reply.Result, ChatGPTTypeReply)
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	reply.Id = uint64(id)
 
-	return resp.Choices[0].Text, nil
+	return reply, nil
 }
 
-func (uc *ChatGPTUseCase) AddCompletionToDB(appid, openid, prompt string, completionsResp *CompletionsResp) {
+func (uc *ChatGPTUseCase) AddCompletionToDB(ctx context.Context, appid, openid, prompt, result string, typ ChatGPTType) (uint, error) {
 	hash := md5.New()
 	hash.Write([]byte(prompt))
 
@@ -106,9 +191,12 @@ func (uc *ChatGPTUseCase) AddCompletionToDB(appid, openid, prompt string, comple
 		Openid: openid,
 		Code:   fmt.Sprintf("%x", hash.Sum(nil)),
 		Prompt: prompt,
-		Result: completionsResp.Choices[0].Text,
+		Result: result,
+		Type:   typ,
 	}
-	if err := uc.repo.Add(context.Background(), c); err != nil {
-		uc.log.Errorf("uc.repo.Add(%+v)", err)
+	if err := uc.repo.AddQuotaUseCount(ctx, openid); err != nil {
+		return 0, errors2.WithStack(err)
 	}
+
+	return uc.repo.Add(ctx, c)
 }

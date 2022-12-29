@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/SuKaiFei/go-wxxcx/internal/biz"
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport"
@@ -9,7 +10,7 @@ import (
 	"strings"
 )
 
-func StripPrefix(logger log.Logger, cApp *conf.Application, prefix string, h http.Handler) http.Handler {
+func StripPrefix(logger log.Logger, cApp *conf.Application, prefix string, h http.Handler, securityUC *biz.SecurityUseCase) http.Handler {
 	if prefix == "" {
 		return h
 	}
@@ -29,7 +30,7 @@ func StripPrefix(logger log.Logger, cApp *conf.Application, prefix string, h htt
 			"operation", operation,
 			"url", r.RequestURI,
 		)
-		if err := requestAuth(cApp, r, nil); err != nil {
+		if err := requestAuth(cApp, r, nil, securityUC); err != nil {
 			_ = logContext.Log(log.LevelError,
 				"kind", "server",
 				"component", kind,

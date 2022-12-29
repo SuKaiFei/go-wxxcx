@@ -21,9 +21,18 @@ message Application {
     string secret = 6;
   }
 
+  message Cos {
+      string secret_id = 1;
+      string secret_key = 2;
+      uint64 appid = 3;
+      string region = 4;
+      string bucket = 5;
+  }
+
   map<string, App> mp = 1;
   string staticPath = 2;
   string chat_gpt_apikey = 3;
+  Cos cos = 4;
 }
 
 message Server {

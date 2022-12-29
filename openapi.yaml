@@ -147,6 +147,50 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/chat_gpt/ad/complete:
+        post:
+            tags:
+                - ChatGpt
+            operationId: ChatGpt_CompleteAd
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.CompleteAdRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/chat_gpt/available_count:
+        get:
+            tags:
+                - ChatGpt
+            operationId: ChatGpt_GetAvailableCount
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.GetAvailableCountReply'
     /wxxcx/chat_gpt/completions:
         get:
             tags:
@@ -180,11 +224,384 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.GetChatGptCompletionsReply'
+    /wxxcx/chat_gpt/history:
+        get:
+            tags:
+                - ChatGpt
+            operationId: ChatGpt_GetChatGptHistory
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.GetChatGptHistoryReply'
     /wxxcx/chat_gpt/ping:
         get:
             tags:
                 - ChatGpt
             operationId: ChatGpt_Ping
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/community/article:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCommunityArticle
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleReply'
+    /wxxcx/community/article/list:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCommunityArticleList
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleListReply'
+    /wxxcx/community/article/push:
+        post:
+            tags:
+                - Community
+            operationId: Community_PushCommunityArticle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.community.PushCommunityArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/community/comment/add:
+        post:
+            tags:
+                - Community
+            operationId: Community_AddCommunityComment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityCommentRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityCommentReply'
+    /wxxcx/community/comment/list:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCommunityCommentList
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+                - name: articleId
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: commentId
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityCommentListReply'
+    /wxxcx/community/cos/credential:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCosCredential
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCosCredentialReply'
+    /wxxcx/community/feedback/add:
+        post:
+            tags:
+                - Community
+            operationId: Community_AddCommunityFeedback
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityFeedbackRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/community/like:
+        post:
+            tags:
+                - Community
+            operationId: Community_UpdateCommunityLike
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.community.UpdateCommunityLikeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.UpdateCommunityLikeReply'
+    /wxxcx/community/my/article/delete:
+        delete:
+            tags:
+                - Community
+            operationId: Community_DeleteCommunityMyArticle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.community.DeleteCommunityByIdRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/community/my/article/list:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCommunityMyArticleList
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleListReply'
+    /wxxcx/community/my/comment/delete:
+        delete:
+            tags:
+                - Community
+            operationId: Community_DeleteCommunityMyComment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.community.DeleteCommunityByIdRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/community/my/profile:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCommunityMyProfile
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityMyProfileReply'
+    /wxxcx/community/my/profile/update:
+        put:
+            tags:
+                - Community
+            operationId: Community_UpdateCommunityMyProfile
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.wxxcx.v1.community.UpdateCommunityMyProfileRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /wxxcx/community/ping:
+        get:
+            tags:
+                - Community
+            operationId: Community_Ping
             responses:
                 "200":
                     description: OK
@@ -506,12 +923,283 @@ components:
                 file:
                     type: string
                     format: bytes
+        api.wxxcx.v1.chatGpt.CompleteAdRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                adid:
+                    type: string
+        api.wxxcx.v1.chatGpt.GetAvailableCountReply:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    format: uint64
         api.wxxcx.v1.chatGpt.GetChatGptCompletionsReply:
             type: object
             properties:
                 result:
                     type: string
                 image_path:
+                    type: string
+                id:
+                    type: integer
+                    format: uint64
+        api.wxxcx.v1.chatGpt.GetChatGptHistoryReply:
+            type: object
+            properties:
+                prompt:
+                    type: string
+                result:
+                    type: string
+        api.wxxcx.v1.community.AddCommunityCommentReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                content:
+                    type: string
+                userinfo:
+                    $ref: '#/components/schemas/api.wxxcx.v1.community.CommunityUser'
+                replyUserinfo:
+                    $ref: '#/components/schemas/api.wxxcx.v1.community.CommunityUser'
+                top_reply_id:
+                    type: integer
+                    format: uint64
+                reply_id:
+                    type: integer
+                    format: uint64
+                top_reply_openid:
+                    type: string
+                like_count:
+                    type: integer
+                    format: uint64
+                comment_count:
+                    type: integer
+                    format: uint64
+                is_like:
+                    type: boolean
+                comment_time:
+                    type: string
+                article_id:
+                    type: integer
+                    format: uint64
+        api.wxxcx.v1.community.AddCommunityCommentRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                top_reply_id:
+                    type: integer
+                    format: uint64
+                reply_id:
+                    type: integer
+                    format: uint64
+                top_reply_openid:
+                    type: string
+                reply_openid:
+                    type: string
+                content:
+                    type: string
+                article_id:
+                    type: integer
+                    format: uint64
+        api.wxxcx.v1.community.AddCommunityFeedbackRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                id:
+                    type: integer
+                    format: uint64
+                type:
+                    type: integer
+                    format: uint32
+                content:
+                    type: string
+        api.wxxcx.v1.community.CommunityUser:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                openid:
+                    type: string
+                username:
+                    type: string
+                avatar_url:
+                    type: string
+        api.wxxcx.v1.community.DeleteCommunityByIdRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                id:
+                    type: integer
+                    format: uint64
+                article_id:
+                    type: integer
+                    format: uint64
+        api.wxxcx.v1.community.GetCommunityArticleListReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleReply'
+        api.wxxcx.v1.community.GetCommunityArticleReply:
+            type: object
+            properties:
+                pub_user_name:
+                    type: string
+                pub_user_avatar:
+                    type: string
+                pub_content:
+                    type: string
+                pub_time:
+                    type: string
+                like_count:
+                    type: integer
+                    format: uint64
+                com_count:
+                    type: integer
+                    format: uint64
+                is_like:
+                    type: boolean
+                photos:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.wxxcx.v1.community.Photo'
+                id:
+                    type: integer
+                    format: uint64
+                openid:
+                    type: string
+        api.wxxcx.v1.community.GetCommunityCommentListReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityCommentReply'
+        api.wxxcx.v1.community.GetCommunityMyProfileReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                username:
+                    type: string
+                avatar_url:
+                    type: string
+        api.wxxcx.v1.community.GetCosCredentialReply:
+            type: object
+            properties:
+                tmp_secret_id:
+                    type: string
+                tmp_secret_key:
+                    type: string
+                session_token:
+                    type: string
+                start_time:
+                    type: integer
+                    format: uint64
+                expired_time:
+                    type: integer
+                    format: uint64
+        api.wxxcx.v1.community.Photo:
+            type: object
+            properties:
+                url:
+                    type: string
+                width:
+                    type: integer
+                    format: uint32
+                height:
+                    type: integer
+                    format: uint32
+        api.wxxcx.v1.community.PushCommunityArticleRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                photos:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.wxxcx.v1.community.Photo'
+                content:
+                    type: string
+        api.wxxcx.v1.community.UpdateCommunityLikeReply:
+            type: object
+            properties:
+                is_like:
+                    type: boolean
+        api.wxxcx.v1.community.UpdateCommunityLikeRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                tid:
+                    type: integer
+                    format: uint64
+                type:
+                    type: integer
+                    format: uint64
+        api.wxxcx.v1.community.UpdateCommunityMyProfileRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                id:
+                    type: integer
+                    format: uint64
+                username:
+                    type: string
+                avatar_url:
                     type: string
         wxxcx.v1.GetArticleReply:
             type: object
@@ -651,6 +1339,7 @@ tags:
     - name: Bqb
       description: 表情包服务.
     - name: ChatGpt
+    - name: Community
     - name: Image
     - name: Music
     - name: Navigation

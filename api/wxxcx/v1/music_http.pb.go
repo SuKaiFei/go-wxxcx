@@ -26,7 +26,7 @@ type MusicHTTPServer interface {
 func RegisterMusicHTTPServer(s *http.Server, srv MusicHTTPServer) {
 	r := s.Route("/")
 	r.GET("/wxxcx/music/list", _Music_GetMusicList0_HTTP_Handler(srv))
-	r.GET("/wxxcx/music/ping", _Music_Ping2_HTTP_Handler(srv))
+	r.GET("/wxxcx/music/ping", _Music_Ping3_HTTP_Handler(srv))
 }
 
 func _Music_GetMusicList0_HTTP_Handler(srv MusicHTTPServer) func(ctx http.Context) error {
@@ -48,7 +48,7 @@ func _Music_GetMusicList0_HTTP_Handler(srv MusicHTTPServer) func(ctx http.Contex
 	}
 }
 
-func _Music_Ping2_HTTP_Handler(srv MusicHTTPServer) func(ctx http.Context) error {
+func _Music_Ping3_HTTP_Handler(srv MusicHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {

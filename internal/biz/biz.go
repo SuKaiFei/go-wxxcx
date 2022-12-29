@@ -12,4 +12,7 @@ var ProviderSet = wire.NewSet(
 	NewMusicUseCase,
 	NewWechatUseCase,
 	NewChatGPTUseCase,
+	NewCommunityUseCase,
+	NewCosUseCase,
+	NewSecurityUseCase,
 )

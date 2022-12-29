@@ -54,12 +54,14 @@ check_http(){
     status_code=$(curl -m 5 -s -o /dev/null -w %{http_code} $url)
 }
 
+reply=1
+
 while :
 do
        check_http
        date=$(date +%Y%m%d-%H:%M:%S)
 #生成报警邮件的内容
-       echo "当前时间为:$date
+       echo "当前时间为:$date reply:$reply
        $url服务器异常,状态码为${status_code}"
 
 #指定测试服务器状态的函数，并根据返回码决定是发送邮件报警还是将正常信息写入日志
@@ -67,6 +69,12 @@ do
               echo "$url连接正常"
               break
        fi
+       if [ $reply -eq 5 ];then
+              sed -i "s/$nextPort/$curPort/" /app/wxxcx/config.yaml
+              echo "启动失败"
+              return
+       fi
+       reply=$((${reply} + 1))
        sleep 1
 done
 

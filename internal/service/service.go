@@ -13,4 +13,5 @@ var ProviderSet = wire.NewSet(
 	NewMusicService,
 	NewWechatOcService,
 	NewChatGptService,
+	NewCommunityService,
 )

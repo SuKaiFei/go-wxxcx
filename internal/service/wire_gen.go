@@ -13,6 +13,11 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 )
 
+import (
+	_ "image/jpeg"
+	_ "image/png"
+)
+
 // Injectors from wire.go:
 
 func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap *conf.Bootstrap, confData *conf.Data, application *conf.Application) (*unitTestSvc, func(), error) {
@@ -32,7 +37,8 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	navigationRepo := data.NewNavigationRepo(dataData, logger)
 	navigationUseCase := biz.NewNavigationUseCase(navigationRepo, logger)
 	navigationService := NewNavigationService(navigationUseCase)
-	wechatUseCase := biz.NewWechatUseCase(logger, application, confData)
+	wechatRepo := data.NewWechatRepo(dataData, logger)
+	wechatUseCase := biz.NewWechatUseCase(logger, application, wechatRepo)
 	wechatMpService := NewWechatMpService(wechatUseCase)
 	wechatOcService, cleanup2, err := NewWechatOcService(wechatUseCase)
 	if err != nil {
@@ -47,6 +53,10 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	chatGPTRepo := data.NewChatGPTRepo(dataData, logger)
 	chatGPTUseCase := biz.NewChatGPTUseCase(chatGPTRepo, application, logger)
 	chatGptService := NewChatGptService(chatGPTUseCase)
+	communityRepo := data.NewCommunityRepo(dataData, logger)
+	communityUseCase := biz.NewCommunityUseCase(communityRepo, logger)
+	cosUseCase := biz.NewCosUseCase(application, logger)
+	communityService := NewCommunityService(communityUseCase, cosUseCase, wechatUseCase)
 	serviceUnitTestSvc := &unitTestSvc{
 		bqbSvc:        bqbService,
 		articleSvc:    articleService,
@@ -57,6 +67,7 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		imageSvc:      imageService,
 		musicSvc:      musicService,
 		chatGptSvc:    chatGptService,
+		communitySvc:  communityService,
 	}
 	return serviceUnitTestSvc, func() {
 		cleanup2()
@@ -76,4 +87,5 @@ type unitTestSvc struct {
 	imageSvc      *ImageService
 	musicSvc      *MusicService
 	chatGptSvc    *ChatGptService
+	communitySvc  *CommunityService
 }

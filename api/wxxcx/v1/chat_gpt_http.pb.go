@@ -19,14 +19,20 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type ChatGptHTTPServer interface {
+	CompleteAd(context.Context, *CompleteAdRequest) (*emptypb.Empty, error)
+	GetAvailableCount(context.Context, *GetAvailableCountRequest) (*GetAvailableCountReply, error)
 	GetChatGptCompletions(context.Context, *GetChatGptCompletionsRequest) (*GetChatGptCompletionsReply, error)
+	GetChatGptHistory(context.Context, *GetChatGptHistoryRequest) (*GetChatGptHistoryReply, error)
 	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 }
 
 func RegisterChatGptHTTPServer(s *http.Server, srv ChatGptHTTPServer) {
 	r := s.Route("/")
 	r.GET("/wxxcx/chat_gpt/completions", _ChatGpt_GetChatGptCompletions0_HTTP_Handler(srv))
-	r.GET("/wxxcx/chat_gpt/ping", _ChatGpt_Ping3_HTTP_Handler(srv))
+	r.GET("/wxxcx/chat_gpt/history", _ChatGpt_GetChatGptHistory0_HTTP_Handler(srv))
+	r.GET("/wxxcx/chat_gpt/available_count", _ChatGpt_GetAvailableCount0_HTTP_Handler(srv))
+	r.POST("/wxxcx/chat_gpt/ad/complete", _ChatGpt_CompleteAd0_HTTP_Handler(srv))
+	r.GET("/wxxcx/chat_gpt/ping", _ChatGpt_Ping4_HTTP_Handler(srv))
 }
 
 func _ChatGpt_GetChatGptCompletions0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
@@ -48,7 +54,64 @@ func _ChatGpt_GetChatGptCompletions0_HTTP_Handler(srv ChatGptHTTPServer) func(ct
 	}
 }
 
-func _ChatGpt_Ping3_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
+func _ChatGpt_GetChatGptHistory0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetChatGptHistoryRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetChatGptHistory(ctx, req.(*GetChatGptHistoryRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetChatGptHistoryReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _ChatGpt_GetAvailableCount0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetAvailableCountRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetAvailableCount(ctx, req.(*GetAvailableCountRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetAvailableCountReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _ChatGpt_CompleteAd0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CompleteAdRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CompleteAd(ctx, req.(*CompleteAdRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _ChatGpt_Ping4_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {
@@ -68,7 +131,10 @@ func _ChatGpt_Ping3_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) e
 }
 
 type ChatGptHTTPClient interface {
+	CompleteAd(ctx context.Context, req *CompleteAdRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	GetAvailableCount(ctx context.Context, req *GetAvailableCountRequest, opts ...http.CallOption) (rsp *GetAvailableCountReply, err error)
 	GetChatGptCompletions(ctx context.Context, req *GetChatGptCompletionsRequest, opts ...http.CallOption) (rsp *GetChatGptCompletionsReply, err error)
+	GetChatGptHistory(ctx context.Context, req *GetChatGptHistoryRequest, opts ...http.CallOption) (rsp *GetChatGptHistoryReply, err error)
 	Ping(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
@@ -80,11 +146,50 @@ func NewChatGptHTTPClient(client *http.Client) ChatGptHTTPClient {
 	return &ChatGptHTTPClientImpl{client}
 }
 
+func (c *ChatGptHTTPClientImpl) CompleteAd(ctx context.Context, in *CompleteAdRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/wxxcx/chat_gpt/ad/complete"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ChatGptHTTPClientImpl) GetAvailableCount(ctx context.Context, in *GetAvailableCountRequest, opts ...http.CallOption) (*GetAvailableCountReply, error) {
+	var out GetAvailableCountReply
+	pattern := "/wxxcx/chat_gpt/available_count"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *ChatGptHTTPClientImpl) GetChatGptCompletions(ctx context.Context, in *GetChatGptCompletionsRequest, opts ...http.CallOption) (*GetChatGptCompletionsReply, error) {
 	var out GetChatGptCompletionsReply
 	pattern := "/wxxcx/chat_gpt/completions"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ChatGptHTTPClientImpl) GetChatGptHistory(ctx context.Context, in *GetChatGptHistoryRequest, opts ...http.CallOption) (*GetChatGptHistoryReply, error) {
+	var out GetChatGptHistoryReply
+	pattern := "/wxxcx/chat_gpt/history"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
