@@ -923,6 +923,10 @@ components:
                 file:
                     type: string
                     format: bytes
+                code:
+                    type: string
+                openid:
+                    type: string
         api.wxxcx.v1.chatGpt.CompleteAdRequest:
             type: object
             properties:
@@ -969,7 +973,7 @@ components:
                     type: string
                 userinfo:
                     $ref: '#/components/schemas/api.wxxcx.v1.community.CommunityUser'
-                replyUserinfo:
+                reply_userinfo:
                     $ref: '#/components/schemas/api.wxxcx.v1.community.CommunityUser'
                 top_reply_id:
                     type: integer

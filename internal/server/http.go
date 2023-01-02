@@ -1,8 +1,12 @@
 package server
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
+	"github.com/go-kratos/kratos/v2/errors"
+	"io"
 	nhttp "net/http"
 
 	v1 "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
@@ -17,8 +21,8 @@ import (
 )
 
 var whiteList = map[string]struct{}{
-	"/wxxcx.v1.Bqb/Ping":              {},
-	"/api.wxxcx.v1.Image/UploadImage": {},
+	"/wxxcx.v1.Bqb/Ping": {},
+	//"/api.wxxcx.v1.Image/UploadImage": {},
 }
 
 func NewWhiteListMatcher() selector.MatchFunc {
@@ -52,6 +56,26 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 				Match(NewWhiteListMatcher()).
 				Build(),
 		),
+		http.RequestDecoder(func(r *nhttp.Request, v interface{}) error {
+			codec, ok := http.CodecForRequest(r, "Content-Type")
+			if !ok {
+				return errors.BadRequest("CODEC", fmt.Sprintf("unregister Content-Type: %s", r.Header.Get("Content-Type")))
+			}
+			data, err := io.ReadAll(r.Body)
+			if r.URL.Path != "/wxxcx/image/upload" {
+				r.Body = io.NopCloser(bytes.NewBuffer(data))
+			}
+			if err != nil {
+				return errors.BadRequest("CODEC", err.Error())
+			}
+			if len(data) == 0 {
+				return nil
+			}
+			if err = codec.Unmarshal(data, v); err != nil {
+				return errors.BadRequest("CODEC", fmt.Sprintf("body unmarshal %s", err.Error()))
+			}
+			return nil
+		}),
 	}
 	if c.Http.Network != "" {
 		opts = append(opts, http.Network(c.Http.Network))

@@ -1,18 +1,15 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	pb "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
-	"github.com/makiuchi-d/gozxing"
-	"github.com/makiuchi-d/gozxing/qrcode"
 	errors2 "github.com/pkg/errors"
-	"github.com/valyala/fasthttp"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"image"
 	_ "image/jpeg"
 	_ "image/png"
+	"path"
+	"strings"
 )
 
 type CommunityService struct {
@@ -82,8 +79,9 @@ func (s *CommunityService) GetCommunityMyArticleList(ctx context.Context, req *p
 	if req.GetPageSize() > 50 {
 		req.PageSize = 50
 	}
-	if req.GetPageSize() < 1 {
-		req.PageSize = 10
+	req.PageSize = 5
+	if req.GetPage() < 1 {
+		req.Page = 0
 	}
 	reply, err := s.uc.GetMyArticleList(ctx, req.GetOpenid(), req.Page, req.PageSize)
 	if err != nil {
@@ -96,8 +94,8 @@ func (s *CommunityService) GetCommunityCommentList(ctx context.Context, req *pb.
 	if req.GetPageSize() > 50 {
 		req.PageSize = 50
 	}
-	if req.GetPageSize() < 1 {
-		req.PageSize = 10
+	if req.GetPage() < 1 {
+		req.Page = 0
 	}
 	reply, err := s.uc.GetCommentList(ctx, req.Openid, req.ArticleId, req.CommentId, req.Page, req.PageSize)
 	if err != nil {
@@ -142,28 +140,34 @@ func (s *CommunityService) PushCommunityArticle(ctx context.Context, req *pb.Pus
 			images[i] = photo.Url
 		}
 
-		qrReader := qrcode.NewQRCodeReader()
+		//qrReader := qrcode.NewQRCodeReader()
 		for _, imageUrl := range images {
-			_, body, err := fasthttp.Get(nil, imageUrl)
-			if err != nil {
-				return nil, err
+			if strings.ToLower(path.Ext(imageUrl)) == ".gif" {
+				return nil, errors2.New("暂不支持GIF动态图上传")
 			}
-			img, _, err := image.Decode(bytes.NewReader(body))
-			if err != nil {
-				return nil, err
-			}
-
-			// prepare BinaryBitmap
-			bmp, err := gozxing.NewBinaryBitmapFromImage(img)
-			if err != nil {
-				return nil, err
-			}
-
-			// decode image
-			result, _ := qrReader.Decode(bmp, nil)
-			if result != nil && len(result.GetText()) > 0 {
-				return nil, errors2.New("请删除包含二维码的图片")
-			}
+			//	_, body, err := fasthttp.Get(nil, imageUrl)
+			//	if err != nil {
+			//		return nil, err
+			//	}
+			//	img, _, err := image.Decode(bytes.NewReader(body))
+			//	if err != nil {
+			//		if err == image.ErrFormat {
+			//			continue
+			//		}
+			//		return nil, err
+			//	}
+			//
+			//	// prepare BinaryBitmap
+			//	bmp, err := gozxing.NewBinaryBitmapFromImage(img)
+			//	if err != nil {
+			//		return nil, err
+			//	}
+			//
+			//	// decode image
+			//	result, _ := qrReader.Decode(bmp, nil)
+			//	if result != nil && len(result.GetText()) > 0 {
+			//		return nil, errors2.New("请删除包含二维码的图片")
+			//	}
 		}
 
 		auditing, err := s.cosUc.BatchImageAuditing(ctx, images)
@@ -203,8 +207,9 @@ func (s *CommunityService) GetCommunityArticleList(ctx context.Context, req *pb.
 	if req.GetPageSize() > 50 {
 		req.PageSize = 50
 	}
-	if req.GetPageSize() < 1 {
-		req.PageSize = 10
+	req.PageSize = 5
+	if req.GetPage() < 1 {
+		req.Page = 0
 	}
 	reply, err := s.uc.GetArticleList(ctx, req.GetOpenid(), req.Page, req.PageSize)
 	if err != nil {

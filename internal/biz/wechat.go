@@ -9,6 +9,7 @@ import (
 	"github.com/silenceper/wechat/v2"
 	"github.com/silenceper/wechat/v2/cache"
 	"github.com/silenceper/wechat/v2/miniprogram"
+	"github.com/silenceper/wechat/v2/miniprogram/auth"
 	miniConfig "github.com/silenceper/wechat/v2/miniprogram/config"
 	"github.com/silenceper/wechat/v2/miniprogram/security"
 	"github.com/silenceper/wechat/v2/officialaccount"
@@ -17,6 +18,7 @@ import (
 
 type WechatRepo interface {
 	GetRedisClient() redis.UniversalClient
+	UpsertUser(context.Context, *WechatUser) error
 }
 
 type WechatUseCase struct {
@@ -92,6 +94,28 @@ func (uc *WechatUseCase) MsgCheck(appid, openid, content string) (*security.MsgC
 		)
 	}
 	return &secCheck, nil
+}
+
+func (uc *WechatUseCase) Code2Session(appid, code string) (*auth.ResCode2Session, error) {
+	session, err := uc.mpClientMap[appid].GetAuth().Code2Session(code)
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	if session.ErrCode != 0 {
+		return nil, errors2.New(session.Error())
+	}
+	go func() {
+		user := &WechatUser{
+			Appid:   appid,
+			Openid:  session.OpenID,
+			Unionid: session.UnionID,
+		}
+		if err := uc.repo.UpsertUser(context.Background(), user); err != nil {
+			uc.log.Errorw("msg", "repo.UpsertUser", "err", err)
+			return
+		}
+	}()
+	return &session, nil
 }
 
 func (uc *WechatUseCase) GetOaApp(appid string) *officialaccount.OfficialAccount {

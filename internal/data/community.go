@@ -177,6 +177,15 @@ func (r *CommunityRepo) UpdateUser(ctx context.Context, id uint, m *biz.Communit
 	return nil
 }
 
+func (r *CommunityRepo) UpdateUserUnionid(ctx context.Context, openid, unionid string) error {
+	err := r.data.db.WithContext(ctx).Model(new(biz.CommunityUser)).
+		Where("openid = ?", openid).Update("unionid", unionid).Error
+	if err != nil {
+		return errors2.WithStack(err)
+	}
+	return nil
+}
+
 func (r *CommunityRepo) GetArticleLikeByOpenid(ctx context.Context, openid string, articles []uint) (
 	m []*biz.CommunityLike, err error,
 ) {

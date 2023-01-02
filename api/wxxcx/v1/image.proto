@@ -26,6 +26,8 @@ message UploadImageRequest {
   string sign = 3;
   string filename = 4;
   bytes file = 5;
+  string code = 6;
+  string openid = 7;
 }
 
 message UploadImageReply {

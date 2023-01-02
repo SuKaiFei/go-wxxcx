@@ -10,6 +10,7 @@ import (
 type CommunityUser struct {
 	gorm.Model
 	Openid   string `gorm:"type:char(28);"`
+	Unionid  string `gorm:"type:char(28);"`
 	Username string `gorm:"type:varchar(50);"`
 	Avatar   string `gorm:"type:varchar(500);"`
 }

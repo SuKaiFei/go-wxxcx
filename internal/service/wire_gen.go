@@ -14,6 +14,7 @@ import (
 )
 
 import (
+	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
 )
@@ -39,23 +40,23 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	navigationService := NewNavigationService(navigationUseCase)
 	wechatRepo := data.NewWechatRepo(dataData, logger)
 	wechatUseCase := biz.NewWechatUseCase(logger, application, wechatRepo)
-	wechatMpService := NewWechatMpService(wechatUseCase)
+	communityRepo := data.NewCommunityRepo(dataData, logger)
+	cosUseCase := biz.NewCosUseCase(application, logger)
+	communityUseCase := biz.NewCommunityUseCase(communityRepo, cosUseCase, logger)
+	wechatMpService := NewWechatMpService(wechatUseCase, communityUseCase)
 	wechatOcService, cleanup2, err := NewWechatOcService(wechatUseCase)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	imageUseCase := biz.NewImageUseCase(logger)
-	imageService := NewImageService(imageUseCase, application)
+	imageService := NewImageService(imageUseCase, cosUseCase, application)
 	musicRepo := data.NewMusicRepo(dataData, logger)
 	musicUseCase := biz.NewMusicUseCase(musicRepo, logger)
 	musicService := NewMusicService(musicUseCase)
 	chatGPTRepo := data.NewChatGPTRepo(dataData, logger)
 	chatGPTUseCase := biz.NewChatGPTUseCase(chatGPTRepo, application, logger)
 	chatGptService := NewChatGptService(chatGPTUseCase)
-	communityRepo := data.NewCommunityRepo(dataData, logger)
-	communityUseCase := biz.NewCommunityUseCase(communityRepo, logger)
-	cosUseCase := biz.NewCosUseCase(application, logger)
 	communityService := NewCommunityService(communityUseCase, cosUseCase, wechatUseCase)
 	serviceUnitTestSvc := &unitTestSvc{
 		bqbSvc:        bqbService,

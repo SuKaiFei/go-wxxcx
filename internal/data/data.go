@@ -36,8 +36,11 @@ type Data struct {
 // NewData .
 func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     c.Redis.Addr,
-		Password: c.Redis.Password, // no password set
+		Addr:         c.Redis.Addr,
+		Password:     c.Redis.Password, // no password set
+		DialTimeout:  10 * time.Second,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 20 * time.Second,
 	})
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelFunc()
@@ -76,6 +79,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		new(biz.CommunityComment),
 		new(biz.CommunityLike),
 		new(biz.CommunityFeedback),
+		new(biz.WechatUser),
 	)
 	if err != nil {
 		return nil, nil, err

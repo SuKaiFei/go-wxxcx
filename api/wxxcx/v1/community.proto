@@ -112,7 +112,7 @@ message AddCommunityCommentReply {
   uint64 id = 1 [json_name = 'id'];
   string content = 2;
   CommunityUser userinfo = 3;
-  CommunityUser reply_userinfo = 4;
+  CommunityUser reply_userinfo = 4 [json_name = 'reply_userinfo'];
   uint64 top_reply_id = 5 [json_name = 'top_reply_id'];
   uint64 reply_id = 6 [json_name = 'reply_id'];
   string top_reply_openid = 7 [json_name = 'top_reply_openid'];

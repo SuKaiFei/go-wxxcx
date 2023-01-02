@@ -19,6 +19,7 @@ type CommunityRepo interface {
 	GetUser(context.Context, string) (*CommunityUser, error)
 	AddUser(context.Context, *CommunityUser) (uint, error)
 	UpdateUser(context.Context, uint, *CommunityUser) error
+	UpdateUserUnionid(context.Context, string, string) error
 	GetUserListByOpenid(context.Context, []string) ([]*CommunityUser, error)
 	GetComment(context.Context, uint) (m *CommunityComment, err error)
 	GetCommentList(context.Context, uint, uint, int, int) (m []*CommunityComment, err error)
@@ -42,14 +43,16 @@ type CommunityRepo interface {
 }
 
 type CommunityUseCase struct {
-	repo CommunityRepo
-	log  *log.Helper
+	repo  CommunityRepo
+	cosUC *CosUseCase
+	log   *log.Helper
 }
 
-func NewCommunityUseCase(repo CommunityRepo, logger log.Logger) *CommunityUseCase {
+func NewCommunityUseCase(repo CommunityRepo, cosUC *CosUseCase, logger log.Logger) *CommunityUseCase {
 	return &CommunityUseCase{
-		repo: repo,
-		log:  log.NewHelper(logger),
+		cosUC: cosUC,
+		repo:  repo,
+		log:   log.NewHelper(logger),
 	}
 }
 
@@ -185,8 +188,20 @@ func (uc *CommunityUseCase) GetMyProfile(ctx context.Context, openid string) (
 			return nil, errors2.WithStack(err)
 		}
 	}
+	item.Avatar, err = uc.cosUC.GetPresignedURL(ctx, item.Avatar)
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
 
 	return item, nil
+}
+
+func (uc *CommunityUseCase) UpdateUserUnionid(ctx context.Context, openid, unionid string) error {
+	err := uc.repo.UpdateUserUnionid(ctx, openid, unionid)
+	if err != nil {
+		return errors2.WithStack(err)
+	}
+	return nil
 }
 
 func (uc *CommunityUseCase) UpdateMyProfile(ctx context.Context, req *v1.UpdateCommunityMyProfileRequest) error {
@@ -281,10 +296,22 @@ func (uc *CommunityUseCase) fillCommentReply(ctx context.Context, openid string,
 		user, found := userMap[item.Openid]
 		if !found {
 			user = defaultCommentUser
+		} else {
+			avatar, err := uc.cosUC.GetPresignedURL(ctx, user.Avatar)
+			if err != nil {
+				return nil, errors2.WithStack(err)
+			}
+			user.Avatar = avatar
 		}
 		replyUser, found := userMap[item.ReplyOpenid]
 		if !found {
 			replyUser = defaultCommentUser
+		} else {
+			avatar, err := uc.cosUC.GetPresignedURL(ctx, replyUser.Avatar)
+			if err != nil {
+				return nil, errors2.WithStack(err)
+			}
+			replyUser.Avatar = avatar
 		}
 		_, isLike := likeMap[item.ID]
 
@@ -352,6 +379,12 @@ func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string,
 		user, found := userMap[item.Openid]
 		if !found {
 			user = defaultCommentUser
+		} else {
+			avatar, err := uc.cosUC.GetPresignedURL(ctx, user.Avatar)
+			if err != nil {
+				return nil, errors2.WithStack(err)
+			}
+			user.Avatar = avatar
 		}
 		_, isLike := likeMap[item.ID]
 		if !found {
@@ -365,6 +398,10 @@ func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string,
 			item.CommentCount = 0
 		}
 
+		photos, err := uc.cosUC.GetPresignedURLByPhoto(ctx, item.Photos)
+		if err != nil {
+			return nil, errors2.WithStack(err)
+		}
 		res[i] = &v1.GetCommunityArticleReply{
 			Id:            uint64(item.ID),
 			PubUserName:   user.Username,
@@ -374,7 +411,7 @@ func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string,
 			LikeCount:     uint64(item.LikeCount),
 			ComCount:      uint64(item.CommentCount),
 			IsLike:        isLike,
-			Photos:        item.Photos,
+			Photos:        photos,
 			Openid:        item.Openid,
 		}
 	}

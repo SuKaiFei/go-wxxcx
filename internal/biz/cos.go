@@ -3,15 +3,18 @@ package biz
 import (
 	"context"
 	"fmt"
+	v1 "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
 	cosSts "github.com/SuKaiFei/go-wxxcx/util/cos"
 	"github.com/go-kratos/kratos/v2/log"
 	jsoniter "github.com/json-iterator/go"
 	errors2 "github.com/pkg/errors"
 	"github.com/tencentyun/cos-go-sdk-v5"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -20,27 +23,74 @@ type CosUseCase struct {
 	cosConf   *conf.Application_Cos
 	stsClient *cosSts.Client
 	client    *cos.Client
+	bucketURL string
 }
 
 func NewCosUseCase(appConf *conf.Application, logger log.Logger) *CosUseCase {
-	u, _ := url.Parse("https://community-1315492681.cos.ap-beijing.myqcloud.com")
-	ciu, _ := url.Parse("https://community-1315492681.ci.ap-beijing.myqcloud.com")
+	cosConf := appConf.GetCos()
+	u, _ := url.Parse(fmt.Sprintf("https://%s.cos.%s.myqcloud.com", cosConf.Bucket, cosConf.Region))
+	ciu, _ := url.Parse(fmt.Sprintf("https://%s.ci.%s.myqcloud.com", cosConf.Bucket, cosConf.Region))
 	// 用于Get Service 查询，默认全地域 service.cos.myqcloud.com
 	su, _ := url.Parse("https://service.cos.myqcloud.com")
 	b := &cos.BaseURL{BucketURL: u, ServiceURL: su, CIURL: ciu}
 
 	return &CosUseCase{
-		cosConf: appConf.GetCos(),
-		log:     log.NewHelper(logger),
-
-		stsClient: cosSts.NewClient(appConf.Cos.SecretId, appConf.Cos.SecretKey, nil),
+		cosConf:   cosConf,
+		log:       log.NewHelper(logger),
+		bucketURL: u.String(),
+		stsClient: cosSts.NewClient(cosConf.SecretId, cosConf.SecretKey, nil),
 		client: cos.NewClient(b, &http.Client{
 			Transport: &cos.AuthorizationTransport{
-				SecretID:  appConf.Cos.SecretId,
-				SecretKey: appConf.Cos.SecretKey,
+				SecretID:  cosConf.SecretId,
+				SecretKey: cosConf.SecretKey,
 			},
 		}),
 	}
+}
+
+func (uc *CosUseCase) Upload(ctx context.Context, key string, file io.Reader) (string, error) {
+	put, err := uc.client.Object.Put(ctx, key, file, nil)
+	if err != nil {
+		return "", errors2.WithStack(err)
+	}
+	if put.StatusCode != http.StatusOK {
+		return "", errors2.New("上传异常")
+	}
+
+	return uc.GetPresignedURL(ctx, key)
+}
+
+func (uc *CosUseCase) GetPresignedURL(ctx context.Context, key string) (string, error) {
+	if strings.Contains(key, uc.bucketURL) {
+		urlEnd := strings.Index(key, "?")
+		if urlEnd <= 0 {
+			urlEnd = len(key)
+		}
+		key = key[len(uc.bucketURL)+1 : urlEnd]
+	}
+	if key[:4] == "http" {
+		return key, nil
+	}
+	presignedURL, err := uc.client.Object.GetPresignedURL(ctx, http.MethodGet, key, uc.cosConf.SecretId, uc.cosConf.SecretKey, time.Minute, nil)
+	if err != nil {
+		return "", errors2.WithStack(err)
+	}
+
+	return presignedURL.String(), nil
+}
+
+func (uc *CosUseCase) GetPresignedURLByPhoto(ctx context.Context, photos []*v1.Photo) ([]*v1.Photo, error) {
+	for _, photo := range photos {
+		if strings.Contains(photo.Url, uc.bucketURL) {
+			presignedURL, err := uc.GetPresignedURL(ctx, photo.Url)
+			if err != nil {
+				return nil, errors2.WithStack(err)
+			}
+			photo.Url = presignedURL
+		}
+	}
+
+	return photos, nil
 }
 
 func (uc *CosUseCase) BatchImageAuditing(ctx context.Context, images []string) (bool, error) {
@@ -48,14 +98,21 @@ func (uc *CosUseCase) BatchImageAuditing(ctx context.Context, images []string) (
 	for i, image := range images {
 		options[i] = cos.ImageAuditingInputOptions{
 			DataId: strconv.Itoa(i),
-			Url:    image,
+		}
+		image = strings.ReplaceAll(image, uc.bucketURL, "")
+		if image[:4] == "http" {
+			options[i].Url = image
+		} else {
+			end := strings.Index(image, "?")
+			if end <= 0 {
+				end = len(image)
+			}
+			image = image[:end]
+			options[i].Object = image
 		}
 	}
 	opt := &cos.BatchImageAuditingOptions{
 		Input: options,
-		Conf: &cos.ImageAuditingJobConf{
-			DetectType: "Porn,Ads",
-		},
 	}
 	res, _, err := uc.client.CI.BatchImageAuditing(ctx, opt)
 	if err != nil {

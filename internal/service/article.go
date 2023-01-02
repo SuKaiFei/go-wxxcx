@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
 	errors2 "github.com/pkg/errors"
 
@@ -30,8 +31,8 @@ func (s *ArticleService) GetArticles(ctx context.Context, req *pb.GetArticlesReq
 	if req.GetPageSize() > 50 {
 		req.PageSize = 50
 	}
-	if req.GetPageSize() < 1 {
-		req.PageSize = 10
+	if req.GetPage() < 1 {
+		req.Page = 0
 	}
 	reply, err := s.uc.GetArticles(ctx, req.GetAppid(), req.GetCode(), req.GetPage(), req.GetPageSize())
 	if err != nil {

@@ -4,28 +4,30 @@ import (
 	"context"
 	pb "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
-	"github.com/pkg/errors"
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/silenceper/wechat/v2/miniprogram"
 )
 
 type WechatMpService struct {
 	pb.UnimplementedWechatMpServer
-	uc *biz.WechatUseCase
+	uc          *biz.WechatUseCase
+	communityUC *biz.CommunityUseCase
 }
 
-func NewWechatMpService(uc *biz.WechatUseCase) *WechatMpService {
-	return &WechatMpService{uc: uc}
+func NewWechatMpService(uc *biz.WechatUseCase, communityUC *biz.CommunityUseCase) *WechatMpService {
+	return &WechatMpService{uc: uc, communityUC: communityUC}
 }
 
 func (s *WechatMpService) LoginWechatMp(ctx context.Context, req *pb.LoginWechatMpRequest) (*pb.LoginWechatMpReply, error) {
-	client := s.uc.GetMpApp(req.GetAppid())
-	authCli := client.GetAuth()
-	session, err := authCli.Code2Session(req.GetCode())
+	session, err := s.uc.Code2Session(req.Appid, req.Code)
 	if err != nil {
 		return nil, err
 	}
-	if session.ErrCode != 0 {
-		return nil, errors.New(session.Error())
+	if req.Appid == "wxec615f70feb4e93c" {
+		go func() {
+			err2 := s.communityUC.UpdateUserUnionid(context.Background(), session.OpenID, session.UnionID)
+			log.Errorw("msg", "communityUC.UpdateUserUnionid", "err", err2)
+		}()
 	}
 	reply := &pb.LoginWechatMpReply{
 		Openid:  session.OpenID,

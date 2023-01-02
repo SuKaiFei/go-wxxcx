@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	jsoniter "github.com/json-iterator/go"
+	"io"
 	"strconv"
 	"strings"
 	"time"
@@ -37,6 +38,7 @@ func MiddlewareAuth(cApp *conf.Application, securityUC *biz.SecurityUseCase) mid
 }
 
 func requestAuth(cApp *conf.Application, request *http.Request, req interface{}, securityUC *biz.SecurityUseCase) (err error) {
+	//return nil
 	referer := request.Header.Get("Referer")
 	requestUrl := request.URL
 	if len(referer) < 44 {
@@ -73,11 +75,11 @@ func requestAuth(cApp *conf.Application, request *http.Request, req interface{},
 			openid = requestUrl.Query()["openid"][0]
 		}
 	} else {
-		bytes, err := jsoniter.Marshal(req)
-		if err != nil {
-			return err
+		all, _ := io.ReadAll(request.Body)
+		if len(all) == 0 {
+			all, _ = jsoniter.Marshal(req)
 		}
-		if err := jsoniter.Unmarshal(bytes, &data); err != nil {
+		if err := jsoniter.Unmarshal(all, &data); err != nil {
 			return err
 		}
 
@@ -118,7 +120,8 @@ func requestAuth(cApp *conf.Application, request *http.Request, req interface{},
 	}
 
 	if len(timestampStr) == 13 && len(openid) > 0 {
-		if err = securityUC.VerifySign(request.Context(), requestUrl.RequestURI(), appid, openid, sign); err != nil {
+		newSign := fmt.Sprintf("%d%s", timestamp, sign)
+		if err = securityUC.VerifySign(request.Context(), requestUrl.RequestURI(), appid, openid, newSign); err != nil {
 			log.Errorw(
 				"msg", "VerifySign",
 				"请求IP", request.Header.Get("X-Forward-For"),

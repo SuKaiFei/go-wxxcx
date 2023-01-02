@@ -8,29 +8,77 @@ import (
 	"github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
 	"github.com/SuKaiFei/go-wxxcx/internal/conf"
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/uuid"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/qrcode"
+	errors2 "github.com/pkg/errors"
 	"github.com/valyala/fasthttp"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
 	"os"
+	"path"
 	"strings"
 	"time"
 )
 
 type ImageService struct {
 	v1.UnimplementedImageServer
-	uc      *biz.ImageUseCase
-	appConf *conf.Application
+	uc        *biz.ImageUseCase
+	cosUc     *biz.CosUseCase
+	appConf   *conf.Application
+	whitelist map[string]struct{}
 }
 
-func NewImageService(uc *biz.ImageUseCase, appConf *conf.Application) *ImageService {
-	return &ImageService{uc: uc, appConf: appConf}
+func NewImageService(uc *biz.ImageUseCase, cosUc *biz.CosUseCase, appConf *conf.Application) *ImageService {
+	whitelist := map[string]struct{}{
+		"oLbjy5U8441c3vmPZdaXcZb4s5h8": {},
+		"oLbjy5QvnIhStDV6Ot2KBiOicorI": {},
+		"oLbjy5Q3Bb3fu2zFCJXYN0UnqNEs": {},
+	}
+	return &ImageService{whitelist: whitelist, uc: uc, cosUc: cosUc, appConf: appConf}
 }
 
 func (s *ImageService) UploadImage(ctx context.Context, req *v1.UploadImageRequest) (
+	reply *v1.UploadImageReply,
+	err error,
+) {
+	if len(req.File) == 0 {
+		return nil, errors.New(400, "", "file is empty")
+	}
+
+	if _, found := s.whitelist[req.Openid]; !found {
+		img, _, _ := image.Decode(bytes.NewReader(req.File))
+		if img != nil {
+			bmp, err := gozxing.NewBinaryBitmapFromImage(img)
+			if err != nil {
+				return nil, err
+			}
+
+			result, _ := qrcode.NewQRCodeReader().Decode(bmp, nil)
+			if result != nil && len(result.GetText()) > 0 {
+				return nil, errors2.New("禁止二维码图片")
+			}
+		}
+	}
+
+	now := time.Now()
+	if req.Code == "" {
+		req.Code = "article"
+	}
+	key := fmt.Sprintf(`%s/%0.4d%0.2d%0.2d/%s%s`, req.Code, now.Year(), now.Month(), now.Day(), uuid.NewString(), path.Ext(req.Filename))
+	upload, err := s.cosUc.Upload(ctx, key, bytes.NewReader(req.File))
+	return &v1.UploadImageReply{Path: upload}, err
+}
+
+func (s *ImageService) UploadImageOld(ctx context.Context, req *v1.UploadImageRequest) (
 	reply *v1.UploadImageReply,
 	err error,
 ) {
