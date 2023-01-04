@@ -33,6 +33,7 @@ message Application {
   string staticPath = 2;
   string chat_gpt_apikey = 3;
   Cos cos = 4;
+  string wordcloud_fontPath = 5;
 }
 
 message Server {

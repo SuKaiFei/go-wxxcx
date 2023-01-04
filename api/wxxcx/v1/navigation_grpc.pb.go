@@ -35,7 +35,7 @@ func NewNavigationClient(cc grpc.ClientConnInterface) NavigationClient {
 
 func (c *navigationClient) GetNavigations(ctx context.Context, in *GetNavigationsRequest, opts ...grpc.CallOption) (*GetNavigationsReply, error) {
 	out := new(GetNavigationsReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.Navigation/GetNavigations", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.navigation.Navigation/GetNavigations", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func _Navigation_GetNavigations_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.Navigation/GetNavigations",
+		FullMethod: "/wxxcx.v1.navigation.Navigation/GetNavigations",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NavigationServer).GetNavigations(ctx, req.(*GetNavigationsRequest))
@@ -92,7 +92,7 @@ func _Navigation_GetNavigations_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Navigation_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.wxxcx.v1.Navigation",
+	ServiceName: "wxxcx.v1.navigation.Navigation",
 	HandlerType: (*NavigationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

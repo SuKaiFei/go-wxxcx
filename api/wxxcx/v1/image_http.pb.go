@@ -26,7 +26,7 @@ type ImageHTTPServer interface {
 func RegisterImageHTTPServer(s *http.Server, srv ImageHTTPServer) {
 	r := s.Route("/")
 	r.POST("/wxxcx/image/upload", _Image_UploadImage0_HTTP_Handler(srv))
-	r.GET("/wxxcx/image/ping", _Image_Ping5_HTTP_Handler(srv))
+	r.GET("/wxxcx/image/ping", _Image_Ping2_HTTP_Handler(srv))
 }
 
 func _Image_UploadImage0_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
@@ -35,7 +35,7 @@ func _Image_UploadImage0_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.Image/UploadImage")
+		http.SetOperation(ctx, "/wxxcx.v1.image.Image/UploadImage")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UploadImage(ctx, req.(*UploadImageRequest))
 		})
@@ -48,13 +48,13 @@ func _Image_UploadImage0_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context
 	}
 }
 
-func _Image_Ping5_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
+func _Image_Ping2_HTTP_Handler(srv ImageHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.Image/Ping")
+		http.SetOperation(ctx, "/wxxcx.v1.image.Image/Ping")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Ping(ctx, req.(*emptypb.Empty))
 		})
@@ -84,7 +84,7 @@ func (c *ImageHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, opts 
 	var out emptypb.Empty
 	pattern := "/wxxcx/image/ping"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.Image/Ping"))
+	opts = append(opts, http.Operation("/wxxcx.v1.image.Image/Ping"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -97,7 +97,7 @@ func (c *ImageHTTPClientImpl) UploadImage(ctx context.Context, in *UploadImageRe
 	var out UploadImageReply
 	pattern := "/wxxcx/image/upload"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.Image/UploadImage"))
+	opts = append(opts, http.Operation("/wxxcx.v1.image.Image/UploadImage"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

@@ -37,7 +37,7 @@ func NewImageClient(cc grpc.ClientConnInterface) ImageClient {
 
 func (c *imageClient) UploadImage(ctx context.Context, in *UploadImageRequest, opts ...grpc.CallOption) (*UploadImageReply, error) {
 	out := new(UploadImageReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.Image/UploadImage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.image.Image/UploadImage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *imageClient) UploadImage(ctx context.Context, in *UploadImageRequest, o
 
 func (c *imageClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.Image/Ping", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.image.Image/Ping", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func _Image_UploadImage_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.Image/UploadImage",
+		FullMethod: "/wxxcx.v1.image.Image/UploadImage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ImageServer).UploadImage(ctx, req.(*UploadImageRequest))
@@ -113,7 +113,7 @@ func _Image_Ping_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.Image/Ping",
+		FullMethod: "/wxxcx.v1.image.Image/Ping",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ImageServer).Ping(ctx, req.(*emptypb.Empty))
@@ -125,7 +125,7 @@ func _Image_Ping_Handler(srv interface{}, ctx context.Context, dec func(interfac
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Image_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.wxxcx.v1.Image",
+	ServiceName: "wxxcx.v1.image.Image",
 	HandlerType: (*ImageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

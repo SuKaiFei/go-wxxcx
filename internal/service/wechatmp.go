@@ -26,7 +26,9 @@ func (s *WechatMpService) LoginWechatMp(ctx context.Context, req *pb.LoginWechat
 	if req.Appid == "wxec615f70feb4e93c" {
 		go func() {
 			err2 := s.communityUC.UpdateUserUnionid(context.Background(), session.OpenID, session.UnionID)
-			log.Errorw("msg", "communityUC.UpdateUserUnionid", "err", err2)
+			if err2 != nil {
+				log.Errorw("msg", "communityUC.UpdateUserUnionid", "err", err2)
+			}
 		}()
 	}
 	reply := &pb.LoginWechatMpReply{

@@ -34,7 +34,7 @@ func _Article_GetArticle0_HTTP_Handler(srv ArticleHTTPServer) func(ctx http.Cont
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Article/GetArticle")
+		http.SetOperation(ctx, "/wxxcx.v1.article.Article/GetArticle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetArticle(ctx, req.(*GetArticleRequest))
 		})
@@ -53,7 +53,7 @@ func _Article_GetArticles0_HTTP_Handler(srv ArticleHTTPServer) func(ctx http.Con
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Article/GetArticles")
+		http.SetOperation(ctx, "/wxxcx.v1.article.Article/GetArticles")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetArticles(ctx, req.(*GetArticlesRequest))
 		})
@@ -83,7 +83,7 @@ func (c *ArticleHTTPClientImpl) GetArticle(ctx context.Context, in *GetArticleRe
 	var out GetArticleReply
 	pattern := "/wxxcx/article/by_code"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Article/GetArticle"))
+	opts = append(opts, http.Operation("/wxxcx.v1.article.Article/GetArticle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -96,7 +96,7 @@ func (c *ArticleHTTPClientImpl) GetArticles(ctx context.Context, in *GetArticles
 	var out GetArticlesReply
 	pattern := "/wxxcx/article/list_by_code"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Article/GetArticles"))
+	opts = append(opts, http.Operation("/wxxcx.v1.article.Article/GetArticles"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

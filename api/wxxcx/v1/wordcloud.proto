@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package wxxcx.v1.wordcloud;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "wxxcx/v1/image.proto";
+
+option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
+
+service Wordcloud {
+  rpc GenerateWordcloudImage (GenerateWordcloudImageRequest) returns (wxxcx.v1.image.UploadImageReply) {
+    option (google.api.http) = {
+      post: "/wxxcx/wordcloud/generate"
+      body: "*"
+    };
+  }
+
+  rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/wxxcx/wordcloud/ping"
+    };
+  }
+}
+
+message GenerateWordcloudImageRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  string image_path = 5 [json_name = 'image_path'];
+  repeated string words = 6 [json_name = 'words'];
+}

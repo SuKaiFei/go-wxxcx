@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package wxxcx.v1;
+package wxxcx.v1.article;
 
 import "google/api/annotations.proto";
 

@@ -34,7 +34,7 @@ func _WechatMp_LoginWechatMp0_HTTP_Handler(srv WechatMpHTTPServer) func(ctx http
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.WechatMp/LoginWechatMp")
+		http.SetOperation(ctx, "/wxxcx.v1.wechatmp.WechatMp/LoginWechatMp")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.LoginWechatMp(ctx, req.(*LoginWechatMpRequest))
 		})
@@ -53,7 +53,7 @@ func _WechatMp_SecurityCheckMsg0_HTTP_Handler(srv WechatMpHTTPServer) func(ctx h
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.WechatMp/SecurityCheckMsg")
+		http.SetOperation(ctx, "/wxxcx.v1.wechatmp.WechatMp/SecurityCheckMsg")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.SecurityCheckMsg(ctx, req.(*SecurityCheckMsgRequest))
 		})
@@ -83,7 +83,7 @@ func (c *WechatMpHTTPClientImpl) LoginWechatMp(ctx context.Context, in *LoginWec
 	var out LoginWechatMpReply
 	pattern := "/wxxcx/wechat/mp/login"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.WechatMp/LoginWechatMp"))
+	opts = append(opts, http.Operation("/wxxcx.v1.wechatmp.WechatMp/LoginWechatMp"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -96,7 +96,7 @@ func (c *WechatMpHTTPClientImpl) SecurityCheckMsg(ctx context.Context, in *Secur
 	var out SecurityCheckMsgReply
 	pattern := "/wxxcx/wechat/mp/sec-check/msg"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.WechatMp/SecurityCheckMsg"))
+	opts = append(opts, http.Operation("/wxxcx.v1.wechatmp.WechatMp/SecurityCheckMsg"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

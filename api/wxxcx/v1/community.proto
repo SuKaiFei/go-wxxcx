@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package api.wxxcx.v1.community;
+package wxxcx.v1.community;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";

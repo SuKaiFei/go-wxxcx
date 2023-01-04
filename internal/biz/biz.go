@@ -15,4 +15,5 @@ var ProviderSet = wire.NewSet(
 	NewCommunityUseCase,
 	NewCosUseCase,
 	NewSecurityUseCase,
+	NewWordcloudUseCase,
 )

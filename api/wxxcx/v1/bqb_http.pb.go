@@ -37,7 +37,7 @@ func _Bqb_GetBqbIndex0_HTTP_Handler(srv BqbHTTPServer) func(ctx http.Context) er
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Bqb/GetBqbIndex")
+		http.SetOperation(ctx, "/wxxcx.v1.bqb.Bqb/GetBqbIndex")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetBqbIndex(ctx, req.(*GetBqbIndexRequest))
 		})
@@ -56,7 +56,7 @@ func _Bqb_GetBqbList0_HTTP_Handler(srv BqbHTTPServer) func(ctx http.Context) err
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Bqb/GetBqbList")
+		http.SetOperation(ctx, "/wxxcx.v1.bqb.Bqb/GetBqbList")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetBqbList(ctx, req.(*GetBqbListRequest))
 		})
@@ -75,7 +75,7 @@ func _Bqb_Ping0_HTTP_Handler(srv BqbHTTPServer) func(ctx http.Context) error {
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/wxxcx.v1.Bqb/Ping")
+		http.SetOperation(ctx, "/wxxcx.v1.bqb.Bqb/Ping")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Ping(ctx, req.(*emptypb.Empty))
 		})
@@ -106,7 +106,7 @@ func (c *BqbHTTPClientImpl) GetBqbIndex(ctx context.Context, in *GetBqbIndexRequ
 	var out GetBqbIndexReply
 	pattern := "/wxxcx/bqb/index"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Bqb/GetBqbIndex"))
+	opts = append(opts, http.Operation("/wxxcx.v1.bqb.Bqb/GetBqbIndex"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -119,7 +119,7 @@ func (c *BqbHTTPClientImpl) GetBqbList(ctx context.Context, in *GetBqbListReques
 	var out GetBqbListReply
 	pattern := "/wxxcx/bqb/list"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Bqb/GetBqbList"))
+	opts = append(opts, http.Operation("/wxxcx.v1.bqb.Bqb/GetBqbList"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -132,7 +132,7 @@ func (c *BqbHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, opts ..
 	var out emptypb.Empty
 	pattern := "/wxxcx/bqb/ping"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/wxxcx.v1.Bqb/Ping"))
+	opts = append(opts, http.Operation("/wxxcx.v1.bqb.Bqb/Ping"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

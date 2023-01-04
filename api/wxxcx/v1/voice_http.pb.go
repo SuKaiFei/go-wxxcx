@@ -30,7 +30,7 @@ func RegisterVoiceHTTPServer(s *http.Server, srv VoiceHTTPServer) {
 	r.GET("/wxxcx/voice/list", _Voice_GetVoiceList0_HTTP_Handler(srv))
 	r.GET("/wxxcx/voice/default", _Voice_GetVoiceDefault0_HTTP_Handler(srv))
 	r.GET("/wxxcx/voice/by_id", _Voice_GetVoiceById0_HTTP_Handler(srv))
-	r.GET("/wxxcx/voice/ping", _Voice_Ping2_HTTP_Handler(srv))
+	r.GET("/wxxcx/voice/ping", _Voice_Ping4_HTTP_Handler(srv))
 }
 
 func _Voice_GetVoiceList0_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Context) error {
@@ -90,7 +90,7 @@ func _Voice_GetVoiceById0_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Contex
 	}
 }
 
-func _Voice_Ping2_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Context) error {
+func _Voice_Ping4_HTTP_Handler(srv VoiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {

@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package helloworld.v1;
+package wxxcx.v1.error;
 
 option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
-option java_multiple_files = true;
-option java_package = "wxxcx.v1";
-option objc_class_prefix = "APIHelloworldV1";
 
 enum ErrorReason {
   GREETER_UNSPECIFIED = 0;
   USER_NOT_FOUND = 1;
+  USER_WRONG_IDENTITY = 2;
+  BAD_APPID = 11;
+  BAD_SIGN = 12;
 }

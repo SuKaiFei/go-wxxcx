@@ -36,7 +36,7 @@ func NewWechatMpClient(cc grpc.ClientConnInterface) WechatMpClient {
 
 func (c *wechatMpClient) LoginWechatMp(ctx context.Context, in *LoginWechatMpRequest, opts ...grpc.CallOption) (*LoginWechatMpReply, error) {
 	out := new(LoginWechatMpReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.WechatMp/LoginWechatMp", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.wechatmp.WechatMp/LoginWechatMp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (c *wechatMpClient) LoginWechatMp(ctx context.Context, in *LoginWechatMpReq
 
 func (c *wechatMpClient) SecurityCheckMsg(ctx context.Context, in *SecurityCheckMsgRequest, opts ...grpc.CallOption) (*SecurityCheckMsgReply, error) {
 	out := new(SecurityCheckMsgReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.WechatMp/SecurityCheckMsg", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.wechatmp.WechatMp/SecurityCheckMsg", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func _WechatMp_LoginWechatMp_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.WechatMp/LoginWechatMp",
+		FullMethod: "/wxxcx.v1.wechatmp.WechatMp/LoginWechatMp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WechatMpServer).LoginWechatMp(ctx, req.(*LoginWechatMpRequest))
@@ -112,7 +112,7 @@ func _WechatMp_SecurityCheckMsg_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.WechatMp/SecurityCheckMsg",
+		FullMethod: "/wxxcx.v1.wechatmp.WechatMp/SecurityCheckMsg",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WechatMpServer).SecurityCheckMsg(ctx, req.(*SecurityCheckMsgRequest))
@@ -124,7 +124,7 @@ func _WechatMp_SecurityCheckMsg_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var WechatMp_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.wxxcx.v1.WechatMp",
+	ServiceName: "wxxcx.v1.wechatmp.WechatMp",
 	HandlerType: (*WechatMpServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -38,7 +38,7 @@ func NewBqbClient(cc grpc.ClientConnInterface) BqbClient {
 
 func (c *bqbClient) GetBqbIndex(ctx context.Context, in *GetBqbIndexRequest, opts ...grpc.CallOption) (*GetBqbIndexReply, error) {
 	out := new(GetBqbIndexReply)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Bqb/GetBqbIndex", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.bqb.Bqb/GetBqbIndex", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (c *bqbClient) GetBqbIndex(ctx context.Context, in *GetBqbIndexRequest, opt
 
 func (c *bqbClient) GetBqbList(ctx context.Context, in *GetBqbListRequest, opts ...grpc.CallOption) (*GetBqbListReply, error) {
 	out := new(GetBqbListReply)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Bqb/GetBqbList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.bqb.Bqb/GetBqbList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *bqbClient) GetBqbList(ctx context.Context, in *GetBqbListRequest, opts 
 
 func (c *bqbClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Bqb/Ping", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.bqb.Bqb/Ping", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func _Bqb_GetBqbIndex_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Bqb/GetBqbIndex",
+		FullMethod: "/wxxcx.v1.bqb.Bqb/GetBqbIndex",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BqbServer).GetBqbIndex(ctx, req.(*GetBqbIndexRequest))
@@ -127,7 +127,7 @@ func _Bqb_GetBqbList_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Bqb/GetBqbList",
+		FullMethod: "/wxxcx.v1.bqb.Bqb/GetBqbList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BqbServer).GetBqbList(ctx, req.(*GetBqbListRequest))
@@ -145,7 +145,7 @@ func _Bqb_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Bqb/Ping",
+		FullMethod: "/wxxcx.v1.bqb.Bqb/Ping",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BqbServer).Ping(ctx, req.(*emptypb.Empty))
@@ -157,7 +157,7 @@ func _Bqb_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Bqb_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "wxxcx.v1.Bqb",
+	ServiceName: "wxxcx.v1.bqb.Bqb",
 	HandlerType: (*BqbServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

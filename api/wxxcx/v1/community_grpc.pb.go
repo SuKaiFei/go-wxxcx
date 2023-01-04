@@ -49,7 +49,7 @@ func NewCommunityClient(cc grpc.ClientConnInterface) CommunityClient {
 
 func (c *communityClient) DeleteCommunityMyArticle(ctx context.Context, in *DeleteCommunityByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/DeleteCommunityMyArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/DeleteCommunityMyArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *communityClient) DeleteCommunityMyArticle(ctx context.Context, in *Dele
 
 func (c *communityClient) DeleteCommunityMyComment(ctx context.Context, in *DeleteCommunityByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/DeleteCommunityMyComment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/DeleteCommunityMyComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *communityClient) DeleteCommunityMyComment(ctx context.Context, in *Dele
 
 func (c *communityClient) GetCommunityMyArticleList(ctx context.Context, in *GetCommunityArticleListRequest, opts ...grpc.CallOption) (*GetCommunityArticleListReply, error) {
 	out := new(GetCommunityArticleListReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/GetCommunityMyArticleList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/GetCommunityMyArticleList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *communityClient) GetCommunityMyArticleList(ctx context.Context, in *Get
 
 func (c *communityClient) GetCommunityMyProfile(ctx context.Context, in *GetCommunityMyProfileRequest, opts ...grpc.CallOption) (*GetCommunityMyProfileReply, error) {
 	out := new(GetCommunityMyProfileReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/GetCommunityMyProfile", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/GetCommunityMyProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (c *communityClient) GetCommunityMyProfile(ctx context.Context, in *GetComm
 
 func (c *communityClient) UpdateCommunityMyProfile(ctx context.Context, in *UpdateCommunityMyProfileRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/UpdateCommunityMyProfile", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/UpdateCommunityMyProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (c *communityClient) UpdateCommunityMyProfile(ctx context.Context, in *Upda
 
 func (c *communityClient) GetCommunityArticleList(ctx context.Context, in *GetCommunityArticleListRequest, opts ...grpc.CallOption) (*GetCommunityArticleListReply, error) {
 	out := new(GetCommunityArticleListReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/GetCommunityArticleList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/GetCommunityArticleList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (c *communityClient) GetCommunityArticleList(ctx context.Context, in *GetCo
 
 func (c *communityClient) GetCommunityCommentList(ctx context.Context, in *GetCommunityCommentListRequest, opts ...grpc.CallOption) (*GetCommunityCommentListReply, error) {
 	out := new(GetCommunityCommentListReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/GetCommunityCommentList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/GetCommunityCommentList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (c *communityClient) GetCommunityCommentList(ctx context.Context, in *GetCo
 
 func (c *communityClient) GetCommunityArticle(ctx context.Context, in *GetCommunityArticleRequest, opts ...grpc.CallOption) (*GetCommunityArticleReply, error) {
 	out := new(GetCommunityArticleReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/GetCommunityArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/GetCommunityArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (c *communityClient) GetCommunityArticle(ctx context.Context, in *GetCommun
 
 func (c *communityClient) AddCommunityComment(ctx context.Context, in *AddCommunityCommentRequest, opts ...grpc.CallOption) (*AddCommunityCommentReply, error) {
 	out := new(AddCommunityCommentReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/AddCommunityComment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/AddCommunityComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (c *communityClient) AddCommunityComment(ctx context.Context, in *AddCommun
 
 func (c *communityClient) AddCommunityFeedback(ctx context.Context, in *AddCommunityFeedbackRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/AddCommunityFeedback", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/AddCommunityFeedback", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func (c *communityClient) AddCommunityFeedback(ctx context.Context, in *AddCommu
 
 func (c *communityClient) PushCommunityArticle(ctx context.Context, in *PushCommunityArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/PushCommunityArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/PushCommunityArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +148,7 @@ func (c *communityClient) PushCommunityArticle(ctx context.Context, in *PushComm
 
 func (c *communityClient) UpdateCommunityLike(ctx context.Context, in *UpdateCommunityLikeRequest, opts ...grpc.CallOption) (*UpdateCommunityLikeReply, error) {
 	out := new(UpdateCommunityLikeReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/UpdateCommunityLike", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/UpdateCommunityLike", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +157,7 @@ func (c *communityClient) UpdateCommunityLike(ctx context.Context, in *UpdateCom
 
 func (c *communityClient) GetCosCredential(ctx context.Context, in *GetCosCredentialRequest, opts ...grpc.CallOption) (*GetCosCredentialReply, error) {
 	out := new(GetCosCredentialReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/GetCosCredential", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/GetCosCredential", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +166,7 @@ func (c *communityClient) GetCosCredential(ctx context.Context, in *GetCosCreden
 
 func (c *communityClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.community.Community/Ping", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/Ping", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -263,7 +263,7 @@ func _Community_DeleteCommunityMyArticle_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/DeleteCommunityMyArticle",
+		FullMethod: "/wxxcx.v1.community.Community/DeleteCommunityMyArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).DeleteCommunityMyArticle(ctx, req.(*DeleteCommunityByIdRequest))
@@ -281,7 +281,7 @@ func _Community_DeleteCommunityMyComment_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/DeleteCommunityMyComment",
+		FullMethod: "/wxxcx.v1.community.Community/DeleteCommunityMyComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).DeleteCommunityMyComment(ctx, req.(*DeleteCommunityByIdRequest))
@@ -299,7 +299,7 @@ func _Community_GetCommunityMyArticleList_Handler(srv interface{}, ctx context.C
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/GetCommunityMyArticleList",
+		FullMethod: "/wxxcx.v1.community.Community/GetCommunityMyArticleList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).GetCommunityMyArticleList(ctx, req.(*GetCommunityArticleListRequest))
@@ -317,7 +317,7 @@ func _Community_GetCommunityMyProfile_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/GetCommunityMyProfile",
+		FullMethod: "/wxxcx.v1.community.Community/GetCommunityMyProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).GetCommunityMyProfile(ctx, req.(*GetCommunityMyProfileRequest))
@@ -335,7 +335,7 @@ func _Community_UpdateCommunityMyProfile_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/UpdateCommunityMyProfile",
+		FullMethod: "/wxxcx.v1.community.Community/UpdateCommunityMyProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).UpdateCommunityMyProfile(ctx, req.(*UpdateCommunityMyProfileRequest))
@@ -353,7 +353,7 @@ func _Community_GetCommunityArticleList_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/GetCommunityArticleList",
+		FullMethod: "/wxxcx.v1.community.Community/GetCommunityArticleList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).GetCommunityArticleList(ctx, req.(*GetCommunityArticleListRequest))
@@ -371,7 +371,7 @@ func _Community_GetCommunityCommentList_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/GetCommunityCommentList",
+		FullMethod: "/wxxcx.v1.community.Community/GetCommunityCommentList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).GetCommunityCommentList(ctx, req.(*GetCommunityCommentListRequest))
@@ -389,7 +389,7 @@ func _Community_GetCommunityArticle_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/GetCommunityArticle",
+		FullMethod: "/wxxcx.v1.community.Community/GetCommunityArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).GetCommunityArticle(ctx, req.(*GetCommunityArticleRequest))
@@ -407,7 +407,7 @@ func _Community_AddCommunityComment_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/AddCommunityComment",
+		FullMethod: "/wxxcx.v1.community.Community/AddCommunityComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).AddCommunityComment(ctx, req.(*AddCommunityCommentRequest))
@@ -425,7 +425,7 @@ func _Community_AddCommunityFeedback_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/AddCommunityFeedback",
+		FullMethod: "/wxxcx.v1.community.Community/AddCommunityFeedback",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).AddCommunityFeedback(ctx, req.(*AddCommunityFeedbackRequest))
@@ -443,7 +443,7 @@ func _Community_PushCommunityArticle_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/PushCommunityArticle",
+		FullMethod: "/wxxcx.v1.community.Community/PushCommunityArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).PushCommunityArticle(ctx, req.(*PushCommunityArticleRequest))
@@ -461,7 +461,7 @@ func _Community_UpdateCommunityLike_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/UpdateCommunityLike",
+		FullMethod: "/wxxcx.v1.community.Community/UpdateCommunityLike",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).UpdateCommunityLike(ctx, req.(*UpdateCommunityLikeRequest))
@@ -479,7 +479,7 @@ func _Community_GetCosCredential_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/GetCosCredential",
+		FullMethod: "/wxxcx.v1.community.Community/GetCosCredential",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).GetCosCredential(ctx, req.(*GetCosCredentialRequest))
@@ -497,7 +497,7 @@ func _Community_Ping_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.community.Community/Ping",
+		FullMethod: "/wxxcx.v1.community.Community/Ping",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CommunityServer).Ping(ctx, req.(*emptypb.Empty))
@@ -509,7 +509,7 @@ func _Community_Ping_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Community_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.wxxcx.v1.community.Community",
+	ServiceName: "wxxcx.v1.community.Community",
 	HandlerType: (*CommunityServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -49,8 +49,8 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		cleanup()
 		return nil, nil, err
 	}
-	imageUseCase := biz.NewImageUseCase(logger)
-	imageService := NewImageService(imageUseCase, cosUseCase, application)
+	imageUseCase := biz.NewImageUseCase(logger, cosUseCase)
+	imageService := NewImageService(imageUseCase, application)
 	musicRepo := data.NewMusicRepo(dataData, logger)
 	musicUseCase := biz.NewMusicUseCase(musicRepo, logger)
 	musicService := NewMusicService(musicUseCase)
@@ -58,6 +58,8 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	chatGPTUseCase := biz.NewChatGPTUseCase(chatGPTRepo, application, logger)
 	chatGptService := NewChatGptService(chatGPTUseCase)
 	communityService := NewCommunityService(communityUseCase, cosUseCase, wechatUseCase)
+	wordcloudUseCase := biz.NewWordcloudUseCase(logger, imageUseCase, wechatUseCase, application)
+	wordcloudService := NewWordcloudService(wordcloudUseCase, wechatUseCase)
 	serviceUnitTestSvc := &unitTestSvc{
 		bqbSvc:        bqbService,
 		articleSvc:    articleService,
@@ -69,6 +71,7 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		musicSvc:      musicService,
 		chatGptSvc:    chatGptService,
 		communitySvc:  communityService,
+		wordcloudSvc:  wordcloudService,
 	}
 	return serviceUnitTestSvc, func() {
 		cleanup2()
@@ -89,4 +92,5 @@ type unitTestSvc struct {
 	musicSvc      *MusicService
 	chatGptSvc    *ChatGptService
 	communitySvc  *CommunityService
+	wordcloudSvc  *WordcloudService
 }

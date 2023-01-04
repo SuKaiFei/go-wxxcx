@@ -40,7 +40,7 @@ func NewChatGptClient(cc grpc.ClientConnInterface) ChatGptClient {
 
 func (c *chatGptClient) GetChatGptCompletions(ctx context.Context, in *GetChatGptCompletionsRequest, opts ...grpc.CallOption) (*GetChatGptCompletionsReply, error) {
 	out := new(GetChatGptCompletionsReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (c *chatGptClient) GetChatGptCompletions(ctx context.Context, in *GetChatGp
 
 func (c *chatGptClient) GetChatGptHistory(ctx context.Context, in *GetChatGptHistoryRequest, opts ...grpc.CallOption) (*GetChatGptHistoryReply, error) {
 	out := new(GetChatGptHistoryReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *chatGptClient) GetChatGptHistory(ctx context.Context, in *GetChatGptHis
 
 func (c *chatGptClient) GetAvailableCount(ctx context.Context, in *GetAvailableCountRequest, opts ...grpc.CallOption) (*GetAvailableCountReply, error) {
 	out := new(GetAvailableCountReply)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *chatGptClient) GetAvailableCount(ctx context.Context, in *GetAvailableC
 
 func (c *chatGptClient) CompleteAd(ctx context.Context, in *CompleteAdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.chatGpt.ChatGpt/CompleteAd", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *chatGptClient) CompleteAd(ctx context.Context, in *CompleteAdRequest, o
 
 func (c *chatGptClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/Ping", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.chatGpt.ChatGpt/Ping", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +137,7 @@ func _ChatGpt_GetChatGptCompletions_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions",
+		FullMethod: "/wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatGptServer).GetChatGptCompletions(ctx, req.(*GetChatGptCompletionsRequest))
@@ -155,7 +155,7 @@ func _ChatGpt_GetChatGptHistory_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory",
+		FullMethod: "/wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatGptServer).GetChatGptHistory(ctx, req.(*GetChatGptHistoryRequest))
@@ -173,7 +173,7 @@ func _ChatGpt_GetAvailableCount_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount",
+		FullMethod: "/wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatGptServer).GetAvailableCount(ctx, req.(*GetAvailableCountRequest))
@@ -191,7 +191,7 @@ func _ChatGpt_CompleteAd_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd",
+		FullMethod: "/wxxcx.v1.chatGpt.ChatGpt/CompleteAd",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatGptServer).CompleteAd(ctx, req.(*CompleteAdRequest))
@@ -209,7 +209,7 @@ func _ChatGpt_Ping_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.wxxcx.v1.chatGpt.ChatGpt/Ping",
+		FullMethod: "/wxxcx.v1.chatGpt.ChatGpt/Ping",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatGptServer).Ping(ctx, req.(*emptypb.Empty))
@@ -221,7 +221,7 @@ func _ChatGpt_Ping_Handler(srv interface{}, ctx context.Context, dec func(interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ChatGpt_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.wxxcx.v1.chatGpt.ChatGpt",
+	ServiceName: "wxxcx.v1.chatGpt.ChatGpt",
 	HandlerType: (*ChatGptServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

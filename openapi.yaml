@@ -34,7 +34,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetArticleReply'
+                                $ref: '#/components/schemas/wxxcx.v1.article.GetArticleReply'
     /wxxcx/article/list_by_code:
         get:
             tags:
@@ -73,7 +73,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetArticlesReply'
+                                $ref: '#/components/schemas/wxxcx.v1.article.GetArticlesReply'
     /wxxcx/bqb/index:
         get:
             tags:
@@ -98,7 +98,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetBqbIndexReply'
+                                $ref: '#/components/schemas/wxxcx.v1.bqb.GetBqbIndexReply'
     /wxxcx/bqb/list:
         get:
             tags:
@@ -137,7 +137,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/wxxcx.v1.GetBqbListReply'
+                                $ref: '#/components/schemas/wxxcx.v1.bqb.GetBqbListReply'
     /wxxcx/bqb/ping:
         get:
             tags:
@@ -156,7 +156,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.CompleteAdRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.chatGpt.CompleteAdRequest'
                 required: true
             responses:
                 "200":
@@ -190,7 +190,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.GetAvailableCountReply'
+                                $ref: '#/components/schemas/wxxcx.v1.chatGpt.GetAvailableCountReply'
     /wxxcx/chat_gpt/completions:
         get:
             tags:
@@ -223,7 +223,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.GetChatGptCompletionsReply'
+                                $ref: '#/components/schemas/wxxcx.v1.chatGpt.GetChatGptCompletionsReply'
     /wxxcx/chat_gpt/history:
         get:
             tags:
@@ -257,7 +257,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.chatGpt.GetChatGptHistoryReply'
+                                $ref: '#/components/schemas/wxxcx.v1.chatGpt.GetChatGptHistoryReply'
     /wxxcx/chat_gpt/ping:
         get:
             tags:
@@ -300,7 +300,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCommunityArticleReply'
     /wxxcx/community/article/list:
         get:
             tags:
@@ -339,7 +339,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleListReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCommunityArticleListReply'
     /wxxcx/community/article/push:
         post:
             tags:
@@ -349,7 +349,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.community.PushCommunityArticleRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.community.PushCommunityArticleRequest'
                 required: true
             responses:
                 "200":
@@ -364,7 +364,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityCommentRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.community.AddCommunityCommentRequest'
                 required: true
             responses:
                 "200":
@@ -372,7 +372,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityCommentReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.AddCommunityCommentReply'
     /wxxcx/community/comment/list:
         get:
             tags:
@@ -421,7 +421,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityCommentListReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCommunityCommentListReply'
     /wxxcx/community/cos/credential:
         get:
             tags:
@@ -450,7 +450,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCosCredentialReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCosCredentialReply'
     /wxxcx/community/feedback/add:
         post:
             tags:
@@ -460,7 +460,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityFeedbackRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.community.AddCommunityFeedbackRequest'
                 required: true
             responses:
                 "200":
@@ -475,7 +475,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.community.UpdateCommunityLikeRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.community.UpdateCommunityLikeRequest'
                 required: true
             responses:
                 "200":
@@ -483,7 +483,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.UpdateCommunityLikeReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.UpdateCommunityLikeReply'
     /wxxcx/community/my/article/delete:
         delete:
             tags:
@@ -493,7 +493,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.community.DeleteCommunityByIdRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.community.DeleteCommunityByIdRequest'
                 required: true
             responses:
                 "200":
@@ -537,7 +537,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleListReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCommunityArticleListReply'
     /wxxcx/community/my/comment/delete:
         delete:
             tags:
@@ -547,7 +547,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.community.DeleteCommunityByIdRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.community.DeleteCommunityByIdRequest'
                 required: true
             responses:
                 "200":
@@ -581,7 +581,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityMyProfileReply'
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCommunityMyProfileReply'
     /wxxcx/community/my/profile/update:
         put:
             tags:
@@ -591,7 +591,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.community.UpdateCommunityMyProfileRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.community.UpdateCommunityMyProfileRequest'
                 required: true
             responses:
                 "200":
@@ -624,7 +624,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.UploadImageRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.image.UploadImageRequest'
                 required: true
             responses:
                 "200":
@@ -632,7 +632,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.UploadImageReply'
+                                $ref: '#/components/schemas/wxxcx.v1.image.UploadImageReply'
     /wxxcx/music/list:
         get:
             tags:
@@ -709,7 +709,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.GetNavigationsReply'
+                                $ref: '#/components/schemas/wxxcx.v1.navigation.GetNavigationsReply'
     /wxxcx/voice/by_id:
         get:
             tags:
@@ -808,7 +808,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.LoginWechatMpRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.wechatmp.LoginWechatMpRequest'
                 required: true
             responses:
                 "200":
@@ -816,7 +816,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.LoginWechatMpReply'
+                                $ref: '#/components/schemas/wxxcx.v1.wechatmp.LoginWechatMpReply'
     /wxxcx/wechat/mp/sec-check/msg:
         post:
             tags:
@@ -826,7 +826,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.wxxcx.v1.SecurityCheckMsgRequest'
+                            $ref: '#/components/schemas/wxxcx.v1.wechatmp.SecurityCheckMsgRequest'
                 required: true
             responses:
                 "200":
@@ -834,100 +834,89 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.wxxcx.v1.SecurityCheckMsgReply'
+                                $ref: '#/components/schemas/wxxcx.v1.wechatmp.SecurityCheckMsgReply'
+    /wxxcx/wordcloud/generate:
+        post:
+            tags:
+                - Wordcloud
+            operationId: Wordcloud_GenerateWordcloudImage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/wxxcx.v1.wordcloud.GenerateWordcloudImageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.image.UploadImageReply'
+    /wxxcx/wordcloud/ping:
+        get:
+            tags:
+                - Wordcloud
+            operationId: Wordcloud_Ping
+            responses:
+                "200":
+                    description: OK
+                    content: {}
 components:
     schemas:
-        api.wxxcx.v1.GetNavigationReply:
+        wxxcx.v1.article.GetArticleReply:
             type: object
             properties:
-                type:
-                    type: integer
-                    format: uint32
                 image_path:
                     type: string
                 title:
                     type: string
-                describe:
+                content:
                     type: string
-                sort:
-                    type: integer
-                    format: int64
-                mp_appid:
-                    type: string
-                url:
-                    type: string
-        api.wxxcx.v1.GetNavigationsReply:
+        wxxcx.v1.article.GetArticlesReply:
             type: object
             properties:
                 results:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.wxxcx.v1.GetNavigationReply'
-        api.wxxcx.v1.LoginWechatMpReply:
+                        $ref: '#/components/schemas/wxxcx.v1.article.GetArticleReply'
+        wxxcx.v1.bqb.GetBqbIndexReply:
             type: object
             properties:
-                openid:
-                    type: string
-                session_key:
-                    type: string
-                unionid:
-                    type: string
-        api.wxxcx.v1.LoginWechatMpRequest:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.bqb.GetBqbIndexReply_Info'
+        wxxcx.v1.bqb.GetBqbIndexReply_Info:
             type: object
             properties:
-                appid:
+                name:
                     type: string
-                timestamp:
+                type:
                     type: string
-                sign:
+                image_path:
                     type: string
-                code:
-                    type: string
-        api.wxxcx.v1.SecurityCheckMsgReply:
-            type: object
-            properties:
-                suggest:
-                    type: string
-                label:
+                num:
                     type: integer
-                    format: uint32
-        api.wxxcx.v1.SecurityCheckMsgRequest:
+                    format: uint64
+        wxxcx.v1.bqb.GetBqbListReply:
             type: object
             properties:
-                appid:
-                    type: string
-                timestamp:
-                    type: string
-                sign:
-                    type: string
-                content:
-                    type: string
-                openid:
-                    type: string
-        api.wxxcx.v1.UploadImageReply:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.bqb.GetBqbListReply_Info'
+        wxxcx.v1.bqb.GetBqbListReply_Info:
             type: object
             properties:
-                path:
+                id:
+                    type: integer
+                    format: uint64
+                type:
                     type: string
-        api.wxxcx.v1.UploadImageRequest:
-            type: object
-            properties:
-                appid:
+                image_path:
                     type: string
-                timestamp:
-                    type: string
-                sign:
-                    type: string
-                filename:
-                    type: string
-                file:
-                    type: string
-                    format: bytes
-                code:
-                    type: string
-                openid:
-                    type: string
-        api.wxxcx.v1.chatGpt.CompleteAdRequest:
+        wxxcx.v1.chatGpt.CompleteAdRequest:
             type: object
             properties:
                 appid:
@@ -940,13 +929,13 @@ components:
                     type: string
                 adid:
                     type: string
-        api.wxxcx.v1.chatGpt.GetAvailableCountReply:
+        wxxcx.v1.chatGpt.GetAvailableCountReply:
             type: object
             properties:
                 count:
                     type: integer
                     format: uint64
-        api.wxxcx.v1.chatGpt.GetChatGptCompletionsReply:
+        wxxcx.v1.chatGpt.GetChatGptCompletionsReply:
             type: object
             properties:
                 result:
@@ -956,14 +945,21 @@ components:
                 id:
                     type: integer
                     format: uint64
-        api.wxxcx.v1.chatGpt.GetChatGptHistoryReply:
+        wxxcx.v1.chatGpt.GetChatGptHistoryReply:
             type: object
             properties:
                 prompt:
                     type: string
                 result:
                     type: string
-        api.wxxcx.v1.community.AddCommunityCommentReply:
+        wxxcx.v1.common.Share:
+            type: object
+            properties:
+                title:
+                    type: string
+                imageUrl:
+                    type: string
+        wxxcx.v1.community.AddCommunityCommentReply:
             type: object
             properties:
                 id:
@@ -972,9 +968,9 @@ components:
                 content:
                     type: string
                 userinfo:
-                    $ref: '#/components/schemas/api.wxxcx.v1.community.CommunityUser'
+                    $ref: '#/components/schemas/wxxcx.v1.community.CommunityUser'
                 reply_userinfo:
-                    $ref: '#/components/schemas/api.wxxcx.v1.community.CommunityUser'
+                    $ref: '#/components/schemas/wxxcx.v1.community.CommunityUser'
                 top_reply_id:
                     type: integer
                     format: uint64
@@ -996,7 +992,7 @@ components:
                 article_id:
                     type: integer
                     format: uint64
-        api.wxxcx.v1.community.AddCommunityCommentRequest:
+        wxxcx.v1.community.AddCommunityCommentRequest:
             type: object
             properties:
                 appid:
@@ -1022,7 +1018,7 @@ components:
                 article_id:
                     type: integer
                     format: uint64
-        api.wxxcx.v1.community.AddCommunityFeedbackRequest:
+        wxxcx.v1.community.AddCommunityFeedbackRequest:
             type: object
             properties:
                 appid:
@@ -1041,7 +1037,7 @@ components:
                     format: uint32
                 content:
                     type: string
-        api.wxxcx.v1.community.CommunityUser:
+        wxxcx.v1.community.CommunityUser:
             type: object
             properties:
                 id:
@@ -1053,7 +1049,7 @@ components:
                     type: string
                 avatar_url:
                     type: string
-        api.wxxcx.v1.community.DeleteCommunityByIdRequest:
+        wxxcx.v1.community.DeleteCommunityByIdRequest:
             type: object
             properties:
                 appid:
@@ -1070,14 +1066,14 @@ components:
                 article_id:
                     type: integer
                     format: uint64
-        api.wxxcx.v1.community.GetCommunityArticleListReply:
+        wxxcx.v1.community.GetCommunityArticleListReply:
             type: object
             properties:
                 results:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.wxxcx.v1.community.GetCommunityArticleReply'
-        api.wxxcx.v1.community.GetCommunityArticleReply:
+                        $ref: '#/components/schemas/wxxcx.v1.community.GetCommunityArticleReply'
+        wxxcx.v1.community.GetCommunityArticleReply:
             type: object
             properties:
                 pub_user_name:
@@ -1099,20 +1095,20 @@ components:
                 photos:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.wxxcx.v1.community.Photo'
+                        $ref: '#/components/schemas/wxxcx.v1.community.Photo'
                 id:
                     type: integer
                     format: uint64
                 openid:
                     type: string
-        api.wxxcx.v1.community.GetCommunityCommentListReply:
+        wxxcx.v1.community.GetCommunityCommentListReply:
             type: object
             properties:
                 results:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.wxxcx.v1.community.AddCommunityCommentReply'
-        api.wxxcx.v1.community.GetCommunityMyProfileReply:
+                        $ref: '#/components/schemas/wxxcx.v1.community.AddCommunityCommentReply'
+        wxxcx.v1.community.GetCommunityMyProfileReply:
             type: object
             properties:
                 id:
@@ -1122,7 +1118,7 @@ components:
                     type: string
                 avatar_url:
                     type: string
-        api.wxxcx.v1.community.GetCosCredentialReply:
+        wxxcx.v1.community.GetCosCredentialReply:
             type: object
             properties:
                 tmp_secret_id:
@@ -1137,7 +1133,7 @@ components:
                 expired_time:
                     type: integer
                     format: uint64
-        api.wxxcx.v1.community.Photo:
+        wxxcx.v1.community.Photo:
             type: object
             properties:
                 url:
@@ -1148,7 +1144,7 @@ components:
                 height:
                     type: integer
                     format: uint32
-        api.wxxcx.v1.community.PushCommunityArticleRequest:
+        wxxcx.v1.community.PushCommunityArticleRequest:
             type: object
             properties:
                 appid:
@@ -1162,15 +1158,15 @@ components:
                 photos:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.wxxcx.v1.community.Photo'
+                        $ref: '#/components/schemas/wxxcx.v1.community.Photo'
                 content:
                     type: string
-        api.wxxcx.v1.community.UpdateCommunityLikeReply:
+        wxxcx.v1.community.UpdateCommunityLikeReply:
             type: object
             properties:
                 is_like:
                     type: boolean
-        api.wxxcx.v1.community.UpdateCommunityLikeRequest:
+        wxxcx.v1.community.UpdateCommunityLikeRequest:
             type: object
             properties:
                 appid:
@@ -1187,7 +1183,7 @@ components:
                 type:
                     type: integer
                     format: uint64
-        api.wxxcx.v1.community.UpdateCommunityMyProfileRequest:
+        wxxcx.v1.community.UpdateCommunityMyProfileRequest:
             type: object
             properties:
                 appid:
@@ -1205,64 +1201,28 @@ components:
                     type: string
                 avatar_url:
                     type: string
-        wxxcx.v1.GetArticleReply:
+        wxxcx.v1.image.UploadImageReply:
             type: object
             properties:
-                image_path:
+                path:
                     type: string
-                title:
-                    type: string
-                content:
-                    type: string
-        wxxcx.v1.GetArticlesReply:
+        wxxcx.v1.image.UploadImageRequest:
             type: object
             properties:
-                results:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/wxxcx.v1.GetArticleReply'
-        wxxcx.v1.GetBqbIndexReply:
-            type: object
-            properties:
-                results:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/wxxcx.v1.GetBqbIndexReply_Info'
-        wxxcx.v1.GetBqbIndexReply_Info:
-            type: object
-            properties:
-                name:
+                appid:
                     type: string
-                type:
+                timestamp:
                     type: string
-                image_path:
+                sign:
                     type: string
-                num:
-                    type: integer
-                    format: uint64
-        wxxcx.v1.GetBqbListReply:
-            type: object
-            properties:
-                results:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/wxxcx.v1.GetBqbListReply_Info'
-        wxxcx.v1.GetBqbListReply_Info:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint64
-                type:
+                filename:
                     type: string
-                image_path:
+                file:
                     type: string
-        wxxcx.v1.common.Share:
-            type: object
-            properties:
-                title:
+                    format: bytes
+                code:
                     type: string
-                imageUrl:
+                openid:
                     type: string
         wxxcx.v1.music.GetMusicListReply:
             type: object
@@ -1290,6 +1250,32 @@ components:
                     type: string
                 share:
                     $ref: '#/components/schemas/wxxcx.v1.common.Share'
+        wxxcx.v1.navigation.GetNavigationReply:
+            type: object
+            properties:
+                type:
+                    type: integer
+                    format: uint32
+                image_path:
+                    type: string
+                title:
+                    type: string
+                describe:
+                    type: string
+                sort:
+                    type: integer
+                    format: int64
+                mp_appid:
+                    type: string
+                url:
+                    type: string
+        wxxcx.v1.navigation.GetNavigationsReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.navigation.GetNavigationReply'
         wxxcx.v1.voice.GetVoiceListReply:
             type: object
             properties:
@@ -1337,6 +1323,64 @@ components:
                     $ref: '#/components/schemas/wxxcx.v1.common.Share'
                 mp_url:
                     type: string
+        wxxcx.v1.wechatmp.LoginWechatMpReply:
+            type: object
+            properties:
+                openid:
+                    type: string
+                session_key:
+                    type: string
+                unionid:
+                    type: string
+        wxxcx.v1.wechatmp.LoginWechatMpRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                code:
+                    type: string
+        wxxcx.v1.wechatmp.SecurityCheckMsgReply:
+            type: object
+            properties:
+                suggest:
+                    type: string
+                label:
+                    type: integer
+                    format: uint32
+        wxxcx.v1.wechatmp.SecurityCheckMsgRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                content:
+                    type: string
+                openid:
+                    type: string
+        wxxcx.v1.wordcloud.GenerateWordcloudImageRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: string
+                sign:
+                    type: string
+                openid:
+                    type: string
+                image_path:
+                    type: string
+                words:
+                    type: array
+                    items:
+                        type: string
 tags:
     - name: Article
       description: 文章服务.
@@ -1350,3 +1394,4 @@ tags:
     - name: Voice
       description: 语音盒服务.
     - name: WechatMp
+    - name: Wordcloud

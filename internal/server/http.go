@@ -21,7 +21,7 @@ import (
 )
 
 var whiteList = map[string]struct{}{
-	"/wxxcx.v1.Bqb/Ping": {},
+	"/wxxcx.v1.bqb.Bqb/Ping": {},
 	//"/api.wxxcx.v1.Image/UploadImage": {},
 }
 
@@ -46,6 +46,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	musicSVC *service.MusicService,
 	chatGptSVC *service.ChatGptService,
 	communitySVC *service.CommunityService,
+	wordcloudSVC *service.WordcloudService,
 	securityUC *biz.SecurityUseCase,
 	logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
@@ -100,6 +101,7 @@ func NewHTTPServer(c *conf.Server, cApp *conf.Application,
 	v1.RegisterMusicHTTPServer(srv, musicSVC)
 	v1.RegisterChatGptHTTPServer(srv, chatGptSVC)
 	v1.RegisterCommunityHTTPServer(srv, communitySVC)
+	v1.RegisterWordcloudHTTPServer(srv, wordcloudSVC)
 	RegisterWechatHTTPServer(srv, wechatMpSVC)
 	return srv
 }

@@ -32,7 +32,7 @@ func RegisterChatGptHTTPServer(s *http.Server, srv ChatGptHTTPServer) {
 	r.GET("/wxxcx/chat_gpt/history", _ChatGpt_GetChatGptHistory0_HTTP_Handler(srv))
 	r.GET("/wxxcx/chat_gpt/available_count", _ChatGpt_GetAvailableCount0_HTTP_Handler(srv))
 	r.POST("/wxxcx/chat_gpt/ad/complete", _ChatGpt_CompleteAd0_HTTP_Handler(srv))
-	r.GET("/wxxcx/chat_gpt/ping", _ChatGpt_Ping4_HTTP_Handler(srv))
+	r.GET("/wxxcx/chat_gpt/ping", _ChatGpt_Ping6_HTTP_Handler(srv))
 }
 
 func _ChatGpt_GetChatGptCompletions0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
@@ -41,7 +41,7 @@ func _ChatGpt_GetChatGptCompletions0_HTTP_Handler(srv ChatGptHTTPServer) func(ct
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions")
+		http.SetOperation(ctx, "/wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetChatGptCompletions(ctx, req.(*GetChatGptCompletionsRequest))
 		})
@@ -60,7 +60,7 @@ func _ChatGpt_GetChatGptHistory0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx ht
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory")
+		http.SetOperation(ctx, "/wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetChatGptHistory(ctx, req.(*GetChatGptHistoryRequest))
 		})
@@ -79,7 +79,7 @@ func _ChatGpt_GetAvailableCount0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx ht
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount")
+		http.SetOperation(ctx, "/wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetAvailableCount(ctx, req.(*GetAvailableCountRequest))
 		})
@@ -98,7 +98,7 @@ func _ChatGpt_CompleteAd0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Cont
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd")
+		http.SetOperation(ctx, "/wxxcx.v1.chatGpt.ChatGpt/CompleteAd")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CompleteAd(ctx, req.(*CompleteAdRequest))
 		})
@@ -111,13 +111,13 @@ func _ChatGpt_CompleteAd0_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Cont
 	}
 }
 
-func _ChatGpt_Ping4_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
+func _ChatGpt_Ping6_HTTP_Handler(srv ChatGptHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.chatGpt.ChatGpt/Ping")
+		http.SetOperation(ctx, "/wxxcx.v1.chatGpt.ChatGpt/Ping")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Ping(ctx, req.(*emptypb.Empty))
 		})
@@ -150,7 +150,7 @@ func (c *ChatGptHTTPClientImpl) CompleteAd(ctx context.Context, in *CompleteAdRe
 	var out emptypb.Empty
 	pattern := "/wxxcx/chat_gpt/ad/complete"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/CompleteAd"))
+	opts = append(opts, http.Operation("/wxxcx.v1.chatGpt.ChatGpt/CompleteAd"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -163,7 +163,7 @@ func (c *ChatGptHTTPClientImpl) GetAvailableCount(ctx context.Context, in *GetAv
 	var out GetAvailableCountReply
 	pattern := "/wxxcx/chat_gpt/available_count"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount"))
+	opts = append(opts, http.Operation("/wxxcx.v1.chatGpt.ChatGpt/GetAvailableCount"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -176,7 +176,7 @@ func (c *ChatGptHTTPClientImpl) GetChatGptCompletions(ctx context.Context, in *G
 	var out GetChatGptCompletionsReply
 	pattern := "/wxxcx/chat_gpt/completions"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions"))
+	opts = append(opts, http.Operation("/wxxcx.v1.chatGpt.ChatGpt/GetChatGptCompletions"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -189,7 +189,7 @@ func (c *ChatGptHTTPClientImpl) GetChatGptHistory(ctx context.Context, in *GetCh
 	var out GetChatGptHistoryReply
 	pattern := "/wxxcx/chat_gpt/history"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory"))
+	opts = append(opts, http.Operation("/wxxcx.v1.chatGpt.ChatGpt/GetChatGptHistory"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -202,7 +202,7 @@ func (c *ChatGptHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, opt
 	var out emptypb.Empty
 	pattern := "/wxxcx/chat_gpt/ping"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.chatGpt.ChatGpt/Ping"))
+	opts = append(opts, http.Operation("/wxxcx.v1.chatGpt.ChatGpt/Ping"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package api.wxxcx.v1.chatGpt;
+package wxxcx.v1.chatGpt;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";

@@ -6,10 +6,9 @@ import (
 	"github.com/SuKaiFei/go-wxxcx/internal/biz"
 	errors2 "github.com/pkg/errors"
 	"google.golang.org/protobuf/types/known/emptypb"
+	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
-	"path"
-	"strings"
 )
 
 type CommunityService struct {
@@ -141,34 +140,34 @@ func (s *CommunityService) PushCommunityArticle(ctx context.Context, req *pb.Pus
 		}
 
 		//qrReader := qrcode.NewQRCodeReader()
-		for _, imageUrl := range images {
-			if strings.ToLower(path.Ext(imageUrl)) == ".gif" {
-				return nil, errors2.New("暂不支持GIF动态图上传")
-			}
-			//	_, body, err := fasthttp.Get(nil, imageUrl)
-			//	if err != nil {
-			//		return nil, err
-			//	}
-			//	img, _, err := image.Decode(bytes.NewReader(body))
-			//	if err != nil {
-			//		if err == image.ErrFormat {
-			//			continue
-			//		}
-			//		return nil, err
-			//	}
-			//
-			//	// prepare BinaryBitmap
-			//	bmp, err := gozxing.NewBinaryBitmapFromImage(img)
-			//	if err != nil {
-			//		return nil, err
-			//	}
-			//
-			//	// decode image
-			//	result, _ := qrReader.Decode(bmp, nil)
-			//	if result != nil && len(result.GetText()) > 0 {
-			//		return nil, errors2.New("请删除包含二维码的图片")
-			//	}
-		}
+		//for _, imageUrl := range images {
+		// if strings.ToLower(path.Ext(imageUrl)) == ".gif" {
+		// 	return nil, errors2.New("暂不支持GIF动态图上传")
+		// }
+		//	_, body, err := fasthttp.Get(nil, imageUrl)
+		//	if err != nil {
+		//		return nil, err
+		//	}
+		//	img, _, err := image.Decode(bytes.NewReader(body))
+		//	if err != nil {
+		//		if err == image.ErrFormat {
+		//			continue
+		//		}
+		//		return nil, err
+		//	}
+		//
+		//	// prepare BinaryBitmap
+		//	bmp, err := gozxing.NewBinaryBitmapFromImage(img)
+		//	if err != nil {
+		//		return nil, err
+		//	}
+		//
+		//	// decode image
+		//	result, _ := qrReader.Decode(bmp, nil)
+		//	if result != nil && len(result.GetText()) > 0 {
+		//		return nil, errors2.New("请删除包含二维码的图片")
+		//	}
+		//}
 
 		auditing, err := s.cosUc.BatchImageAuditing(ctx, images)
 		if err != nil {

@@ -32,7 +32,7 @@ func _Navigation_GetNavigations0_HTTP_Handler(srv NavigationHTTPServer) func(ctx
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.Navigation/GetNavigations")
+		http.SetOperation(ctx, "/wxxcx.v1.navigation.Navigation/GetNavigations")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetNavigations(ctx, req.(*GetNavigationsRequest))
 		})
@@ -61,7 +61,7 @@ func (c *NavigationHTTPClientImpl) GetNavigations(ctx context.Context, in *GetNa
 	var out GetNavigationsReply
 	pattern := "/wxxcx/navigation/list_by_code"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.Navigation/GetNavigations"))
+	opts = append(opts, http.Operation("/wxxcx.v1.navigation.Navigation/GetNavigations"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

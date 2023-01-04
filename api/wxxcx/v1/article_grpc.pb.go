@@ -36,7 +36,7 @@ func NewArticleClient(cc grpc.ClientConnInterface) ArticleClient {
 
 func (c *articleClient) GetArticle(ctx context.Context, in *GetArticleRequest, opts ...grpc.CallOption) (*GetArticleReply, error) {
 	out := new(GetArticleReply)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Article/GetArticle", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.article.Article/GetArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (c *articleClient) GetArticle(ctx context.Context, in *GetArticleRequest, o
 
 func (c *articleClient) GetArticles(ctx context.Context, in *GetArticlesRequest, opts ...grpc.CallOption) (*GetArticlesReply, error) {
 	out := new(GetArticlesReply)
-	err := c.cc.Invoke(ctx, "/wxxcx.v1.Article/GetArticles", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.article.Article/GetArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func _Article_GetArticle_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Article/GetArticle",
+		FullMethod: "/wxxcx.v1.article.Article/GetArticle",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArticleServer).GetArticle(ctx, req.(*GetArticleRequest))
@@ -112,7 +112,7 @@ func _Article_GetArticles_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/wxxcx.v1.Article/GetArticles",
+		FullMethod: "/wxxcx.v1.article.Article/GetArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArticleServer).GetArticles(ctx, req.(*GetArticlesRequest))
@@ -124,7 +124,7 @@ func _Article_GetArticles_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Article_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "wxxcx.v1.Article",
+	ServiceName: "wxxcx.v1.article.Article",
 	HandlerType: (*ArticleServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

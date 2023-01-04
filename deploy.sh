@@ -72,7 +72,7 @@ do
        if [ $reply -eq 5 ];then
               sed -i "s/$nextPort/$curPort/" /app/wxxcx/config.yaml
               echo "启动失败"
-              return
+              exit
        fi
        reply=$((${reply} + 1))
        sleep 1

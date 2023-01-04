@@ -59,7 +59,7 @@ func _Community_DeleteCommunityMyArticle0_HTTP_Handler(srv CommunityHTTPServer) 
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/DeleteCommunityMyArticle")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/DeleteCommunityMyArticle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteCommunityMyArticle(ctx, req.(*DeleteCommunityByIdRequest))
 		})
@@ -78,7 +78,7 @@ func _Community_DeleteCommunityMyComment0_HTTP_Handler(srv CommunityHTTPServer) 
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/DeleteCommunityMyComment")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/DeleteCommunityMyComment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteCommunityMyComment(ctx, req.(*DeleteCommunityByIdRequest))
 		})
@@ -97,7 +97,7 @@ func _Community_GetCommunityMyArticleList0_HTTP_Handler(srv CommunityHTTPServer)
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/GetCommunityMyArticleList")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCommunityMyArticleList")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetCommunityMyArticleList(ctx, req.(*GetCommunityArticleListRequest))
 		})
@@ -116,7 +116,7 @@ func _Community_GetCommunityMyProfile0_HTTP_Handler(srv CommunityHTTPServer) fun
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/GetCommunityMyProfile")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCommunityMyProfile")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetCommunityMyProfile(ctx, req.(*GetCommunityMyProfileRequest))
 		})
@@ -135,7 +135,7 @@ func _Community_UpdateCommunityMyProfile0_HTTP_Handler(srv CommunityHTTPServer) 
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/UpdateCommunityMyProfile")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/UpdateCommunityMyProfile")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateCommunityMyProfile(ctx, req.(*UpdateCommunityMyProfileRequest))
 		})
@@ -154,7 +154,7 @@ func _Community_GetCommunityArticleList0_HTTP_Handler(srv CommunityHTTPServer) f
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/GetCommunityArticleList")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCommunityArticleList")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetCommunityArticleList(ctx, req.(*GetCommunityArticleListRequest))
 		})
@@ -173,7 +173,7 @@ func _Community_GetCommunityCommentList0_HTTP_Handler(srv CommunityHTTPServer) f
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/GetCommunityCommentList")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCommunityCommentList")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetCommunityCommentList(ctx, req.(*GetCommunityCommentListRequest))
 		})
@@ -192,7 +192,7 @@ func _Community_GetCommunityArticle0_HTTP_Handler(srv CommunityHTTPServer) func(
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/GetCommunityArticle")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCommunityArticle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetCommunityArticle(ctx, req.(*GetCommunityArticleRequest))
 		})
@@ -211,7 +211,7 @@ func _Community_AddCommunityComment0_HTTP_Handler(srv CommunityHTTPServer) func(
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/AddCommunityComment")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/AddCommunityComment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.AddCommunityComment(ctx, req.(*AddCommunityCommentRequest))
 		})
@@ -230,7 +230,7 @@ func _Community_AddCommunityFeedback0_HTTP_Handler(srv CommunityHTTPServer) func
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/AddCommunityFeedback")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/AddCommunityFeedback")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.AddCommunityFeedback(ctx, req.(*AddCommunityFeedbackRequest))
 		})
@@ -249,7 +249,7 @@ func _Community_PushCommunityArticle0_HTTP_Handler(srv CommunityHTTPServer) func
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/PushCommunityArticle")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/PushCommunityArticle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.PushCommunityArticle(ctx, req.(*PushCommunityArticleRequest))
 		})
@@ -268,7 +268,7 @@ func _Community_UpdateCommunityLike0_HTTP_Handler(srv CommunityHTTPServer) func(
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/UpdateCommunityLike")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/UpdateCommunityLike")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateCommunityLike(ctx, req.(*UpdateCommunityLikeRequest))
 		})
@@ -287,7 +287,7 @@ func _Community_GetCosCredential0_HTTP_Handler(srv CommunityHTTPServer) func(ctx
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/GetCosCredential")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCosCredential")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetCosCredential(ctx, req.(*GetCosCredentialRequest))
 		})
@@ -306,7 +306,7 @@ func _Community_Ping1_HTTP_Handler(srv CommunityHTTPServer) func(ctx http.Contex
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/api.wxxcx.v1.community.Community/Ping")
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/Ping")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Ping(ctx, req.(*emptypb.Empty))
 		})
@@ -348,7 +348,7 @@ func (c *CommunityHTTPClientImpl) AddCommunityComment(ctx context.Context, in *A
 	var out AddCommunityCommentReply
 	pattern := "/wxxcx/community/comment/add"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/AddCommunityComment"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/AddCommunityComment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -361,7 +361,7 @@ func (c *CommunityHTTPClientImpl) AddCommunityFeedback(ctx context.Context, in *
 	var out emptypb.Empty
 	pattern := "/wxxcx/community/feedback/add"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/AddCommunityFeedback"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/AddCommunityFeedback"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -374,7 +374,7 @@ func (c *CommunityHTTPClientImpl) DeleteCommunityMyArticle(ctx context.Context, 
 	var out emptypb.Empty
 	pattern := "/wxxcx/community/my/article/delete"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/DeleteCommunityMyArticle"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/DeleteCommunityMyArticle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, in, &out, opts...)
 	if err != nil {
@@ -387,7 +387,7 @@ func (c *CommunityHTTPClientImpl) DeleteCommunityMyComment(ctx context.Context, 
 	var out emptypb.Empty
 	pattern := "/wxxcx/community/my/comment/delete"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/DeleteCommunityMyComment"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/DeleteCommunityMyComment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, in, &out, opts...)
 	if err != nil {
@@ -400,7 +400,7 @@ func (c *CommunityHTTPClientImpl) GetCommunityArticle(ctx context.Context, in *G
 	var out GetCommunityArticleReply
 	pattern := "/wxxcx/community/article"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/GetCommunityArticle"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunityArticle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -413,7 +413,7 @@ func (c *CommunityHTTPClientImpl) GetCommunityArticleList(ctx context.Context, i
 	var out GetCommunityArticleListReply
 	pattern := "/wxxcx/community/article/list"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/GetCommunityArticleList"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunityArticleList"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -426,7 +426,7 @@ func (c *CommunityHTTPClientImpl) GetCommunityCommentList(ctx context.Context, i
 	var out GetCommunityCommentListReply
 	pattern := "/wxxcx/community/comment/list"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/GetCommunityCommentList"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunityCommentList"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -439,7 +439,7 @@ func (c *CommunityHTTPClientImpl) GetCommunityMyArticleList(ctx context.Context,
 	var out GetCommunityArticleListReply
 	pattern := "/wxxcx/community/my/article/list"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/GetCommunityMyArticleList"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunityMyArticleList"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -452,7 +452,7 @@ func (c *CommunityHTTPClientImpl) GetCommunityMyProfile(ctx context.Context, in 
 	var out GetCommunityMyProfileReply
 	pattern := "/wxxcx/community/my/profile"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/GetCommunityMyProfile"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunityMyProfile"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -465,7 +465,7 @@ func (c *CommunityHTTPClientImpl) GetCosCredential(ctx context.Context, in *GetC
 	var out GetCosCredentialReply
 	pattern := "/wxxcx/community/cos/credential"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/GetCosCredential"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCosCredential"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -478,7 +478,7 @@ func (c *CommunityHTTPClientImpl) Ping(ctx context.Context, in *emptypb.Empty, o
 	var out emptypb.Empty
 	pattern := "/wxxcx/community/ping"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/Ping"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/Ping"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -491,7 +491,7 @@ func (c *CommunityHTTPClientImpl) PushCommunityArticle(ctx context.Context, in *
 	var out emptypb.Empty
 	pattern := "/wxxcx/community/article/push"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/PushCommunityArticle"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/PushCommunityArticle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -504,7 +504,7 @@ func (c *CommunityHTTPClientImpl) UpdateCommunityLike(ctx context.Context, in *U
 	var out UpdateCommunityLikeReply
 	pattern := "/wxxcx/community/like"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/UpdateCommunityLike"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/UpdateCommunityLike"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -517,7 +517,7 @@ func (c *CommunityHTTPClientImpl) UpdateCommunityMyProfile(ctx context.Context, 
 	var out emptypb.Empty
 	pattern := "/wxxcx/community/my/profile/update"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/api.wxxcx.v1.community.Community/UpdateCommunityMyProfile"))
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/UpdateCommunityMyProfile"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {

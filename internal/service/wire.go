@@ -25,6 +25,7 @@ type unitTestSvc struct {
 	musicSvc      *MusicService
 	chatGptSvc    *ChatGptService
 	communitySvc  *CommunityService
+	wordcloudSvc  *WordcloudService
 }
 
 func NewTestUnitTestSvcService(*conf.Server, log.Logger, *conf.Bootstrap, *conf.Data, *conf.Application) (*unitTestSvc, func(), error) {
