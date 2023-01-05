@@ -28,15 +28,19 @@ type CommunityHTTPServer interface {
 	GetCommunityCommentList(context.Context, *GetCommunityCommentListRequest) (*GetCommunityCommentListReply, error)
 	GetCommunityMyArticleList(context.Context, *GetCommunityArticleListRequest) (*GetCommunityArticleListReply, error)
 	GetCommunityMyProfile(context.Context, *GetCommunityMyProfileRequest) (*GetCommunityMyProfileReply, error)
+	GetCommunitySettingNotice(context.Context, *CommonRequest) (*GetCommunitySettingNoticeReply, error)
 	GetCosCredential(context.Context, *GetCosCredentialRequest) (*GetCosCredentialReply, error)
 	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	PushCommunityArticle(context.Context, *PushCommunityArticleRequest) (*emptypb.Empty, error)
 	UpdateCommunityLike(context.Context, *UpdateCommunityLikeRequest) (*UpdateCommunityLikeReply, error)
 	UpdateCommunityMyProfile(context.Context, *UpdateCommunityMyProfileRequest) (*emptypb.Empty, error)
+	UpdateCommunitySettingNotice(context.Context, *UpdateCommunitySettingNoticeRequest) (*emptypb.Empty, error)
 }
 
 func RegisterCommunityHTTPServer(s *http.Server, srv CommunityHTTPServer) {
 	r := s.Route("/")
+	r.GET("/wxxcx/community/setting/notice", _Community_GetCommunitySettingNotice0_HTTP_Handler(srv))
+	r.POST("/wxxcx/community/setting/notice/update", _Community_UpdateCommunitySettingNotice0_HTTP_Handler(srv))
 	r.DELETE("/wxxcx/community/my/article/delete", _Community_DeleteCommunityMyArticle0_HTTP_Handler(srv))
 	r.DELETE("/wxxcx/community/my/comment/delete", _Community_DeleteCommunityMyComment0_HTTP_Handler(srv))
 	r.GET("/wxxcx/community/my/article/list", _Community_GetCommunityMyArticleList0_HTTP_Handler(srv))
@@ -51,6 +55,44 @@ func RegisterCommunityHTTPServer(s *http.Server, srv CommunityHTTPServer) {
 	r.POST("/wxxcx/community/like", _Community_UpdateCommunityLike0_HTTP_Handler(srv))
 	r.GET("/wxxcx/community/cos/credential", _Community_GetCosCredential0_HTTP_Handler(srv))
 	r.GET("/wxxcx/community/ping", _Community_Ping1_HTTP_Handler(srv))
+}
+
+func _Community_GetCommunitySettingNotice0_HTTP_Handler(srv CommunityHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CommonRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCommunitySettingNotice")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetCommunitySettingNotice(ctx, req.(*CommonRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetCommunitySettingNoticeReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Community_UpdateCommunitySettingNotice0_HTTP_Handler(srv CommunityHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateCommunitySettingNoticeRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/UpdateCommunitySettingNotice")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateCommunitySettingNotice(ctx, req.(*UpdateCommunitySettingNoticeRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
 }
 
 func _Community_DeleteCommunityMyArticle0_HTTP_Handler(srv CommunityHTTPServer) func(ctx http.Context) error {
@@ -329,11 +371,13 @@ type CommunityHTTPClient interface {
 	GetCommunityCommentList(ctx context.Context, req *GetCommunityCommentListRequest, opts ...http.CallOption) (rsp *GetCommunityCommentListReply, err error)
 	GetCommunityMyArticleList(ctx context.Context, req *GetCommunityArticleListRequest, opts ...http.CallOption) (rsp *GetCommunityArticleListReply, err error)
 	GetCommunityMyProfile(ctx context.Context, req *GetCommunityMyProfileRequest, opts ...http.CallOption) (rsp *GetCommunityMyProfileReply, err error)
+	GetCommunitySettingNotice(ctx context.Context, req *CommonRequest, opts ...http.CallOption) (rsp *GetCommunitySettingNoticeReply, err error)
 	GetCosCredential(ctx context.Context, req *GetCosCredentialRequest, opts ...http.CallOption) (rsp *GetCosCredentialReply, err error)
 	Ping(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	PushCommunityArticle(ctx context.Context, req *PushCommunityArticleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	UpdateCommunityLike(ctx context.Context, req *UpdateCommunityLikeRequest, opts ...http.CallOption) (rsp *UpdateCommunityLikeReply, err error)
 	UpdateCommunityMyProfile(ctx context.Context, req *UpdateCommunityMyProfileRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	UpdateCommunitySettingNotice(ctx context.Context, req *UpdateCommunitySettingNoticeRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type CommunityHTTPClientImpl struct {
@@ -461,6 +505,19 @@ func (c *CommunityHTTPClientImpl) GetCommunityMyProfile(ctx context.Context, in 
 	return &out, err
 }
 
+func (c *CommunityHTTPClientImpl) GetCommunitySettingNotice(ctx context.Context, in *CommonRequest, opts ...http.CallOption) (*GetCommunitySettingNoticeReply, error) {
+	var out GetCommunitySettingNoticeReply
+	pattern := "/wxxcx/community/setting/notice"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunitySettingNotice"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *CommunityHTTPClientImpl) GetCosCredential(ctx context.Context, in *GetCosCredentialRequest, opts ...http.CallOption) (*GetCosCredentialReply, error) {
 	var out GetCosCredentialReply
 	pattern := "/wxxcx/community/cos/credential"
@@ -520,6 +577,19 @@ func (c *CommunityHTTPClientImpl) UpdateCommunityMyProfile(ctx context.Context, 
 	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/UpdateCommunityMyProfile"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *CommunityHTTPClientImpl) UpdateCommunitySettingNotice(ctx context.Context, in *UpdateCommunitySettingNoticeRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/wxxcx/community/setting/notice/update"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/UpdateCommunitySettingNotice"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

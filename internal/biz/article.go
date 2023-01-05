@@ -34,6 +34,7 @@ func (uc *ArticleUseCase) GetArticle(ctx context.Context, appid, code string) (
 		ImagePath: article.ImagePath,
 		Title:     article.Title,
 		Content:   article.Content,
+		Sort:      uint64(article.Sort),
 	}, nil
 }
 
@@ -52,6 +53,7 @@ func (uc *ArticleUseCase) GetArticles(ctx context.Context, appid, code string, p
 			ImagePath: article.ImagePath,
 			Title:     article.Title,
 			Content:   article.Content,
+			Sort:      uint64(article.Sort),
 		}
 	}
 

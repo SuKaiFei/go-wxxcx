@@ -7,6 +7,19 @@ import (
 	"gorm.io/gorm"
 )
 
+type CommunitySettingNotice struct {
+	gorm.Model
+	Openid             string `gorm:"type:char(28);"`
+	Unionid            string `gorm:"type:char(28);"`
+	IsOpenLikeWork     *bool
+	IsOpenLikeComment  *bool
+	IsOpenCommentReply *bool
+}
+
+func (CommunitySettingNotice) TableName() string {
+	return "community_setting_notice"
+}
+
 type CommunityUser struct {
 	gorm.Model
 	Openid   string `gorm:"type:char(28);"`

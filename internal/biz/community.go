@@ -3,13 +3,20 @@ package biz
 import (
 	"context"
 	v1 "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	errors2 "github.com/pkg/errors"
 	"gorm.io/gorm"
+	"time"
+)
+
+const (
+	appid = "wxec615f70feb4e93c"
 )
 
 var (
-	defaultCommentUser = &CommunityUser{
+	defaultSettingNotice = true
+	defaultCommentUser   = &CommunityUser{
 		Username: "微信用户",
 		Avatar:   "https://mmbiz.qpic.cn/mmbiz_png/Mhr8pCDXpQqoWjx3avyHfIMn9OJc93Po20icsy9C9Qsd8lu6N9OUpgNetmssiaA96WgibiaWKVxHRz0oIz78JOA2Nw/0?wx_fmt=png",
 	}
@@ -19,6 +26,9 @@ type CommunityRepo interface {
 	GetUser(context.Context, string) (*CommunityUser, error)
 	AddUser(context.Context, *CommunityUser) (uint, error)
 	UpdateUser(context.Context, uint, *CommunityUser) error
+	GetSettingNotice(context.Context, string) (*CommunitySettingNotice, error)
+	AddSettingNotice(context.Context, *CommunitySettingNotice) (uint, error)
+	UpdateSettingNotice(context.Context, uint, *CommunitySettingNotice) error
 	UpdateUserUnionid(context.Context, string, string) error
 	GetUserListByOpenid(context.Context, []string) ([]*CommunityUser, error)
 	GetComment(context.Context, uint) (m *CommunityComment, err error)
@@ -43,17 +53,59 @@ type CommunityRepo interface {
 }
 
 type CommunityUseCase struct {
-	repo  CommunityRepo
-	cosUC *CosUseCase
-	log   *log.Helper
+	repo     CommunityRepo
+	cosUC    *CosUseCase
+	wechatUc *WechatUseCase
+	log      *log.Helper
 }
 
-func NewCommunityUseCase(repo CommunityRepo, cosUC *CosUseCase, logger log.Logger) *CommunityUseCase {
+func NewCommunityUseCase(repo CommunityRepo, cosUC *CosUseCase, wechatUc *WechatUseCase, logger log.Logger) *CommunityUseCase {
 	return &CommunityUseCase{
-		cosUC: cosUC,
-		repo:  repo,
-		log:   log.NewHelper(logger),
+		cosUC:    cosUC,
+		wechatUc: wechatUc,
+		repo:     repo,
+		log:      log.NewHelper(logger),
 	}
+}
+
+func (uc *CommunityUseCase) GetSettingNotice(ctx context.Context, openid string) (*CommunitySettingNotice, error) {
+	m, err := uc.repo.GetSettingNotice(ctx, openid)
+	if err != nil && errors2.Cause(err) != gorm.ErrRecordNotFound {
+		return nil, errors2.WithStack(err)
+	}
+	if m == nil {
+		user, err := uc.GetMyProfile(ctx, openid)
+		if err != nil {
+			return nil, errors2.WithStack(err)
+		}
+		m = &CommunitySettingNotice{
+			Openid:             openid,
+			Unionid:            user.Unionid,
+			IsOpenLikeWork:     &defaultSettingNotice,
+			IsOpenLikeComment:  &defaultSettingNotice,
+			IsOpenCommentReply: &defaultSettingNotice,
+		}
+		if _, err := uc.repo.AddSettingNotice(ctx, m); err != nil {
+			return nil, errors2.WithStack(err)
+		}
+	}
+
+	return m, nil
+}
+
+func (uc *CommunityUseCase) UpdateSettingNotice(ctx context.Context, req *v1.UpdateCommunitySettingNoticeRequest) error {
+	m := &CommunitySettingNotice{
+		Openid:             req.Openid,
+		Unionid:            req.Unionid,
+		IsOpenLikeWork:     &req.IsOpenLikeWork,
+		IsOpenLikeComment:  &req.IsOpenLikeComment,
+		IsOpenCommentReply: &req.IsOpenCommentReply,
+	}
+	m.ID = uint(req.Id)
+	if err := uc.repo.UpdateSettingNotice(ctx, uint(req.Id), m); err != nil {
+		return errors2.WithStack(err)
+	}
+	return nil
 }
 
 func (uc *CommunityUseCase) AddComment(ctx context.Context, req *v1.AddCommunityCommentRequest) (*v1.AddCommunityCommentReply, error) {
@@ -129,6 +181,14 @@ func (uc *CommunityUseCase) AddFeedback(ctx context.Context, req *v1.AddCommunit
 }
 
 func (uc *CommunityUseCase) CreateArticle(ctx context.Context, req *v1.PushCommunityArticleRequest) error {
+	articles, err := uc.repo.GetArticleListByOpenid(ctx, req.Openid, 0, 1)
+	if err != nil {
+		return nil
+	}
+	if len(articles) > 0 && time.Now().Sub(articles[0].CreatedAt).Hours() < 1 {
+		return errors.New(400, "", "发布频率高，请稍后再试")
+	}
+
 	m := &CommunityArticle{
 		Openid:  req.Openid,
 		Content: req.Content,
@@ -178,8 +238,16 @@ func (uc *CommunityUseCase) GetMyProfile(ctx context.Context, openid string) (
 		return nil, errors2.WithStack(err)
 	}
 	if item == nil {
+		wechatUser, err := uc.wechatUc.GetUser(ctx, appid, openid)
+		if err != nil {
+			return nil, errors2.WithStack(err)
+		}
+		if len(wechatUser.Unionid) == 0 {
+			return nil, errors2.New("unionid not found")
+		}
 		item = &CommunityUser{
 			Openid:   openid,
+			Unionid:  wechatUser.Unionid,
 			Username: defaultCommentUser.Username,
 			Avatar:   defaultCommentUser.Avatar,
 		}

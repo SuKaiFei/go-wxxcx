@@ -21,6 +21,30 @@ func NewCommunityRepo(data *Data, logger log.Logger) biz.CommunityRepo {
 	}
 }
 
+func (r *CommunityRepo) GetSettingNotice(ctx context.Context, openid string) (m *biz.CommunitySettingNotice, err error) {
+	err = r.data.db.WithContext(ctx).First(&m, "openid=?", openid).Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return m, nil
+}
+
+func (r *CommunityRepo) AddSettingNotice(ctx context.Context, m *biz.CommunitySettingNotice) (uint, error) {
+	err := r.data.db.WithContext(ctx).Create(m).Error
+	if err != nil {
+		return 0, errors2.WithStack(err)
+	}
+	return m.ID, nil
+}
+
+func (r *CommunityRepo) UpdateSettingNotice(ctx context.Context, id uint, m *biz.CommunitySettingNotice) error {
+	err := r.data.db.WithContext(ctx).Where("id=?", id).Updates(m).Error
+	if err != nil {
+		return errors2.WithStack(err)
+	}
+	return nil
+}
+
 func (r *CommunityRepo) GetLike(ctx context.Context, openid string, tid uint, likeType biz.CommunityLikeType) (
 	m *biz.CommunityLike, err error,
 ) {

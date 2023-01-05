@@ -19,6 +19,7 @@ import (
 type WechatRepo interface {
 	GetRedisClient() redis.UniversalClient
 	UpsertUser(context.Context, *WechatUser) error
+	GetUser(context.Context, string, string) (*WechatUser, error)
 }
 
 type WechatUseCase struct {
@@ -124,4 +125,36 @@ func (uc *WechatUseCase) GetOaApp(appid string) *officialaccount.OfficialAccount
 
 func (uc *WechatUseCase) GetMpApp(appid string) *miniprogram.MiniProgram {
 	return uc.mpClientMap[appid]
+}
+
+func (uc *WechatUseCase) GetUser(ctx context.Context, appid, openid string) (*WechatUser, error) {
+	user, err := uc.repo.GetUser(ctx, appid, openid)
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return user, nil
+}
+
+func (uc *WechatUseCase) SyncOAUser(ctx context.Context, appid, nextOpenid string) error {
+	app := uc.GetOaApp(appid)
+	if app == nil {
+		return errors2.New("app is empty")
+	}
+
+	openidList, err := app.GetUser().ListUserOpenIDs(nextOpenid)
+	if err != nil {
+		return errors2.WithStack(err)
+	}
+	if openidList.ErrCode != 0 {
+		return errors2.New(openidList.Error())
+	}
+	for _, openID := range openidList.Data.OpenIDs {
+		userInfo, err := app.GetUser().GetUserInfo(openID)
+		if err != nil {
+			return errors2.WithStack(err)
+		}
+		_ = userInfo
+	}
+
+	return nil
 }

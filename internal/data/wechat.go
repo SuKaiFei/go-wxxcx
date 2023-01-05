@@ -25,6 +25,14 @@ func (r *wechatRepo) GetRedisClient() redis.UniversalClient {
 	return r.data.rdb
 }
 
+func (r *wechatRepo) GetUser(ctx context.Context, appid string, openid string) (m *biz.WechatUser, err error) {
+	err = r.data.db.WithContext(ctx).First(m, "appid=? and openid=?", appid, openid).Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return
+}
+
 func (r *wechatRepo) UpsertUser(ctx context.Context, m *biz.WechatUser) error {
 	err := r.data.db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "appid"}, {Name: "openid"}},

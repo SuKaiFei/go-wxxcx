@@ -23,6 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CommunityClient interface {
+	GetCommunitySettingNotice(ctx context.Context, in *CommonRequest, opts ...grpc.CallOption) (*GetCommunitySettingNoticeReply, error)
+	UpdateCommunitySettingNotice(ctx context.Context, in *UpdateCommunitySettingNoticeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteCommunityMyArticle(ctx context.Context, in *DeleteCommunityByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteCommunityMyComment(ctx context.Context, in *DeleteCommunityByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetCommunityMyArticleList(ctx context.Context, in *GetCommunityArticleListRequest, opts ...grpc.CallOption) (*GetCommunityArticleListReply, error)
@@ -45,6 +47,24 @@ type communityClient struct {
 
 func NewCommunityClient(cc grpc.ClientConnInterface) CommunityClient {
 	return &communityClient{cc}
+}
+
+func (c *communityClient) GetCommunitySettingNotice(ctx context.Context, in *CommonRequest, opts ...grpc.CallOption) (*GetCommunitySettingNoticeReply, error) {
+	out := new(GetCommunitySettingNoticeReply)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/GetCommunitySettingNotice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *communityClient) UpdateCommunitySettingNotice(ctx context.Context, in *UpdateCommunitySettingNoticeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/wxxcx.v1.community.Community/UpdateCommunitySettingNotice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *communityClient) DeleteCommunityMyArticle(ctx context.Context, in *DeleteCommunityByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
@@ -177,6 +197,8 @@ func (c *communityClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...g
 // All implementations must embed UnimplementedCommunityServer
 // for forward compatibility
 type CommunityServer interface {
+	GetCommunitySettingNotice(context.Context, *CommonRequest) (*GetCommunitySettingNoticeReply, error)
+	UpdateCommunitySettingNotice(context.Context, *UpdateCommunitySettingNoticeRequest) (*emptypb.Empty, error)
 	DeleteCommunityMyArticle(context.Context, *DeleteCommunityByIdRequest) (*emptypb.Empty, error)
 	DeleteCommunityMyComment(context.Context, *DeleteCommunityByIdRequest) (*emptypb.Empty, error)
 	GetCommunityMyArticleList(context.Context, *GetCommunityArticleListRequest) (*GetCommunityArticleListReply, error)
@@ -198,6 +220,12 @@ type CommunityServer interface {
 type UnimplementedCommunityServer struct {
 }
 
+func (UnimplementedCommunityServer) GetCommunitySettingNotice(context.Context, *CommonRequest) (*GetCommunitySettingNoticeReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCommunitySettingNotice not implemented")
+}
+func (UnimplementedCommunityServer) UpdateCommunitySettingNotice(context.Context, *UpdateCommunitySettingNoticeRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCommunitySettingNotice not implemented")
+}
 func (UnimplementedCommunityServer) DeleteCommunityMyArticle(context.Context, *DeleteCommunityByIdRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCommunityMyArticle not implemented")
 }
@@ -251,6 +279,42 @@ type UnsafeCommunityServer interface {
 
 func RegisterCommunityServer(s grpc.ServiceRegistrar, srv CommunityServer) {
 	s.RegisterService(&Community_ServiceDesc, srv)
+}
+
+func _Community_GetCommunitySettingNotice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommonRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommunityServer).GetCommunitySettingNotice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/wxxcx.v1.community.Community/GetCommunitySettingNotice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommunityServer).GetCommunitySettingNotice(ctx, req.(*CommonRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Community_UpdateCommunitySettingNotice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCommunitySettingNoticeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommunityServer).UpdateCommunitySettingNotice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/wxxcx.v1.community.Community/UpdateCommunitySettingNotice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommunityServer).UpdateCommunitySettingNotice(ctx, req.(*UpdateCommunitySettingNoticeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Community_DeleteCommunityMyArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -512,6 +576,14 @@ var Community_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "wxxcx.v1.community.Community",
 	HandlerType: (*CommunityServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetCommunitySettingNotice",
+			Handler:    _Community_GetCommunitySettingNotice_Handler,
+		},
+		{
+			MethodName: "UpdateCommunitySettingNotice",
+			Handler:    _Community_UpdateCommunitySettingNotice_Handler,
+		},
 		{
 			MethodName: "DeleteCommunityMyArticle",
 			Handler:    _Community_DeleteCommunityMyArticle_Handler,

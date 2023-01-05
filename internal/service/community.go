@@ -22,6 +22,28 @@ func NewCommunityService(uc *biz.CommunityUseCase, cosUc *biz.CosUseCase, wechat
 	return &CommunityService{uc: uc, cosUc: cosUc, wechatUc: wechatUc}
 }
 
+func (s *CommunityService) GetCommunitySettingNotice(ctx context.Context, req *pb.CommonRequest) (*pb.GetCommunitySettingNoticeReply, error) {
+	m, err := s.uc.GetSettingNotice(ctx, req.Openid)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetCommunitySettingNoticeReply{
+		Id:                 uint64(m.ID),
+		IsOpenLikeWork:     *m.IsOpenLikeWork,
+		IsOpenLikeComment:  *m.IsOpenLikeComment,
+		IsOpenCommentReply: *m.IsOpenCommentReply,
+	}, nil
+}
+
+func (s *CommunityService) UpdateCommunitySettingNotice(ctx context.Context, req *pb.UpdateCommunitySettingNoticeRequest) (*emptypb.Empty, error) {
+	err := s.uc.UpdateSettingNotice(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return new(emptypb.Empty), nil
+}
+
 func (s *CommunityService) DeleteCommunityMyArticle(ctx context.Context, req *pb.DeleteCommunityByIdRequest) (*emptypb.Empty, error) {
 	err := s.uc.DeleteMyArticle(ctx, req.Openid, req.Id)
 	if err != nil {

@@ -606,6 +606,50 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/community/setting/notice:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCommunitySettingNotice
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCommunitySettingNoticeReply'
+    /wxxcx/community/setting/notice/update:
+        post:
+            tags:
+                - Community
+            operationId: Community_UpdateCommunitySettingNotice
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/wxxcx.v1.community.UpdateCommunitySettingNoticeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /wxxcx/image/ping:
         get:
             tags:
@@ -873,6 +917,9 @@ components:
                     type: string
                 content:
                     type: string
+                sort:
+                    type: integer
+                    format: uint64
         wxxcx.v1.article.GetArticlesReply:
             type: object
             properties:
@@ -1118,6 +1165,18 @@ components:
                     type: string
                 avatar_url:
                     type: string
+        wxxcx.v1.community.GetCommunitySettingNoticeReply:
+            type: object
+            properties:
+                is_open_like_work:
+                    type: boolean
+                is_open_like_comment:
+                    type: boolean
+                is_open_comment_reply:
+                    type: boolean
+                id:
+                    type: integer
+                    format: uint64
         wxxcx.v1.community.GetCosCredentialReply:
             type: object
             properties:
@@ -1201,6 +1260,29 @@ components:
                     type: string
                 avatar_url:
                     type: string
+        wxxcx.v1.community.UpdateCommunitySettingNoticeRequest:
+            type: object
+            properties:
+                appid:
+                    type: string
+                timestamp:
+                    type: integer
+                    format: uint64
+                sign:
+                    type: string
+                openid:
+                    type: string
+                unionid:
+                    type: string
+                id:
+                    type: integer
+                    format: uint64
+                is_open_like_work:
+                    type: boolean
+                is_open_like_comment:
+                    type: boolean
+                is_open_comment_reply:
+                    type: boolean
         wxxcx.v1.image.UploadImageReply:
             type: object
             properties:

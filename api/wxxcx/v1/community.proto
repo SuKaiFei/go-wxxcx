@@ -4,10 +4,22 @@ package wxxcx.v1.community;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "wxxcx/v1/common.proto";
 
 option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
 
 service Community {
+  rpc GetCommunitySettingNotice (wxxcx.v1.common.CommonRequest) returns (GetCommunitySettingNoticeReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/setting/notice"
+    };
+  }
+  rpc UpdateCommunitySettingNotice (UpdateCommunitySettingNoticeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/wxxcx/community/setting/notice/update"
+      body: "*"
+    };
+  }
   rpc DeleteCommunityMyArticle (DeleteCommunityByIdRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/wxxcx/community/my/article/delete"
@@ -86,6 +98,24 @@ service Community {
       get: "/wxxcx/community/ping"
     };
   }
+}
+message GetCommunitySettingNoticeReply {
+  bool is_open_like_work = 1 [json_name = 'is_open_like_work'];
+  bool is_open_like_comment = 2 [json_name = 'is_open_like_comment'];
+  bool is_open_comment_reply = 3 [json_name = 'is_open_comment_reply'];
+  uint64 id = 4;
+}
+
+message UpdateCommunitySettingNoticeRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+  string unionid = 5;
+  uint64 id = 6;
+  bool is_open_like_work = 7 [json_name = 'is_open_like_work'];
+  bool is_open_like_comment = 8 [json_name = 'is_open_like_comment'];
+  bool is_open_comment_reply = 9 [json_name = 'is_open_comment_reply'];
 }
 
 message AddCommunityCommentRequest {

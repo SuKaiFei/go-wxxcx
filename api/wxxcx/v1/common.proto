@@ -8,3 +8,10 @@ message Share {
   string title = 1 [json_name = 'title'];
   string image_url = 2 [json_name = 'imageUrl'];
 }
+
+message CommonRequest {
+  string appid = 1;
+  string timestamp = 2;
+  string sign = 3;
+  string openid = 4;
+}

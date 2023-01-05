@@ -44,7 +44,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 	wechatUseCase := biz.NewWechatUseCase(logger, application, wechatRepo)
 	communityRepo := data.NewCommunityRepo(dataData, logger)
 	cosUseCase := biz.NewCosUseCase(application, logger)
-	communityUseCase := biz.NewCommunityUseCase(communityRepo, cosUseCase, logger)
+	communityUseCase := biz.NewCommunityUseCase(communityRepo, cosUseCase, wechatUseCase, logger)
 	wechatMpService := service.NewWechatMpService(wechatUseCase, communityUseCase)
 	wechatOcService, cleanup2, err := service.NewWechatOcService(wechatUseCase)
 	if err != nil {

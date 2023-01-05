@@ -31,6 +31,7 @@ message GetArticleReply {
   string image_path = 1 [json_name = 'image_path'];
   string title = 2;
   string content = 3;
+  uint64 sort = 4;
 }
 
 message GetArticlesRequest {

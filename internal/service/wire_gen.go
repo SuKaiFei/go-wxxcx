@@ -42,7 +42,7 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	wechatUseCase := biz.NewWechatUseCase(logger, application, wechatRepo)
 	communityRepo := data.NewCommunityRepo(dataData, logger)
 	cosUseCase := biz.NewCosUseCase(application, logger)
-	communityUseCase := biz.NewCommunityUseCase(communityRepo, cosUseCase, logger)
+	communityUseCase := biz.NewCommunityUseCase(communityRepo, cosUseCase, wechatUseCase, logger)
 	wechatMpService := NewWechatMpService(wechatUseCase, communityUseCase)
 	wechatOcService, cleanup2, err := NewWechatOcService(wechatUseCase)
 	if err != nil {

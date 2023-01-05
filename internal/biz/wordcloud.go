@@ -17,6 +17,7 @@ import (
 	"image/gif"
 	"image/jpeg"
 	"image/png"
+	"math/rand"
 	"time"
 )
 
@@ -54,6 +55,8 @@ func (uc *WordcloudUseCase) GenerateImage(ctx context.Context, imagePath string,
 	if len(words) == 0 {
 		return nil, errors.New(400, "", "请输入词语")
 	}
+
+	words = uc.randomStrings(words)
 
 	_, body, err := fasthttp.GetTimeout(nil, imagePath, 5*time.Second)
 	if err != nil {
@@ -154,4 +157,12 @@ func (uc *WordcloudUseCase) generate(words []string, inImg image.Image) (image.I
 	}
 
 	return render.Render(), nil
+}
+
+func (uc *WordcloudUseCase) randomStrings(words []string) []string {
+	for i := len(words) - 1; i > 0; i-- {
+		rNum := rand.Intn(i + 1)
+		words[i], words[rNum] = words[rNum], words[i]
+	}
+	return words
 }
