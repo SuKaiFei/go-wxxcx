@@ -22,7 +22,7 @@ var (
 )
 
 func TestGetUserList(t *testing.T) {
-	userinfoList, err := tSVC.wechatOcSvc.GetUserList(appid)
+	userinfoList, err := tSVC.wechatOASvc.GetUserList(appid)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,14 +35,14 @@ func TestGetUserList(t *testing.T) {
 func TestSend(t *testing.T) {
 	openIDs := openidAll
 	for _, s := range openidAll {
-		tSVC.wechatOcSvc.SendAsync(s)
+		tSVC.wechatOASvc.SendAsync(s)
 	}
 	t.Logf("推送完成(%d)\n", len(openIDs))
 }
 
 func TestSendLocalhost(t *testing.T) {
 	for i, openID := range openidAll {
-		msgID, err := tSVC.wechatOcSvc.Send(openID)
+		msgID, err := tSVC.wechatOASvc.Send(openID)
 		t.Logf("index(%d) msgID(%d) error(%+v)\n", i, msgID, err)
 	}
 
@@ -50,14 +50,14 @@ func TestSendLocalhost(t *testing.T) {
 }
 
 func TestSendAll(t *testing.T) {
-	//_, client := tSVC.wechatOcSvc.GetApp(appid)
+	//_, client := tSVC.wechatOASvc.GetApp(appid)
 	//openIDs, err := client.GetUser().ListAllUserOpenIDs()
 	//if err != nil {
 	//	t.Fatal(err)
 	//}
 	//
 	//for _, openID := range openIDs {
-	//	tSVC.wechatOcSvc.SendAsync(openID)
+	//	tSVC.wechatOASvc.SendAsync(openID)
 	//}
 	//
 	//t.Logf("推送完成(%d)\n", len(openIDs))

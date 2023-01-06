@@ -41,13 +41,18 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 	navigationUseCase := biz.NewNavigationUseCase(navigationRepo, logger)
 	navigationService := service.NewNavigationService(navigationUseCase)
 	wechatRepo := data.NewWechatRepo(dataData, logger)
-	wechatUseCase := biz.NewWechatUseCase(logger, application, wechatRepo)
+	wechatUseCase, cleanup2, err := biz.NewWechatUseCase(logger, application, wechatRepo)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	communityRepo := data.NewCommunityRepo(dataData, logger)
 	cosUseCase := biz.NewCosUseCase(application, logger)
 	communityUseCase := biz.NewCommunityUseCase(communityRepo, cosUseCase, wechatUseCase, logger)
 	wechatMpService := service.NewWechatMpService(wechatUseCase, communityUseCase)
-	wechatOcService, cleanup2, err := service.NewWechatOcService(wechatUseCase)
+	wechatOAService, cleanup3, err := service.NewWechatOAService(wechatUseCase)
 	if err != nil {
+		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
@@ -64,9 +69,10 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 	wordcloudService := service.NewWordcloudService(wordcloudUseCase, wechatUseCase)
 	securityRepo := data.NewSecurityRepo(dataData, logger)
 	securityUseCase := biz.NewSecurityUseCase(securityRepo, logger)
-	httpServer := server.NewHTTPServer(confServer, application, bqbService, voiceService, articleService, navigationService, wechatMpService, wechatOcService, imageService, musicService, chatGptService, communityService, wordcloudService, securityUseCase, logger)
+	httpServer := server.NewHTTPServer(confServer, application, bqbService, voiceService, articleService, navigationService, wechatMpService, wechatOAService, imageService, musicService, chatGptService, communityService, wordcloudService, securityUseCase, logger)
 	app := newApp(logger, httpServer)
 	return app, func() {
+		cleanup3()
 		cleanup2()
 		cleanup()
 	}, nil

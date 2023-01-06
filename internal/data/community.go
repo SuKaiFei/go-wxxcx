@@ -37,6 +37,14 @@ func (r *CommunityRepo) AddSettingNotice(ctx context.Context, m *biz.CommunitySe
 	return m.ID, nil
 }
 
+func (r *CommunityRepo) AddNoticeHistory(ctx context.Context, m *biz.CommunityNoticeHistory) (uint, error) {
+	err := r.data.db.WithContext(ctx).Create(m).Error
+	if err != nil {
+		return 0, errors2.WithStack(err)
+	}
+	return m.ID, nil
+}
+
 func (r *CommunityRepo) UpdateSettingNotice(ctx context.Context, id uint, m *biz.CommunitySettingNotice) error {
 	err := r.data.db.WithContext(ctx).Where("id=?", id).Updates(m).Error
 	if err != nil {
@@ -104,6 +112,14 @@ func (r *CommunityRepo) GetUserListByOpenid(ctx context.Context, openIDs []strin
 
 func (r *CommunityRepo) GetArticleList(ctx context.Context, page, pageSize int) (m []*biz.CommunityArticle, err error) {
 	err = r.data.db.WithContext(ctx).Order("id desc").Limit(pageSize).Offset(page * pageSize).Find(&m).Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return
+}
+
+func (r *CommunityRepo) GetTopArticleList(ctx context.Context) (m []*biz.CommunityArticle, err error) {
+	err = r.data.db.WithContext(ctx).Where("is_top=?", true).Find(&m).Error
 	if err != nil {
 		return nil, errors2.WithStack(err)
 	}
@@ -194,7 +210,10 @@ func (r *CommunityRepo) DeleteComment(ctx context.Context, openid string, id uin
 }
 
 func (r *CommunityRepo) UpdateUser(ctx context.Context, id uint, m *biz.CommunityUser) error {
-	err := r.data.db.WithContext(ctx).Where("id = ?", id).Updates(&m).Error
+	err := r.data.db.WithContext(ctx).Where("id = ?", id).Model(m).Updates(map[string]interface{}{
+		"username": m.Username,
+		"avatar":   m.Avatar,
+	}).Error
 	if err != nil {
 		return errors2.WithStack(err)
 	}

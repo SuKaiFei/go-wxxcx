@@ -39,14 +39,23 @@ func MiddlewareAuth(cApp *conf.Application, securityUC *biz.SecurityUseCase) mid
 
 func requestAuth(cApp *conf.Application, request *http.Request, req interface{}, securityUC *biz.SecurityUseCase) (err error) {
 	//return nil
+
 	referer := request.Header.Get("Referer")
 	requestUrl := request.URL
+	logger := log.NewHelper(log.With(log.GetLogger(),
+		"请求IP", request.Header.Get("X-Forward-For"),
+		"请求地址", request.RequestURI,
+		"referer", referer,
+		"UserAgent", request.UserAgent()),
+	)
 	if len(referer) < 44 {
+		logger.Errorw("msg", "len(referer) < 44")
 		return ErrBadAppid
 	}
 	appid := referer[26:44]
 	app, found := cApp.GetMp()[appid]
 	if !found {
+		logger.Errorw("msg", "cApp.GetMp()[appid]")
 		return ErrBadAppid
 	}
 
@@ -76,6 +85,10 @@ func requestAuth(cApp *conf.Application, request *http.Request, req interface{},
 		}
 	} else {
 		all, _ := io.ReadAll(request.Body)
+		if req == nil && len(all) == 0 {
+			logger.Errorw("msg", "req == nil && len(all) == 0")
+			return ErrBadSign
+		}
 		if len(all) == 0 {
 			all, _ = jsoniter.Marshal(req)
 		}
@@ -105,11 +118,8 @@ func requestAuth(cApp *conf.Application, request *http.Request, req interface{},
 		reqTime = time.Unix(int64(timestamp), 0)
 	}
 	if time.Since(reqTime) > 5*time.Minute {
-		log.Errorw(
+		logger.Errorw(
 			"msg", fmt.Sprintf("时间戳超时%d", time.Now().Unix()-int64(timestamp)),
-			"请求IP", request.Header.Get("X-Forward-For"),
-			"请求地址", request.RequestURI,
-			"UserAgent", request.UserAgent(),
 		)
 		return ErrBadSign
 	}
@@ -122,11 +132,8 @@ func requestAuth(cApp *conf.Application, request *http.Request, req interface{},
 	if len(timestampStr) == 13 && len(openid) > 0 {
 		newSign := fmt.Sprintf("%d%s", timestamp, sign)
 		if err = securityUC.VerifySign(request.Context(), requestUrl.RequestURI(), appid, openid, newSign); err != nil {
-			log.Errorw(
+			logger.Errorw(
 				"msg", "VerifySign",
-				"请求IP", request.Header.Get("X-Forward-For"),
-				"请求地址", request.RequestURI,
-				"UserAgent", request.UserAgent(),
 				"sign", sign,
 				"err", fmt.Sprintf("%+v", err),
 			)

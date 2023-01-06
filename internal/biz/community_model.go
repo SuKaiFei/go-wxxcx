@@ -4,7 +4,17 @@ import (
 	"database/sql/driver"
 	v1 "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/silenceper/wechat/v2/officialaccount/message"
 	"gorm.io/gorm"
+)
+
+type CommunityNoticeType uint8
+
+const (
+	CommunityNoticeTypeLikeWork CommunityNoticeType = iota + 1
+	CommunityNoticeTypeLikeComment
+	CommunityNoticeTypeCommentReply
+	CommunityNoticeTypeCommentWork
 )
 
 type CommunitySettingNotice struct {
@@ -14,10 +24,39 @@ type CommunitySettingNotice struct {
 	IsOpenLikeWork     *bool
 	IsOpenLikeComment  *bool
 	IsOpenCommentReply *bool
+	IsOpenWorkReply    *bool
 }
 
 func (CommunitySettingNotice) TableName() string {
 	return "community_setting_notice"
+}
+
+type CommunityNoticeMessage struct {
+	message.TemplateMessage `json:",inline"`
+}
+
+func (m CommunityNoticeMessage) Value() (driver.Value, error) {
+	return jsoniter.MarshalToString(m)
+}
+
+func (m *CommunityNoticeMessage) Scan(input interface{}) error {
+	return jsoniter.Unmarshal(input.([]byte), m)
+}
+
+type CommunityNoticeHistory struct {
+	gorm.Model
+	Openid     string                 `gorm:"type:char(28);"`
+	Unionid    string                 `gorm:"type:char(28);"`
+	ReqOpenid  string                 `gorm:"type:char(28);"`
+	ReqUnionid string                 `gorm:"type:char(28);"`
+	TemplateID string                 `gorm:"type:char(43);"`
+	MsgID      uint64                 `gorm:"type:bigint"`
+	Detail     CommunityNoticeMessage `gorm:"type:json"`
+	ErrMsg     string                 `gorm:"type:varchar(100);"`
+}
+
+func (CommunityNoticeHistory) TableName() string {
+	return "community_notice_history"
 }
 
 type CommunityUser struct {
@@ -46,9 +85,13 @@ type CommunityArticle struct {
 	gorm.Model
 	Openid       string                 `gorm:"type:char(28);"`
 	Content      string                 `gorm:"type:longtext;"`
+	IsTop        bool                   `gorm:"default:false"`
 	Photos       CommunityArticlePhotos `gorm:"type:json;"`
 	CommentCount int64                  `gorm:"type:bigint;default:0;"`
 	LikeCount    int64                  `gorm:"type:bigint;default:0;"`
+	Type         NavigationType         `gorm:"type:int(1);default:1;"`
+	MpAppid      string                 `gorm:"type:char(18);"`
+	Url          string                 `gorm:"type:varchar(300);"`
 }
 
 func (CommunityArticle) TableName() string {

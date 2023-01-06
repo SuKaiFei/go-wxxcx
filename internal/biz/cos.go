@@ -71,12 +71,25 @@ func (uc *CosUseCase) GetPresignedURL(ctx context.Context, key string) (string, 
 	if key[:4] == "http" {
 		return key, nil
 	}
-	presignedURL, err := uc.client.Object.GetPresignedURL(ctx, http.MethodGet, key, uc.cosConf.SecretId, uc.cosConf.SecretKey, time.Minute, nil)
+	presignedURL, err := uc.client.Object.GetPresignedURL(ctx, http.MethodGet, key, uc.cosConf.SecretId, uc.cosConf.SecretKey, 30*time.Minute, nil)
 	if err != nil {
 		return "", errors2.WithStack(err)
 	}
 
 	return presignedURL.String(), nil
+}
+
+func (uc *CosUseCase) TidyURLByPhoto(photos ...string) []string {
+	for i, photo := range photos {
+		if strings.Contains(photo, uc.bucketURL) {
+			urlEnd := strings.Index(photo, "?")
+			if urlEnd <= 0 {
+				urlEnd = len(photo)
+			}
+			photos[i] = photo[0:urlEnd]
+		}
+	}
+	return photos
 }
 
 func (uc *CosUseCase) GetPresignedURLByPhoto(ctx context.Context, photos []*v1.Photo) ([]*v1.Photo, error) {

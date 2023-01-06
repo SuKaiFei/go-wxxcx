@@ -8,15 +8,15 @@ import (
 	"sync"
 )
 
-type WechatOcService struct {
+type WechatOAService struct {
 	uc       *biz.WechatUseCase
 	sendCH   chan string
 	sendTask *sync.WaitGroup
 }
 
-func NewWechatOcService(uc *biz.WechatUseCase) (*WechatOcService, func(), error) {
+func NewWechatOAService(uc *biz.WechatUseCase) (*WechatOAService, func(), error) {
 	const sendCHCount = 50
-	s := &WechatOcService{
+	s := &WechatOAService{
 		uc:       uc,
 		sendCH:   make(chan string, sendCHCount),
 		sendTask: new(sync.WaitGroup),
@@ -35,12 +35,12 @@ func NewWechatOcService(uc *biz.WechatUseCase) (*WechatOcService, func(), error)
 	closeFunc := func() {
 		close(s.sendCH)
 		s.sendTask.Wait()
-		log.Info("NewWechatOcService closeFunc")
+		log.Info("NewWechatOAService closeFunc")
 	}
 	return s, closeFunc, nil
 }
 
-func (s *WechatOcService) GetUserList(appid string) (
+func (s *WechatOAService) GetUserList(appid string) (
 	[]*user.Info,
 	error,
 ) {
@@ -75,11 +75,11 @@ func (s *WechatOcService) GetUserList(appid string) (
 	return userinfoList, nil
 }
 
-func (s *WechatOcService) SendAsync(openid string) {
+func (s *WechatOAService) SendAsync(openid string) {
 	s.sendCH <- openid
 }
 
-func (s *WechatOcService) Send(openid string) (int64, error) {
+func (s *WechatOAService) Send(openid string) (int64, error) {
 	const templateID = "3EHnd170OYZ7ucWq1cOdRdeGGzrXD0u73QkTYHZHc4o" // 成绩更新提醒
 	const toAppid = "wx575f5d87fb66e69a"                             // 鸡音盒
 	const appid = "wx9ef62ba2e3525812"                               // 鸡你太美小助手

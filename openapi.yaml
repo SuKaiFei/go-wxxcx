@@ -1148,6 +1148,13 @@ components:
                     format: uint64
                 openid:
                     type: string
+                type:
+                    type: integer
+                    format: uint32
+                mp_appid:
+                    type: string
+                url:
+                    type: string
         wxxcx.v1.community.GetCommunityCommentListReply:
             type: object
             properties:
@@ -1173,6 +1180,8 @@ components:
                 is_open_like_comment:
                     type: boolean
                 is_open_comment_reply:
+                    type: boolean
+                is_open_work_reply:
                     type: boolean
                 id:
                     type: integer
@@ -1266,8 +1275,7 @@ components:
                 appid:
                     type: string
                 timestamp:
-                    type: integer
-                    format: uint64
+                    type: string
                 sign:
                     type: string
                 openid:
@@ -1282,6 +1290,8 @@ components:
                 is_open_like_comment:
                     type: boolean
                 is_open_comment_reply:
+                    type: boolean
+                is_open_work_reply:
                     type: boolean
         wxxcx.v1.image.UploadImageReply:
             type: object

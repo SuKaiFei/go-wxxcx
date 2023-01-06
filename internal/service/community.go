@@ -33,6 +33,7 @@ func (s *CommunityService) GetCommunitySettingNotice(ctx context.Context, req *p
 		IsOpenLikeWork:     *m.IsOpenLikeWork,
 		IsOpenLikeComment:  *m.IsOpenLikeComment,
 		IsOpenCommentReply: *m.IsOpenCommentReply,
+		IsOpenWorkReply:    *m.IsOpenWorkReply,
 	}, nil
 }
 

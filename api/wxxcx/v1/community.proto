@@ -103,7 +103,8 @@ message GetCommunitySettingNoticeReply {
   bool is_open_like_work = 1 [json_name = 'is_open_like_work'];
   bool is_open_like_comment = 2 [json_name = 'is_open_like_comment'];
   bool is_open_comment_reply = 3 [json_name = 'is_open_comment_reply'];
-  uint64 id = 4;
+  bool is_open_work_reply = 4 [json_name = 'is_open_work_reply'];
+  uint64 id = 5;
 }
 
 message UpdateCommunitySettingNoticeRequest {
@@ -116,6 +117,7 @@ message UpdateCommunitySettingNoticeRequest {
   bool is_open_like_work = 7 [json_name = 'is_open_like_work'];
   bool is_open_like_comment = 8 [json_name = 'is_open_like_comment'];
   bool is_open_comment_reply = 9 [json_name = 'is_open_comment_reply'];
+  bool is_open_work_reply = 10 [json_name = 'is_open_work_reply'];
 }
 
 message AddCommunityCommentRequest {
@@ -285,4 +287,7 @@ message GetCommunityArticleReply {
   repeated Photo photos = 8;
   uint64 id = 9;
   string openid = 10;
+  uint32 type = 11;
+  string mp_appid = 12[json_name = 'mp_appid'];
+  string url = 13;
 }

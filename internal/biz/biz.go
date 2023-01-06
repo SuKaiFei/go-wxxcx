@@ -17,3 +17,8 @@ var ProviderSet = wire.NewSet(
 	NewSecurityUseCase,
 	NewWordcloudUseCase,
 )
+
+const (
+	appidCommunity = "wxec615f70feb4e93c"
+	appidOA        = "wx9ef62ba2e3525812"
+)

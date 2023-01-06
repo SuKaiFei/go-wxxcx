@@ -49,7 +49,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		panic(err)
 	}
 
-	db, err := gorm.Open(mysql.Open(c.GetDatabase().GetSource()), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(c.GetDatabase().GetSource()), &gorm.Config{CreateBatchSize: 500})
 	if err != nil {
 		panic(err)
 	}
@@ -80,7 +80,9 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		new(biz.CommunityLike),
 		new(biz.CommunityFeedback),
 		new(biz.WechatUser),
+		new(biz.WechatOAUser),
 		new(biz.CommunitySettingNotice),
+		new(biz.CommunityNoticeHistory),
 	)
 	if err != nil {
 		return nil, nil, err

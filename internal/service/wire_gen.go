@@ -39,13 +39,18 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 	navigationUseCase := biz.NewNavigationUseCase(navigationRepo, logger)
 	navigationService := NewNavigationService(navigationUseCase)
 	wechatRepo := data.NewWechatRepo(dataData, logger)
-	wechatUseCase := biz.NewWechatUseCase(logger, application, wechatRepo)
+	wechatUseCase, cleanup2, err := biz.NewWechatUseCase(logger, application, wechatRepo)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	communityRepo := data.NewCommunityRepo(dataData, logger)
 	cosUseCase := biz.NewCosUseCase(application, logger)
 	communityUseCase := biz.NewCommunityUseCase(communityRepo, cosUseCase, wechatUseCase, logger)
 	wechatMpService := NewWechatMpService(wechatUseCase, communityUseCase)
-	wechatOcService, cleanup2, err := NewWechatOcService(wechatUseCase)
+	wechatOAService, cleanup3, err := NewWechatOAService(wechatUseCase)
 	if err != nil {
+		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
@@ -66,7 +71,7 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		voiceSvc:      voiceService,
 		navigationSvc: navigationService,
 		wechatMpSvc:   wechatMpService,
-		wechatOcSvc:   wechatOcService,
+		wechatOcSvc:   wechatOAService,
 		imageSvc:      imageService,
 		musicSvc:      musicService,
 		chatGptSvc:    chatGptService,
@@ -74,6 +79,7 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		wordcloudSvc:  wordcloudService,
 	}
 	return serviceUnitTestSvc, func() {
+		cleanup3()
 		cleanup2()
 		cleanup()
 	}, nil
@@ -87,7 +93,7 @@ type unitTestSvc struct {
 	voiceSvc      *VoiceService
 	navigationSvc *NavigationService
 	wechatMpSvc   *WechatMpService
-	wechatOcSvc   *WechatOcService
+	wechatOcSvc   *WechatOAService
 	imageSvc      *ImageService
 	musicSvc      *MusicService
 	chatGptSvc    *ChatGptService
