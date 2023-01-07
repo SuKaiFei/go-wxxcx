@@ -75,9 +75,12 @@ func (s *CommunityService) GetCommunityMyProfile(ctx context.Context, req *pb.Ge
 		return nil, err
 	}
 	return &pb.GetCommunityMyProfileReply{
-		Id:        uint64(res.ID),
-		Username:  res.Username,
-		AvatarUrl: res.Avatar,
+		Id:           uint64(res.ID),
+		Username:     res.Username,
+		AvatarUrl:    res.Avatar,
+		Introduction: res.Introduction,
+		TagValue:     res.TagValue,
+		TagClass:     res.TagClass,
 	}, nil
 }
 
@@ -87,7 +90,14 @@ func (s *CommunityService) UpdateCommunityMyProfile(ctx context.Context, req *pb
 		return nil, err
 	}
 	if check.Result.Label != 100 {
-		return nil, errors2.New("有违法违规文本内容,请重新输入")
+		return nil, errors2.New("昵称有违法违规文本内容,请重新输入")
+	}
+	check, err = s.wechatUc.MsgCheck(req.Appid, req.Openid, req.Introduction)
+	if err != nil {
+		return nil, err
+	}
+	if check.Result.Label != 100 {
+		return nil, errors2.New("介绍有违法违规文本内容,请重新输入")
 	}
 
 	err = s.uc.UpdateMyProfile(ctx, req)

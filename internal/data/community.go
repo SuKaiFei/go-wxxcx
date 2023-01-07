@@ -129,7 +129,7 @@ func (r *CommunityRepo) GetTopArticleList(ctx context.Context) (m []*biz.Communi
 func (r *CommunityRepo) GetCommentList(ctx context.Context, aid, comID uint, page, pageSize int) (
 	m []*biz.CommunityComment, err error,
 ) {
-	db := r.data.db.WithContext(ctx).Order("interactive_count desc").Order("id desc")
+	db := r.data.db.WithContext(ctx).Order("id desc")
 	db = db.Where("article_id = ?", aid)
 	db = db.Where("top_reply_id = ?", comID)
 	err = db.Limit(pageSize).Offset(page * pageSize).Find(&m).Error
@@ -211,8 +211,9 @@ func (r *CommunityRepo) DeleteComment(ctx context.Context, openid string, id uin
 
 func (r *CommunityRepo) UpdateUser(ctx context.Context, id uint, m *biz.CommunityUser) error {
 	err := r.data.db.WithContext(ctx).Where("id = ?", id).Model(m).Updates(map[string]interface{}{
-		"username": m.Username,
-		"avatar":   m.Avatar,
+		"username":     m.Username,
+		"avatar":       m.Avatar,
+		"introduction": m.Introduction,
 	}).Error
 	if err != nil {
 		return errors2.WithStack(err)

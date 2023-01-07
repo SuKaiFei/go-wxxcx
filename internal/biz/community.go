@@ -15,8 +15,9 @@ import (
 var (
 	defaultSettingNotice = true
 	defaultCommentUser   = &CommunityUser{
-		Username: "微信用户",
-		Avatar:   "https://mmbiz.qpic.cn/mmbiz_png/Mhr8pCDXpQqoWjx3avyHfIMn9OJc93Po20icsy9C9Qsd8lu6N9OUpgNetmssiaA96WgibiaWKVxHRz0oIz78JOA2Nw/0?wx_fmt=png",
+		Username:     "微信用户",
+		Avatar:       "https://mmbiz.qpic.cn/mmbiz_png/Mhr8pCDXpQqoWjx3avyHfIMn9OJc93Po20icsy9C9Qsd8lu6N9OUpgNetmssiaA96WgibiaWKVxHRz0oIz78JOA2Nw/0?wx_fmt=png",
+		Introduction: "这是一个什么也没有写的小黑子",
 	}
 )
 
@@ -253,18 +254,15 @@ func (uc *CommunityUseCase) GetMyProfile(ctx context.Context, openid string) (
 		return nil, errors2.WithStack(err)
 	}
 	if item == nil {
-		wechatUser, err := uc.wechatUc.GetUser(ctx, appidCommunity, openid)
-		if err != nil {
-			return nil, errors2.WithStack(err)
-		}
-		if len(wechatUser.Unionid) == 0 {
-			return nil, errors2.New("unionid not found")
-		}
 		item = &CommunityUser{
-			Openid:   openid,
-			Unionid:  wechatUser.Unionid,
-			Username: defaultCommentUser.Username,
-			Avatar:   defaultCommentUser.Avatar,
+			Openid:       openid,
+			Username:     defaultCommentUser.Username,
+			Avatar:       defaultCommentUser.Avatar,
+			Introduction: defaultCommentUser.Introduction,
+		}
+		wechatUser, _ := uc.wechatUc.GetUser(ctx, appidCommunity, openid)
+		if wechatUser != nil && len(wechatUser.Unionid) > 0 {
+			item.Unionid = wechatUser.Unionid
 		}
 		_, err = uc.repo.AddUser(ctx, item)
 		if err != nil {
@@ -289,8 +287,9 @@ func (uc *CommunityUseCase) UpdateUserUnionid(ctx context.Context, openid, union
 
 func (uc *CommunityUseCase) UpdateMyProfile(ctx context.Context, req *v1.UpdateCommunityMyProfileRequest) error {
 	m := &CommunityUser{
-		Username: req.Username,
-		Avatar:   uc.cosUC.TidyURLByPhoto(req.AvatarUrl)[0],
+		Username:     req.Username,
+		Introduction: req.Introduction,
+		Avatar:       uc.cosUC.TidyURLByPhoto(req.AvatarUrl)[0],
 	}
 	err := uc.repo.UpdateUser(ctx, uint(req.Id), m)
 	if err != nil {
@@ -392,12 +391,11 @@ func (uc *CommunityUseCase) UpdateLike(ctx context.Context, openid string, tid u
 		step = step * -1
 	}
 
-	sendType := CommunityNoticeTypeLikeWork
 	if typ == CommunityLikeTypeArticle {
 		if isSendMsg && step == 1 {
 			article, _ := uc.repo.GetArticle(ctx, uint(tid))
 			if article != nil {
-				go uc.sendTemplateMessage(tid, sendType, article.Openid, openid, "给你点个赞")
+				go uc.sendTemplateMessage(tid, CommunityNoticeTypeLikeWork, article.Openid, openid, "给你点个赞")
 			}
 		}
 		err = uc.repo.UpdateArticleLikeCount(ctx, uint(tid), step)
@@ -408,14 +406,13 @@ func (uc *CommunityUseCase) UpdateLike(ctx context.Context, openid string, tid u
 		if isSendMsg && step == 1 {
 			comment, _ := uc.repo.GetComment(ctx, uint(tid))
 			if comment != nil {
-				go uc.sendTemplateMessage(comment.ArticleID, sendType, comment.Openid, openid, "给你点个赞")
+				go uc.sendTemplateMessage(comment.ArticleID, CommunityNoticeTypeLikeComment, comment.Openid, openid, "给你点个赞")
 			}
 		}
 		err = uc.repo.UpdateCommentLikeCount(ctx, uint(tid), step)
 		if err != nil {
 			return nil, errors2.WithStack(err)
 		}
-		sendType = CommunityNoticeTypeLikeComment
 	}
 
 	return &v1.UpdateCommunityLikeReply{IsLike: updateTo == CommunityLikeStatusLike}, nil
@@ -469,9 +466,9 @@ func (uc *CommunityUseCase) sendTemplateMessage(articleID uint64, typ CommunityN
 	if sendUser != nil {
 		sendUserUnionid = sendUser.Unionid
 	}
-	sendWxUser, err := uc.repo.GetUser(ctx, sendOpenid)
+	sendWxUser, err := uc.GetMyProfile(ctx, sendOpenid)
 	if err != nil {
-		uc.log.Errorw("msg", "sendTemplateMessageGetUser", "openid", openid, "err", err)
+		uc.log.Errorw("msg", "sendTemplateMessageGetUser", "openid", openid, "sendOpenid", sendOpenid, "err", err)
 		return
 	}
 	const templateID = "2YOC5fxi1h3KsxjCLq1Jea1zQzEabiwALahU4jPzkN4"
@@ -572,10 +569,18 @@ func (uc *CommunityUseCase) fillCommentReply(ctx context.Context, openid string,
 			item.CommentCount = 0
 		}
 
+		userinfo := &v1.CommunityUser{
+			Id:        uint64(user.ID),
+			Openid:    user.Openid,
+			Username:  user.Username,
+			AvatarUrl: user.Avatar,
+			TagValue:  user.TagValue,
+			TagClass:  user.TagClass,
+		}
 		res[i] = &v1.AddCommunityCommentReply{
 			Id:             uint64(item.ID),
 			Content:        item.Content,
-			Userinfo:       &v1.CommunityUser{Id: uint64(user.ID), Openid: user.Openid, Username: user.Username, AvatarUrl: user.Avatar},
+			Userinfo:       userinfo,
 			TopReplyId:     item.TopReplyID,
 			ReplyId:        item.ReplyID,
 			TopReplyOpenid: item.TopReplyOpenid,
@@ -590,6 +595,8 @@ func (uc *CommunityUseCase) fillCommentReply(ctx context.Context, openid string,
 				Openid:    replyUser.Openid,
 				Username:  replyUser.Username,
 				AvatarUrl: replyUser.Avatar,
+				TagValue:  replyUser.TagValue,
+				TagClass:  replyUser.TagClass,
 			}
 		}
 	}
@@ -600,7 +607,6 @@ func (uc *CommunityUseCase) fillCommentReply(ctx context.Context, openid string,
 func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string, items []*CommunityArticle) (
 	[]*v1.GetCommunityArticleReply, error,
 ) {
-
 	ids := make([]uint, len(items))
 	pushOpenIDs := make([]string, len(items))
 	for i, item := range items {
@@ -653,19 +659,21 @@ func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string,
 			return nil, errors2.WithStack(err)
 		}
 		res[i] = &v1.GetCommunityArticleReply{
-			Id:            uint64(item.ID),
-			PubUserName:   user.Username,
-			PubUserAvatar: user.Avatar,
-			PubContent:    item.Content,
-			PubTime:       item.CreatedAt.Format("01-02 15:04"),
-			LikeCount:     uint64(item.LikeCount),
-			ComCount:      uint64(item.CommentCount),
-			IsLike:        isLike,
-			Photos:        photos,
-			Openid:        item.Openid,
-			Type:          uint32(item.Type),
-			MpAppid:       item.MpAppid,
-			Url:           item.Url,
+			Id:              uint64(item.ID),
+			PubUserName:     user.Username,
+			PubUserAvatar:   user.Avatar,
+			PubContent:      item.Content,
+			PubUserTagValue: user.TagValue,
+			PubUserTagClass: user.TagClass,
+			PubTime:         item.CreatedAt.Format("01-02 15:04"),
+			LikeCount:       uint64(item.LikeCount),
+			ComCount:        uint64(item.CommentCount),
+			IsLike:          isLike,
+			Photos:          photos,
+			Openid:          item.Openid,
+			Type:            uint32(item.Type),
+			MpAppid:         item.MpAppid,
+			Url:             item.Url,
 		}
 	}
 

@@ -1096,6 +1096,10 @@ components:
                     type: string
                 avatar_url:
                     type: string
+                tag_value:
+                    type: string
+                tag_class:
+                    type: string
         wxxcx.v1.community.DeleteCommunityByIdRequest:
             type: object
             properties:
@@ -1155,6 +1159,10 @@ components:
                     type: string
                 url:
                     type: string
+                pub_user_tag_value:
+                    type: string
+                pub_user_tag_class:
+                    type: string
         wxxcx.v1.community.GetCommunityCommentListReply:
             type: object
             properties:
@@ -1171,6 +1179,12 @@ components:
                 username:
                     type: string
                 avatar_url:
+                    type: string
+                introduction:
+                    type: string
+                tag_value:
+                    type: string
+                tag_class:
                     type: string
         wxxcx.v1.community.GetCommunitySettingNoticeReply:
             type: object
@@ -1268,6 +1282,8 @@ components:
                 username:
                     type: string
                 avatar_url:
+                    type: string
+                introduction:
                     type: string
         wxxcx.v1.community.UpdateCommunitySettingNoticeRequest:
             type: object

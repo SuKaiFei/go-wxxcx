@@ -54,7 +54,7 @@ func NewTestUnitTestSvcService(server *conf.Server, logger log.Logger, bootstrap
 		cleanup()
 		return nil, nil, err
 	}
-	imageUseCase := biz.NewImageUseCase(logger, cosUseCase)
+	imageUseCase := biz.NewImageUseCase(logger, cosUseCase, wechatUseCase)
 	imageService := NewImageService(imageUseCase, application)
 	musicRepo := data.NewMusicRepo(dataData, logger)
 	musicUseCase := biz.NewMusicUseCase(musicRepo, logger)

@@ -138,6 +138,8 @@ message CommunityUser {
   string openid = 2;
   string username = 3;
   string avatar_url = 4 [json_name = 'avatar_url'];
+  string tag_value = 5 [json_name = 'tag_value'];
+  string tag_class = 6 [json_name = 'tag_class'];
 }
 
 message AddCommunityCommentReply {
@@ -166,6 +168,9 @@ message GetCommunityMyProfileReply {
   uint64 id = 1 [json_name = 'id'];
   string username = 2 [json_name = 'username'];
   string avatar_url = 3 [json_name = 'avatar_url'];
+  string introduction = 4 [json_name = 'introduction'];
+  string tag_value = 5 [json_name = 'tag_value'];
+  string tag_class = 6 [json_name = 'tag_class'];
 }
 
 message UpdateCommunityMyProfileRequest {
@@ -176,6 +181,7 @@ message UpdateCommunityMyProfileRequest {
   uint64 id = 5 [json_name = 'id'];
   string username = 6 [json_name = 'username'];
   string avatar_url = 7 [json_name = 'avatar_url'];
+  string introduction = 8 [json_name = 'introduction'];
 }
 
 message AddCommunityFeedbackRequest {
@@ -290,4 +296,6 @@ message GetCommunityArticleReply {
   uint32 type = 11;
   string mp_appid = 12[json_name = 'mp_appid'];
   string url = 13;
+  string pub_user_tag_value = 14 [json_name = 'pub_user_tag_value'];
+  string pub_user_tag_class = 15 [json_name = 'pub_user_tag_class'];
 }

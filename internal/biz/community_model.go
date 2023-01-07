@@ -61,10 +61,13 @@ func (CommunityNoticeHistory) TableName() string {
 
 type CommunityUser struct {
 	gorm.Model
-	Openid   string `gorm:"type:char(28);"`
-	Unionid  string `gorm:"type:char(28);"`
-	Username string `gorm:"type:varchar(50);"`
-	Avatar   string `gorm:"type:varchar(500);"`
+	Openid       string `gorm:"type:char(28);"`
+	Unionid      string `gorm:"type:char(28);"`
+	Username     string `gorm:"type:varchar(50);"`
+	Avatar       string `gorm:"type:varchar(500);"`
+	Introduction string `gorm:"type:varchar(300);"`
+	TagValue     string `gorm:"type:varchar(10);"`
+	TagClass     string `gorm:"type:varchar(50);"`
 }
 
 func (CommunityUser) TableName() string {

@@ -12,7 +12,6 @@ require (
 	github.com/makiuchi-d/gozxing v0.1.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pkg/errors v0.9.1
-	github.com/robfig/cron/v3 v3.0.1
 	github.com/silenceper/wechat/v2 v2.1.4
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.40

@@ -13,6 +13,7 @@ import (
 	"github.com/nfnt/resize"
 	errors2 "github.com/pkg/errors"
 	"image"
+	"image/color"
 	"image/jpeg"
 	"image/png"
 	"time"
@@ -21,17 +22,18 @@ import (
 type ImageUseCase struct {
 	log       *log.Helper
 	cosUC     *CosUseCase
+	wechatUC  *WechatUseCase
 	whitelist map[string]struct{}
 }
 
-func NewImageUseCase(logger log.Logger, cosUC *CosUseCase) *ImageUseCase {
+func NewImageUseCase(logger log.Logger, cosUC *CosUseCase, wechatUC *WechatUseCase) *ImageUseCase {
 	whitelist := map[string]struct{}{
 		"":                             {},
 		"oLbjy5U8441c3vmPZdaXcZb4s5h8": {},
 		"oLbjy5QvnIhStDV6Ot2KBiOicorI": {},
 		"oLbjy5Q3Bb3fu2zFCJXYN0UnqNEs": {},
 	}
-	return &ImageUseCase{whitelist: whitelist, cosUC: cosUC, log: log.NewHelper(logger)}
+	return &ImageUseCase{whitelist: whitelist, cosUC: cosUC, wechatUC: wechatUC, log: log.NewHelper(logger)}
 }
 
 func (uc *ImageUseCase) UploadImage(ctx context.Context, req *v1.UploadImageRequest) (*v1.UploadImageReply, error) {
@@ -44,26 +46,34 @@ func (uc *ImageUseCase) UploadImage(ctx context.Context, req *v1.UploadImageRequ
 		size := len(req.File)
 
 		if size >= 10*1024*1024 {
-			return nil, errors.New(400, "", "图片多大")
+			return nil, errors.New(400, "", "图片太大")
 		}
 		var (
-			maxWidth, maxHeight, imgSize uint
-			isWidth                      bool
+			point               = img.Bounds().Size()
+			maxWidth, maxHeight uint
+			maxSize             = 1280
+			//maxWidth, maxHeight, imgSize uint
+			//isWidth                      bool
 		)
 
-		point := img.Bounds().Size()
-		if point.X > point.Y {
-			isWidth = true
-			imgSize = uint(point.X)
-		} else {
-			imgSize = uint(point.Y)
-		}
-		if imgSize > 1080 {
-			if isWidth {
-				maxWidth = 1080
-			} else {
-				maxHeight = 1080
-			}
+		//point := img.Bounds().Size()
+		//if point.X > point.Y {
+		//	isWidth = true
+		//	imgSize = uint(point.X)
+		//} else {
+		//	imgSize = uint(point.Y)
+		//}
+		//var maxSize uint = 1280
+		//if imgSize > maxSize {
+		//	if isWidth {
+		//		maxWidth = maxSize
+		//	} else {
+		//		maxHeight = maxSize
+		//	}
+		//}
+
+		if point.X > maxSize {
+			maxWidth = uint(maxSize)
 		}
 
 		b := new(bytes.Buffer)
@@ -86,16 +96,9 @@ func (uc *ImageUseCase) UploadImage(ctx context.Context, req *v1.UploadImageRequ
 		)
 	}
 	if _, found := uc.whitelist[req.Openid]; !found {
-		if img != nil {
-			bmp, err := gozxing.NewBinaryBitmapFromImage(img)
-			if err != nil {
-				return nil, err
-			}
-
-			result, _ := qrcode.NewQRCodeReader().Decode(bmp, nil)
-			if result != nil && len(result.GetText()) > 0 {
-				return nil, errors2.New("禁止二维码图片")
-			}
+		content := uc.GetQRCodeContent(img)
+		if len(content) > 0 {
+			return nil, errors2.New("禁止二维码图片")
 		}
 	}
 	now := time.Now()
@@ -109,4 +112,49 @@ func (uc *ImageUseCase) UploadImage(ctx context.Context, req *v1.UploadImageRequ
 	}
 
 	return &v1.UploadImageReply{Path: upload}, nil
+}
+
+func (uc *ImageUseCase) GetQRCodeContent(img image.Image) string {
+	if img != nil {
+		bmp, err := gozxing.NewBinaryBitmapFromImage(img)
+		if err != nil {
+			return ""
+		}
+		result, _ := qrcode.NewQRCodeReader().Decode(bmp, nil)
+		if result != nil && len(result.GetText()) > 0 {
+			return result.GetText()
+		}
+
+		grayingImage := uc.grayingImage(img)
+		bmp, err = gozxing.NewBinaryBitmapFromImage(grayingImage)
+		if err != nil {
+			return ""
+		}
+		result, _ = qrcode.NewQRCodeReader().Decode(bmp, nil)
+		if result != nil && len(result.GetText()) > 0 {
+			return result.GetText()
+		}
+	}
+
+	return ""
+}
+
+func (uc *ImageUseCase) grayingImage(m image.Image) *image.RGBA {
+	bounds := m.Bounds()
+	dx := bounds.Dx()
+	dy := bounds.Dy()
+	newRgba := image.NewRGBA(bounds)
+
+	for x := 0; x < dx; x++ {
+		for y := 0; y < dy; y++ {
+			colorRgb := m.At(x, y)
+			_, g, _, a := colorRgb.RGBA()
+			newG := 255 - uint8(g>>8)
+			newA := uint8(a >> 8)
+			// 将每个点的设置为灰度值
+			newRgba.SetRGBA(x, y, color.RGBA{R: newG, G: newG, B: newG, A: newA})
+		}
+	}
+
+	return newRgba
 }

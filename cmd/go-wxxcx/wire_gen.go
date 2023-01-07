@@ -56,7 +56,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, application *conf.App
 		cleanup()
 		return nil, nil, err
 	}
-	imageUseCase := biz.NewImageUseCase(logger, cosUseCase)
+	imageUseCase := biz.NewImageUseCase(logger, cosUseCase, wechatUseCase)
 	imageService := service.NewImageService(imageUseCase, application)
 	musicRepo := data.NewMusicRepo(dataData, logger)
 	musicUseCase := biz.NewMusicUseCase(musicRepo, logger)
