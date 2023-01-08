@@ -120,17 +120,28 @@ func (uc *ImageUseCase) GetQRCodeContent(img image.Image) string {
 		if err != nil {
 			return ""
 		}
-		result, _ := qrcode.NewQRCodeReader().Decode(bmp, nil)
+		reader := qrcode.NewQRCodeReader()
+		result, _ := reader.Decode(bmp, nil)
 		if result != nil && len(result.GetText()) > 0 {
 			return result.GetText()
 		}
 
-		grayingImage := uc.grayingImage(img)
+		grayingImage := uc.ToBlackAndWhiteImage(img)
 		bmp, err = gozxing.NewBinaryBitmapFromImage(grayingImage)
 		if err != nil {
 			return ""
 		}
-		result, _ = qrcode.NewQRCodeReader().Decode(bmp, nil)
+		result, _ = reader.Decode(bmp, nil)
+		if result != nil && len(result.GetText()) > 0 {
+			return result.GetText()
+		}
+
+		grayingImage = uc.ReverseImageColor(img)
+		bmp, err = gozxing.NewBinaryBitmapFromImage(grayingImage)
+		if err != nil {
+			return ""
+		}
+		result, _ = reader.Decode(bmp, nil)
 		if result != nil && len(result.GetText()) > 0 {
 			return result.GetText()
 		}
@@ -139,7 +150,23 @@ func (uc *ImageUseCase) GetQRCodeContent(img image.Image) string {
 	return ""
 }
 
-func (uc *ImageUseCase) grayingImage(m image.Image) *image.RGBA {
+func (uc *ImageUseCase) ToBlackAndWhiteImage(m image.Image) *image.RGBA {
+	bounds := m.Bounds()
+	dx := bounds.Dx()
+	dy := bounds.Dy()
+	newRgba := image.NewRGBA(bounds)
+
+	for x := 0; x < dx; x++ {
+		for y := 0; y < dy; y++ {
+			colorRgb := m.At(x, y)
+			newRgba.Set(x, y, monoModel(colorRgb))
+		}
+	}
+
+	return newRgba
+}
+
+func (uc *ImageUseCase) ReverseImageColor(m image.Image) *image.RGBA {
 	bounds := m.Bounds()
 	dx := bounds.Dx()
 	dy := bounds.Dy()
@@ -150,11 +177,39 @@ func (uc *ImageUseCase) grayingImage(m image.Image) *image.RGBA {
 			colorRgb := m.At(x, y)
 			_, g, _, a := colorRgb.RGBA()
 			newG := 255 - uint8(g>>8)
-			newA := uint8(a >> 8)
 			// 将每个点的设置为灰度值
-			newRgba.SetRGBA(x, y, color.RGBA{R: newG, G: newG, B: newG, A: newA})
+			newRgba.SetRGBA(x, y, color.RGBA{
+				R: newG,
+				G: newG,
+				B: newG,
+				A: uint8(a >> 8),
+			})
 		}
 	}
 
 	return newRgba
+}
+
+type Pixel bool
+
+const (
+	Black Pixel = true
+	White Pixel = false
+)
+
+// RGBA returns the RGBA values for the receiver.
+func (c Pixel) RGBA() (r, g, b, a uint32) {
+	if c == Black {
+		return 0, 0, 0, 0xffff
+	}
+	return 0xffff, 0xffff, 0xffff, 0xffff
+}
+
+func monoModel(c color.Color) color.Color {
+	if _, ok := c.(Pixel); ok {
+		return c
+	}
+	r, g, b, _ := c.RGBA()
+	y := (299*r + 587*g + 114*b + 500) / 500
+	return Pixel(uint16(y) < 0x8000)
 }

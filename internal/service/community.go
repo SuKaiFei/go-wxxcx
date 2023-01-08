@@ -22,6 +22,15 @@ func NewCommunityService(uc *biz.CommunityUseCase, cosUc *biz.CosUseCase, wechat
 	return &CommunityService{uc: uc, cosUc: cosUc, wechatUc: wechatUc}
 }
 
+func (s *CommunityService) GetCommunityUserTitleList(ctx context.Context, req *pb.CommonRequest) (*pb.GetCommunityUserTitleListReply, error) {
+	tags, err := s.uc.GetUserTitles(ctx, req.Openid)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetCommunityUserTitleListReply{Results: tags}, nil
+}
+
 func (s *CommunityService) GetCommunitySettingNotice(ctx context.Context, req *pb.CommonRequest) (*pb.GetCommunitySettingNoticeReply, error) {
 	m, err := s.uc.GetSettingNotice(ctx, req.Openid)
 	if err != nil {
@@ -79,6 +88,7 @@ func (s *CommunityService) GetCommunityMyProfile(ctx context.Context, req *pb.Ge
 		Username:     res.Username,
 		AvatarUrl:    res.Avatar,
 		Introduction: res.Introduction,
+		TagId:        uint64(res.TagID),
 		TagValue:     res.TagValue,
 		TagClass:     res.TagClass,
 	}, nil
@@ -115,7 +125,7 @@ func (s *CommunityService) GetCommunityMyArticleList(ctx context.Context, req *p
 	if req.GetPage() < 1 {
 		req.Page = 0
 	}
-	reply, err := s.uc.GetMyArticleList(ctx, req.GetOpenid(), req.Page, req.PageSize)
+	reply, err := s.uc.GetMyArticleList(ctx, req.Openid, req.CurOpenid, req.Page, req.PageSize)
 	if err != nil {
 		return nil, err
 	}

@@ -126,7 +126,7 @@ func (uc *WechatUseCase) MsgCheck(appid, openid, content string) (*security.MsgC
 		log.Warnw(
 			"message", "SecurityCheckMsg Label!=100",
 			"content", content,
-			"appidCommunity", appid,
+			"AppidCommunity", appid,
 			"openid", openid,
 		)
 	}

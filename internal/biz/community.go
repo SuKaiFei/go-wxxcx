@@ -22,6 +22,12 @@ var (
 )
 
 type CommunityRepo interface {
+	UpdateUserUserTitle(context.Context, *CommunityUserTitle) error
+	GetUserTitle(context.Context, uint) (*CommunityUserTitle, error)
+	UpdateUserTitle(context.Context, uint, *CommunityUserTitle) error
+	GetUserTitleByValue(context.Context, string, string) (*CommunityUserTitle, error)
+	AddUserTitle(context.Context, *CommunityUserTitle) (uint, error)
+	GetUserTitleList(context.Context, string) ([]*CommunityUserTitle, error)
 	AddNoticeHistory(context.Context, *CommunityNoticeHistory) (uint, error)
 	GetUser(context.Context, string) (*CommunityUser, error)
 	AddUser(context.Context, *CommunityUser) (uint, error)
@@ -51,6 +57,8 @@ type CommunityRepo interface {
 	UpdateArticleCommentCount(context.Context, uint, int) error
 	UpdateCommentLikeCount(context.Context, uint, int) error
 	UpdateCommentCount(context.Context, uint, int) error
+
+	GetSendUserTitle(context.Context) ([]string, error)
 }
 
 type CommunityUseCase struct {
@@ -61,12 +69,35 @@ type CommunityUseCase struct {
 }
 
 func NewCommunityUseCase(repo CommunityRepo, cosUC *CosUseCase, wechatUc *WechatUseCase, logger log.Logger) *CommunityUseCase {
-	return &CommunityUseCase{
+	c := &CommunityUseCase{
 		cosUC:    cosUC,
 		wechatUc: wechatUc,
 		repo:     repo,
 		log:      log.NewHelper(logger),
 	}
+	c.taskSendUserTitle()
+	return c
+}
+
+func (uc *CommunityUseCase) GetUserTitles(ctx context.Context, openid string) ([]*v1.CommunityUserTitle, error) {
+	m, err := uc.repo.GetUserTitleList(ctx, openid)
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+
+	titles := make([]*v1.CommunityUserTitle, len(m))
+	for i, title := range m {
+		titles[i] = &v1.CommunityUserTitle{
+			Id:    uint64(title.ID),
+			Class: title.Class,
+			Value: title.Value,
+		}
+	}
+	if len(titles) > 0 {
+		titles = append([]*v1.CommunityUserTitle{{Class: ".badge-b", Id: 0, Value: "取消头衔"}}, titles...)
+	}
+
+	return titles, nil
 }
 
 func (uc *CommunityUseCase) GetSettingNotice(ctx context.Context, openid string) (*CommunitySettingNotice, error) {
@@ -75,13 +106,8 @@ func (uc *CommunityUseCase) GetSettingNotice(ctx context.Context, openid string)
 		return nil, errors2.WithStack(err)
 	}
 	if m == nil {
-		user, err := uc.GetMyProfile(ctx, openid)
-		if err != nil {
-			return nil, errors2.WithStack(err)
-		}
 		m = &CommunitySettingNotice{
 			Openid:             openid,
-			Unionid:            user.Unionid,
 			IsOpenLikeWork:     &defaultSettingNotice,
 			IsOpenLikeComment:  &defaultSettingNotice,
 			IsOpenCommentReply: &defaultSettingNotice,
@@ -98,7 +124,6 @@ func (uc *CommunityUseCase) GetSettingNotice(ctx context.Context, openid string)
 func (uc *CommunityUseCase) UpdateSettingNotice(ctx context.Context, req *v1.UpdateCommunitySettingNoticeRequest) error {
 	m := &CommunitySettingNotice{
 		Openid:             req.Openid,
-		Unionid:            req.Unionid,
 		IsOpenLikeWork:     &req.IsOpenLikeWork,
 		IsOpenLikeComment:  &req.IsOpenLikeComment,
 		IsOpenCommentReply: &req.IsOpenCommentReply,
@@ -260,7 +285,7 @@ func (uc *CommunityUseCase) GetMyProfile(ctx context.Context, openid string) (
 			Avatar:       defaultCommentUser.Avatar,
 			Introduction: defaultCommentUser.Introduction,
 		}
-		wechatUser, _ := uc.wechatUc.GetUser(ctx, appidCommunity, openid)
+		wechatUser, _ := uc.wechatUc.GetUser(ctx, AppidCommunity, openid)
 		if wechatUser != nil && len(wechatUser.Unionid) > 0 {
 			item.Unionid = wechatUser.Unionid
 		}
@@ -268,10 +293,23 @@ func (uc *CommunityUseCase) GetMyProfile(ctx context.Context, openid string) (
 		if err != nil {
 			return nil, errors2.WithStack(err)
 		}
+		title := &CommunityUserTitle{
+			Openid: openid,
+			Value:  "菜鸡",
+			Class:  ".badge-d",
+		}
+		_, err := uc.repo.AddUserTitle(ctx, title)
+		if err != nil {
+			return nil, errors2.WithStack(err)
+		}
 	}
 	item.Avatar, err = uc.cosUC.GetPresignedURL(ctx, item.Avatar)
 	if err != nil {
 		return nil, errors2.WithStack(err)
+	}
+	if time.Now().After(item.TagValidityPeriod) {
+		item.TagClass = ""
+		item.TagValue = ""
 	}
 
 	return item, nil
@@ -290,6 +328,23 @@ func (uc *CommunityUseCase) UpdateMyProfile(ctx context.Context, req *v1.UpdateC
 		Username:     req.Username,
 		Introduction: req.Introduction,
 		Avatar:       uc.cosUC.TidyURLByPhoto(req.AvatarUrl)[0],
+	}
+	if req.TagId > 0 {
+		title, err := uc.repo.GetUserTitle(ctx, uint(req.TagId))
+		if err != nil {
+			return errors2.WithStack(err)
+		}
+		if title.Openid == req.Openid {
+			m.TagID = title.ID
+			m.TagValue = title.Value
+			m.TagClass = title.Class
+			m.TagValidityPeriod = title.ValidityPeriod
+		}
+	} else {
+		m.TagID = 0
+		m.TagValue = ""
+		m.TagClass = ""
+		m.TagValidityPeriod = time.Now()
 	}
 	err := uc.repo.UpdateUser(ctx, uint(req.Id), m)
 	if err != nil {
@@ -337,14 +392,17 @@ func (uc *CommunityUseCase) GetCommentList(ctx context.Context, openid string, a
 	return &v1.GetCommunityCommentListReply{Results: reply}, nil
 }
 
-func (uc *CommunityUseCase) GetMyArticleList(ctx context.Context, openid string, page, pageSize uint64) (
+func (uc *CommunityUseCase) GetMyArticleList(ctx context.Context, openid, curOpenid string, page, pageSize uint64) (
 	*v1.GetCommunityArticleListReply, error,
 ) {
 	items, err := uc.repo.GetArticleListByOpenid(ctx, openid, int(page), int(pageSize))
 	if err != nil {
 		return nil, errors2.WithStack(err)
 	}
-	reply, err := uc.fillArticleReply(ctx, openid, items)
+	if curOpenid == "" {
+		curOpenid = openid
+	}
+	reply, err := uc.fillArticleReply(ctx, curOpenid, items)
 	if err != nil {
 		return nil, errors2.WithStack(err)
 	}
@@ -453,7 +511,7 @@ func (uc *CommunityUseCase) sendTemplateMessage(articleID uint64, typ CommunityN
 			return
 		}
 	}
-	user, err := uc.wechatUc.GetUser(ctx, appidCommunity, openid)
+	user, err := uc.wechatUc.GetUser(ctx, AppidCommunity, openid)
 	if err != nil {
 		uc.log.Errorw("msg", "sendTemplateMessageGetUser", "openid", openid, "err", err)
 		return
@@ -462,7 +520,7 @@ func (uc *CommunityUseCase) sendTemplateMessage(articleID uint64, typ CommunityN
 		return
 	}
 	sendUserUnionid := ""
-	sendUser, _ := uc.wechatUc.GetUser(ctx, appidCommunity, sendOpenid)
+	sendUser, _ := uc.wechatUc.GetUser(ctx, AppidCommunity, sendOpenid)
 	if sendUser != nil {
 		sendUserUnionid = sendUser.Unionid
 	}
@@ -484,7 +542,7 @@ func (uc *CommunityUseCase) sendTemplateMessage(articleID uint64, typ CommunityN
 		TemplateID: templateID,
 		Data:       data,
 	}
-	msg.MiniProgram.AppID = appidCommunity
+	msg.MiniProgram.AppID = AppidCommunity
 	msg.MiniProgram.PagePath = fmt.Sprintf("pages/index/detail?id=%d", articleID)
 
 	errMsg := "ok"
@@ -549,6 +607,10 @@ func (uc *CommunityUseCase) fillCommentReply(ctx context.Context, openid string,
 				return nil, errors2.WithStack(err)
 			}
 			user.Avatar = avatar
+			if time.Now().After(user.TagValidityPeriod) {
+				user.TagValue = ""
+				user.TagClass = ""
+			}
 		}
 		replyUser, found := userMap[item.ReplyOpenid]
 		if !found {
@@ -559,6 +621,10 @@ func (uc *CommunityUseCase) fillCommentReply(ctx context.Context, openid string,
 				return nil, errors2.WithStack(err)
 			}
 			replyUser.Avatar = avatar
+			if time.Now().After(replyUser.TagValidityPeriod) {
+				replyUser.TagValue = ""
+				replyUser.TagClass = ""
+			}
 		}
 		_, isLike := likeMap[item.ID]
 
@@ -607,6 +673,11 @@ func (uc *CommunityUseCase) fillCommentReply(ctx context.Context, openid string,
 func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string, items []*CommunityArticle) (
 	[]*v1.GetCommunityArticleReply, error,
 ) {
+	res := make([]*v1.GetCommunityArticleReply, len(items))
+	if len(items) == 0 {
+		return res, nil
+	}
+
 	ids := make([]uint, len(items))
 	pushOpenIDs := make([]string, len(items))
 	for i, item := range items {
@@ -630,7 +701,6 @@ func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string,
 		likeMap[uint(like.Tid)] = struct{}{}
 	}
 
-	res := make([]*v1.GetCommunityArticleReply, len(items))
 	for i, item := range items {
 		user, found := userMap[item.Openid]
 		if !found {
@@ -641,11 +711,12 @@ func (uc *CommunityUseCase) fillArticleReply(ctx context.Context, openid string,
 				return nil, errors2.WithStack(err)
 			}
 			user.Avatar = avatar
+			if time.Now().After(user.TagValidityPeriod) {
+				user.TagValue = ""
+				user.TagClass = ""
+			}
 		}
 		_, isLike := likeMap[item.ID]
-		if !found {
-			user = defaultCommentUser
-		}
 
 		if item.LikeCount < 0 {
 			item.LikeCount = 0

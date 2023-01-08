@@ -333,6 +333,10 @@ paths:
                   schema:
                     type: integer
                     format: uint64
+                - name: curOpenid
+                  in: query
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -531,6 +535,10 @@ paths:
                   schema:
                     type: integer
                     format: uint64
+                - name: curOpenid
+                  in: query
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
@@ -650,6 +658,35 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /wxxcx/community/user/title/list:
+        get:
+            tags:
+                - Community
+            operationId: Community_GetCommunityUserTitleList
+            parameters:
+                - name: appid
+                  in: query
+                  schema:
+                    type: string
+                - name: timestamp
+                  in: query
+                  schema:
+                    type: string
+                - name: sign
+                  in: query
+                  schema:
+                    type: string
+                - name: openid
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wxxcx.v1.community.GetCommunityUserTitleListReply'
     /wxxcx/image/ping:
         get:
             tags:
@@ -1100,6 +1137,16 @@ components:
                     type: string
                 tag_class:
                     type: string
+        wxxcx.v1.community.CommunityUserTitle:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint64
+                class:
+                    type: string
+                value:
+                    type: string
         wxxcx.v1.community.DeleteCommunityByIdRequest:
             type: object
             properties:
@@ -1182,6 +1229,9 @@ components:
                     type: string
                 introduction:
                     type: string
+                tag_id:
+                    type: integer
+                    format: uint64
                 tag_value:
                     type: string
                 tag_class:
@@ -1200,6 +1250,13 @@ components:
                 id:
                     type: integer
                     format: uint64
+        wxxcx.v1.community.GetCommunityUserTitleListReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/wxxcx.v1.community.CommunityUserTitle'
         wxxcx.v1.community.GetCosCredentialReply:
             type: object
             properties:
@@ -1285,6 +1342,9 @@ components:
                     type: string
                 introduction:
                     type: string
+                tag_id:
+                    type: integer
+                    format: uint64
         wxxcx.v1.community.UpdateCommunitySettingNoticeRequest:
             type: object
             properties:

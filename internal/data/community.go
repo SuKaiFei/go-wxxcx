@@ -21,6 +21,89 @@ func NewCommunityRepo(data *Data, logger log.Logger) biz.CommunityRepo {
 	}
 }
 
+func (r *CommunityRepo) GetSendUserTitle(ctx context.Context) ([]string, error) {
+	var tmp []struct {
+		ArticleId int    `gorm:"column:article_id;"`
+		Openid    string `gorm:"column:aopenid;"`
+		Ac        int    `gorm:"column:ac;"`
+	}
+	err := r.data.db.WithContext(ctx).Raw(`SELECT
+	article_id,
+	aopenid,
+	count( article_id ) ac 
+FROM
+	(
+	SELECT
+		article_id,
+		cc.openid copenid,
+		ca.openid aopenid 
+	FROM
+		community_comment cc
+		LEFT JOIN community_article ca ON cc.article_id = ca.id 
+	WHERE
+		ca.created_at > DATE_SUB( curdate(), INTERVAL 1 DAY ) 
+	GROUP BY
+		article_id,
+		cc.openid,
+		ca.openid 
+	) s 
+GROUP BY
+	article_id,
+	aopenid 
+ORDER BY
+	ac DESC LIMIT 10
+	`).Scan(&tmp).Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+
+	res := make([]string, len(tmp))
+	for i, s := range tmp {
+		res[i] = s.Openid
+	}
+	return res, nil
+}
+
+func (r *CommunityRepo) GetUserTitleByValue(ctx context.Context, openid, value string) (m *biz.CommunityUserTitle, err error) {
+	err = r.data.db.WithContext(ctx).First(&m, "openid=? and value=?", openid, value).Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return
+}
+
+func (r *CommunityRepo) AddUserTitle(ctx context.Context, m *biz.CommunityUserTitle) (uint, error) {
+	err := r.data.db.WithContext(ctx).Create(m).Error
+	if err != nil {
+		return 0, errors2.WithStack(err)
+	}
+	return m.ID, nil
+}
+
+func (r *CommunityRepo) GetUserTitle(ctx context.Context, id uint) (m *biz.CommunityUserTitle, err error) {
+	err = r.data.db.WithContext(ctx).First(&m, "id=?", id).Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return m, nil
+}
+
+func (r *CommunityRepo) UpdateUserTitle(ctx context.Context, id uint, m *biz.CommunityUserTitle) error {
+	err := r.data.db.WithContext(ctx).Where("id=?", id).Updates(&m).Error
+	if err != nil {
+		return errors2.WithStack(err)
+	}
+	return nil
+}
+
+func (r *CommunityRepo) GetUserTitleList(ctx context.Context, openid string) (m []*biz.CommunityUserTitle, err error) {
+	err = r.data.db.WithContext(ctx).Find(&m, "openid=? and validity_period>now()", openid).Error
+	if err != nil {
+		return nil, errors2.WithStack(err)
+	}
+	return m, nil
+}
+
 func (r *CommunityRepo) GetSettingNotice(ctx context.Context, openid string) (m *biz.CommunitySettingNotice, err error) {
 	err = r.data.db.WithContext(ctx).First(&m, "openid=?", openid).Error
 	if err != nil {
@@ -210,11 +293,30 @@ func (r *CommunityRepo) DeleteComment(ctx context.Context, openid string, id uin
 }
 
 func (r *CommunityRepo) UpdateUser(ctx context.Context, id uint, m *biz.CommunityUser) error {
-	err := r.data.db.WithContext(ctx).Where("id = ?", id).Model(m).Updates(map[string]interface{}{
-		"username":     m.Username,
-		"avatar":       m.Avatar,
-		"introduction": m.Introduction,
-	}).Error
+	values := map[string]interface{}{
+		"username":            m.Username,
+		"avatar":              m.Avatar,
+		"introduction":        m.Introduction,
+		"tag_id":              m.TagID,
+		"tag_value":           m.TagValue,
+		"tag_class":           m.TagClass,
+		"tag_validity_period": m.TagValidityPeriod,
+	}
+	err := r.data.db.WithContext(ctx).Where("id = ?", id).Model(m).Updates(values).Error
+	if err != nil {
+		return errors2.WithStack(err)
+	}
+	return nil
+}
+
+func (r *CommunityRepo) UpdateUserUserTitle(ctx context.Context, m *biz.CommunityUserTitle) error {
+	values := map[string]interface{}{
+		"tag_id":              m.ID,
+		"tag_value":           m.Value,
+		"tag_class":           m.Class,
+		"tag_validity_period": m.ValidityPeriod,
+	}
+	err := r.data.db.WithContext(ctx).Where("openid=?", m.Openid).Model(new(biz.CommunityUser)).Updates(values).Error
 	if err != nil {
 		return errors2.WithStack(err)
 	}

@@ -19,6 +19,6 @@ var ProviderSet = wire.NewSet(
 )
 
 const (
-	appidCommunity = "wxec615f70feb4e93c"
+	AppidCommunity = "wxec615f70feb4e93c"
 	appidOA        = "wx9ef62ba2e3525812"
 )

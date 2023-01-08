@@ -19,8 +19,9 @@ import (
 )
 
 var (
-	ErrBadAppid = errors.BadRequest("请求异常", "appid错误")
-	ErrBadSign  = errors.BadRequest("请求异常", "sign错误")
+	ErrBadAppid  = errors.BadRequest("请求异常", "appid错误")
+	ErrBadOpenid = errors.BadRequest("请求异常", "登录错误,请删除小程序重新打开")
+	ErrBadSign   = errors.BadRequest("请求异常", "sign错误")
 )
 
 func MiddlewareAuth(cApp *conf.Application, securityUC *biz.SecurityUseCase) middleware.Middleware {
@@ -113,6 +114,12 @@ func requestAuth(cApp *conf.Application, request *http.Request, req interface{},
 	)
 
 	if len(timestampStr) == 13 && openid != "" {
+		if openid == "undefined" && appid == biz.AppidCommunity {
+			logger.Errorw(
+				"msg", "openid==undefined",
+			)
+			return ErrBadOpenid
+		}
 		reqTime = time.Unix(int64(timestamp/1000), 0)
 	} else {
 		reqTime = time.Unix(int64(timestamp), 0)

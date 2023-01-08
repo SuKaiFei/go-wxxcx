@@ -29,6 +29,7 @@ type CommunityHTTPServer interface {
 	GetCommunityMyArticleList(context.Context, *GetCommunityArticleListRequest) (*GetCommunityArticleListReply, error)
 	GetCommunityMyProfile(context.Context, *GetCommunityMyProfileRequest) (*GetCommunityMyProfileReply, error)
 	GetCommunitySettingNotice(context.Context, *CommonRequest) (*GetCommunitySettingNoticeReply, error)
+	GetCommunityUserTitleList(context.Context, *CommonRequest) (*GetCommunityUserTitleListReply, error)
 	GetCosCredential(context.Context, *GetCosCredentialRequest) (*GetCosCredentialReply, error)
 	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	PushCommunityArticle(context.Context, *PushCommunityArticleRequest) (*emptypb.Empty, error)
@@ -39,6 +40,7 @@ type CommunityHTTPServer interface {
 
 func RegisterCommunityHTTPServer(s *http.Server, srv CommunityHTTPServer) {
 	r := s.Route("/")
+	r.GET("/wxxcx/community/user/title/list", _Community_GetCommunityUserTitleList0_HTTP_Handler(srv))
 	r.GET("/wxxcx/community/setting/notice", _Community_GetCommunitySettingNotice0_HTTP_Handler(srv))
 	r.POST("/wxxcx/community/setting/notice/update", _Community_UpdateCommunitySettingNotice0_HTTP_Handler(srv))
 	r.DELETE("/wxxcx/community/my/article/delete", _Community_DeleteCommunityMyArticle0_HTTP_Handler(srv))
@@ -55,6 +57,25 @@ func RegisterCommunityHTTPServer(s *http.Server, srv CommunityHTTPServer) {
 	r.POST("/wxxcx/community/like", _Community_UpdateCommunityLike0_HTTP_Handler(srv))
 	r.GET("/wxxcx/community/cos/credential", _Community_GetCosCredential0_HTTP_Handler(srv))
 	r.GET("/wxxcx/community/ping", _Community_Ping1_HTTP_Handler(srv))
+}
+
+func _Community_GetCommunityUserTitleList0_HTTP_Handler(srv CommunityHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CommonRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/wxxcx.v1.community.Community/GetCommunityUserTitleList")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetCommunityUserTitleList(ctx, req.(*CommonRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetCommunityUserTitleListReply)
+		return ctx.Result(200, reply)
+	}
 }
 
 func _Community_GetCommunitySettingNotice0_HTTP_Handler(srv CommunityHTTPServer) func(ctx http.Context) error {
@@ -372,6 +393,7 @@ type CommunityHTTPClient interface {
 	GetCommunityMyArticleList(ctx context.Context, req *GetCommunityArticleListRequest, opts ...http.CallOption) (rsp *GetCommunityArticleListReply, err error)
 	GetCommunityMyProfile(ctx context.Context, req *GetCommunityMyProfileRequest, opts ...http.CallOption) (rsp *GetCommunityMyProfileReply, err error)
 	GetCommunitySettingNotice(ctx context.Context, req *CommonRequest, opts ...http.CallOption) (rsp *GetCommunitySettingNoticeReply, err error)
+	GetCommunityUserTitleList(ctx context.Context, req *CommonRequest, opts ...http.CallOption) (rsp *GetCommunityUserTitleListReply, err error)
 	GetCosCredential(ctx context.Context, req *GetCosCredentialRequest, opts ...http.CallOption) (rsp *GetCosCredentialReply, err error)
 	Ping(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	PushCommunityArticle(ctx context.Context, req *PushCommunityArticleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
@@ -510,6 +532,19 @@ func (c *CommunityHTTPClientImpl) GetCommunitySettingNotice(ctx context.Context,
 	pattern := "/wxxcx/community/setting/notice"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunitySettingNotice"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *CommunityHTTPClientImpl) GetCommunityUserTitleList(ctx context.Context, in *CommonRequest, opts ...http.CallOption) (*GetCommunityUserTitleListReply, error) {
+	var out GetCommunityUserTitleListReply
+	pattern := "/wxxcx/community/user/title/list"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/wxxcx.v1.community.Community/GetCommunityUserTitleList"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

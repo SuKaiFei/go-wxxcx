@@ -6,7 +6,20 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/silenceper/wechat/v2/officialaccount/message"
 	"gorm.io/gorm"
+	"time"
 )
+
+type CommunityUserTitle struct {
+	gorm.Model
+	Openid         string    `gorm:"type:char(28);"`
+	Value          string    `gorm:"type:varchar(10);"`
+	Class          string    `gorm:"type:varchar(50);"`
+	ValidityPeriod time.Time `gorm:"default:'9999-12-31 23:59:59';"`
+}
+
+func (CommunityUserTitle) TableName() string {
+	return "community_user_title"
+}
 
 type CommunityNoticeType uint8
 
@@ -20,7 +33,6 @@ const (
 type CommunitySettingNotice struct {
 	gorm.Model
 	Openid             string `gorm:"type:char(28);"`
-	Unionid            string `gorm:"type:char(28);"`
 	IsOpenLikeWork     *bool
 	IsOpenLikeComment  *bool
 	IsOpenCommentReply *bool
@@ -61,13 +73,15 @@ func (CommunityNoticeHistory) TableName() string {
 
 type CommunityUser struct {
 	gorm.Model
-	Openid       string `gorm:"type:char(28);"`
-	Unionid      string `gorm:"type:char(28);"`
-	Username     string `gorm:"type:varchar(50);"`
-	Avatar       string `gorm:"type:varchar(500);"`
-	Introduction string `gorm:"type:varchar(300);"`
-	TagValue     string `gorm:"type:varchar(10);"`
-	TagClass     string `gorm:"type:varchar(50);"`
+	Openid            string `gorm:"type:char(28);"`
+	Unionid           string `gorm:"type:char(28);"`
+	Username          string `gorm:"type:varchar(50);"`
+	Avatar            string `gorm:"type:varchar(500);"`
+	Introduction      string `gorm:"type:varchar(300);"`
+	TagID             uint
+	TagValue          string    `gorm:"type:varchar(10);"`
+	TagClass          string    `gorm:"type:varchar(50);"`
+	TagValidityPeriod time.Time `gorm:"default:'9999-12-31 23:59:59';"`
 }
 
 func (CommunityUser) TableName() string {

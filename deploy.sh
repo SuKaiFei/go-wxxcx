@@ -62,7 +62,7 @@ do
        date=$(date +%Y%m%d-%H:%M:%S)
 #生成报警邮件的内容
        echo "当前时间为:$date reply:$reply
-       $url服务器异常,状态码为${status_code}"
+       $url服务器状态码为${status_code}"
 
 #指定测试服务器状态的函数，并根据返回码决定是发送邮件报警还是将正常信息写入日志
        if [ $status_code -eq 200 ];then
@@ -87,3 +87,27 @@ nextPortPid=$(netstat -anp|grep $curPort|awk '{printf $7}'|cut -d/ -f1)
 nextPortPid=$(echo $nextPortPid | sed -e 's/-//g')
 echo nextPortPid: $nextPortPid
 kill $nextPortPid
+
+reply=1
+url=http://localhost:$curPort/wxxcx/bqb/ping
+while :
+do
+       check_http
+       date=$(date +%Y%m%d-%H:%M:%S)
+#生成报警邮件的内容
+       echo "关闭旧服务 当前时间为:$date reply:$reply
+       $url服务器状态码为${status_code}"
+
+#指定测试服务器状态的函数，并根据返回码决定是发送邮件报警还是将正常信息写入日志
+       if [ $status_code -ne 200 ];then
+              echo "旧服务已关闭"
+              break
+       fi
+       if [ $reply -eq 5 ];then
+              sed -i "s/$nextPort/$curPort/" /app/wxxcx/config.yaml
+              echo "旧服务关闭失败"
+              exit
+       fi
+       reply=$((${reply} + 1))
+       sleep 1
+done

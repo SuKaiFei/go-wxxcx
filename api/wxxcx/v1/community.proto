@@ -9,6 +9,11 @@ import "wxxcx/v1/common.proto";
 option go_package = "github.com/SuKaiFei/go-wxxcx/api/wxxcx/v1;v1";
 
 service Community {
+  rpc GetCommunityUserTitleList (wxxcx.v1.common.CommonRequest) returns (GetCommunityUserTitleListReply) {
+    option (google.api.http) = {
+      get: "/wxxcx/community/user/title/list"
+    };
+  }
   rpc GetCommunitySettingNotice (wxxcx.v1.common.CommonRequest) returns (GetCommunitySettingNoticeReply) {
     option (google.api.http) = {
       get: "/wxxcx/community/setting/notice"
@@ -99,6 +104,17 @@ service Community {
     };
   }
 }
+
+message CommunityUserTitle {
+  uint64 id = 1;
+  string class = 2;
+  string value = 3;
+}
+
+message GetCommunityUserTitleListReply {
+  repeated CommunityUserTitle results = 1;
+}
+
 message GetCommunitySettingNoticeReply {
   bool is_open_like_work = 1 [json_name = 'is_open_like_work'];
   bool is_open_like_comment = 2 [json_name = 'is_open_like_comment'];
@@ -169,8 +185,9 @@ message GetCommunityMyProfileReply {
   string username = 2 [json_name = 'username'];
   string avatar_url = 3 [json_name = 'avatar_url'];
   string introduction = 4 [json_name = 'introduction'];
-  string tag_value = 5 [json_name = 'tag_value'];
-  string tag_class = 6 [json_name = 'tag_class'];
+  uint64 tag_id = 5 [json_name = 'tag_id'];
+  string tag_value = 6 [json_name = 'tag_value'];
+  string tag_class = 7 [json_name = 'tag_class'];
 }
 
 message UpdateCommunityMyProfileRequest {
@@ -182,6 +199,7 @@ message UpdateCommunityMyProfileRequest {
   string username = 6 [json_name = 'username'];
   string avatar_url = 7 [json_name = 'avatar_url'];
   string introduction = 8 [json_name = 'introduction'];
+  uint64 tag_id = 9 [json_name = 'tag_id'];
 }
 
 message AddCommunityFeedbackRequest {
@@ -247,6 +265,7 @@ message GetCommunityArticleListRequest {
   string openid = 4;
   uint64 page = 5;
   uint64 page_size = 6;
+  string cur_openid = 7;
 }
 
 message GetCommunityArticleListReply {

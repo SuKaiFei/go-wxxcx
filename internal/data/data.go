@@ -83,6 +83,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		new(biz.WechatOAUser),
 		new(biz.CommunitySettingNotice),
 		new(biz.CommunityNoticeHistory),
+		new(biz.CommunityUserTitle),
 	)
 	if err != nil {
 		return nil, nil, err

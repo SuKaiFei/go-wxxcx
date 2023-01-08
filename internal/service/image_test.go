@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/SuKaiFei/go-wxxcx/internal/biz"
 	"github.com/makiuchi-d/gozxing"
 	"github.com/makiuchi-d/gozxing/qrcode"
 	"github.com/nfnt/resize"
@@ -86,8 +87,24 @@ func TestImageResize(t *testing.T) {
 	t.Log("时间消耗：", time.Now().Sub(now).String())
 }
 
+func TestGet(t *testing.T) {
+	file, err := os.Open("/Users/sukaifei/Downloads/WechatIMG311.jpeg")
+	defer file.Close()
+
+	img, _, err := image.Decode(file)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	now := time.Now()
+	content := new(biz.ImageUseCase).GetQRCodeContent(img)
+
+	t.Log("content：", content)
+	t.Log("时间消耗：", time.Now().Sub(now).String())
+}
+
 func TestNewQRCodeReader(t *testing.T) {
-	file, err := os.Open("/Users/sukaifei/Downloads/IMG_3924.JPG")
+	file, err := os.Open("/Users/sukaifei/Downloads/WechatIMG311.jpeg")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +116,7 @@ func TestNewQRCodeReader(t *testing.T) {
 	}
 
 	now := time.Now()
-	rgba := grayingImage(img)
+	rgba := grayingImage(img, 255)
 	//if err := png.Encode(create, rgba); err != nil {
 	//	t.Fatal(err)
 	//}
@@ -107,23 +124,30 @@ func TestNewQRCodeReader(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	hints := map[gozxing.DecodeHintType]interface{}{
-		gozxing.DecodeHintType_TRY_HARDER: true,
-		gozxing.DecodeHintType_POSSIBLE_FORMATS: []gozxing.BarcodeFormat{
-			gozxing.BarcodeFormat_QR_CODE},
-	}
 	reader := qrcode.NewQRCodeReader()
-	result, err := reader.Decode(bmp, hints)
+	result, err := reader.Decode(bmp, nil)
 	t.Log("qrcode.NewQRCodeReader1", result, err)
 
 	bmp, err = gozxing.NewBinaryBitmapFromImage(rgba)
 	if err != nil {
 		t.Fatal(err)
 	}
-	result, err = reader.Decode(bmp, hints)
+	result, err = reader.Decode(bmp, nil)
 	t.Log("qrcode.NewQRCodeReader2", result, err)
+	create, err := os.Create("/Users/sukaifei/Downloads/123123.JPG")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer create.Close()
+	if err := jpeg.Encode(create, rgba, nil); err != nil {
+		t.Fatal(err)
+	}
+	rgba = grayingImage(img, 128)
+	bmp, err = gozxing.NewBinaryBitmapFromImage(rgba)
+	result, err = reader.Decode(bmp, nil)
+	t.Log("qrcode.NewQRCodeReader3", result, err)
 	t.Log("时间消耗：", time.Now().Sub(now).String())
-	create, err := os.Create("/Users/sukaifei/Downloads/IMG_39241.JPG")
+	create, err = os.Create("/Users/sukaifei/Downloads/asdfsaf.JPG")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,7 +157,7 @@ func TestNewQRCodeReader(t *testing.T) {
 	}
 }
 
-func grayingImage(m image.Image) *image.RGBA {
+func grayingImage(m image.Image, ng uint8) *image.RGBA {
 	bounds := m.Bounds()
 	dx := bounds.Dx()
 	dy := bounds.Dy()
@@ -142,13 +166,42 @@ func grayingImage(m image.Image) *image.RGBA {
 	for x := 0; x < dx; x++ {
 		for y := 0; y < dy; y++ {
 			colorRgb := m.At(x, y)
-			_, g, _, a := colorRgb.RGBA()
-			newG := 255 - uint8(g>>8)
-			newA := uint8(a >> 8)
+			_, g, _, _ := colorRgb.RGBA()
+			newG := uint8(g)
+			if newG > 200 {
+				newG = 1
+			} else {
+				newG = 0
+			}
+			//newA := uint8(a >> 8)
 			// 将每个点的设置为灰度值
-			newRgba.SetRGBA(x, y, color.RGBA{R: newG, G: newG, B: newG, A: newA})
+			newRgba.Set(x, y, monoModel(colorRgb))
 		}
 	}
 
 	return newRgba
+}
+
+type Pixel bool
+
+const (
+	Black Pixel = true
+	White Pixel = false
+)
+
+// RGBA returns the RGBA values for the receiver.
+func (c Pixel) RGBA() (r, g, b, a uint32) {
+	if c == Black {
+		return 0, 0, 0, 0xffff
+	}
+	return 0xffff, 0xffff, 0xffff, 0xffff
+}
+
+func monoModel(c color.Color) color.Color {
+	if _, ok := c.(Pixel); ok {
+		return c
+	}
+	r, g, b, _ := c.RGBA()
+	y := (299*r + 587*g + 114*b + 500) / 500
+	return Pixel(uint16(y) < 0x8000)
 }
